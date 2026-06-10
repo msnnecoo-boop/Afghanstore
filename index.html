@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>AfghanStore - فروش کاینس بازی</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&family=Exo+2:wght@300;400;600;800&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --gold:#F5C518;--gold-dark:#C9A010;--gold-glow:rgba(245,197,24,0.3);
+  --bg:#07090D;--surface:#0F1117;--surface2:#161923;--surface3:#1C2130;
+  --border:rgba(255,255,255,0.08);--text:#E8EAF0;--muted:#6B7593;
+  --danger:#FF4757;--success:#2ED573;--blue:#3D7EFF;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:'Exo 2',sans-serif;min-height:100vh;overflow-x:hidden;}
+body::after{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(245,197,24,0.02) 1px,transparent 1px),linear-gradient(90deg,rgba(245,197,24,0.02) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;z-index:0;}
+header{border-bottom:1px solid rgba(245,197,24,0.15);background:rgba(7,9,13,0.95);backdrop-filter:blur(16px);position:sticky;top:0;z-index:100;}
+.header-inner{display:flex;align-items:center;justify-content:space-between;padding:12px 20px;max-width:1100px;margin:0 auto;}
+.logo{display:flex;align-items:center;gap:10px;}
+.logo-hex{width:38px;height:38px;background:linear-gradient(135deg,#F5C518,#C9A010);clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:900;color:#000;font-family:'Rajdhani',sans-serif;}
+.logo-text{font-family:'Rajdhani',sans-serif;font-size:20px;font-weight:700;letter-spacing:2px;}
+.logo-text span{color:var(--gold);}
+.nav{display:flex;gap:4px;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:3px;}
+.nav-btn{padding:7px 14px;border:none;background:transparent;color:var(--muted);font-family:'Exo 2',sans-serif;font-size:11px;font-weight:700;letter-spacing:.5px;cursor:pointer;border-radius:5px;transition:all .2s;white-space:nowrap;}
+.nav-btn.active{background:var(--gold);color:#000;}
+.nav-btn:hover:not(.active){color:var(--text);}
+.hero{background:linear-gradient(160deg,#0a0c12 0%,#0f1520 50%,#0a0c12 100%);border-bottom:1px solid rgba(245,197,24,0.1);padding:40px 20px;text-align:center;position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;top:-50%;left:50%;transform:translateX(-50%);width:600px;height:600px;background:radial-gradient(circle,rgba(245,197,24,0.06) 0%,transparent 70%);pointer-events:none;}
+.hero-badge{display:inline-flex;align-items:center;gap:7px;background:rgba(245,197,24,0.1);border:1px solid rgba(245,197,24,0.25);border-radius:20px;padding:5px 14px;font-size:11px;font-weight:700;color:var(--gold);letter-spacing:1px;text-transform:uppercase;margin-bottom:16px;}
+.hero-dot{width:6px;height:6px;background:#2ED573;border-radius:50%;animation:blink 1.4s infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+.hero h1{font-family:'Rajdhani',sans-serif;font-size:clamp(30px,6vw,54px);font-weight:700;letter-spacing:1px;line-height:1.1;margin-bottom:10px;}
+.hero h1 span{color:var(--gold);}
+.hero p{color:var(--muted);font-size:14px;margin-bottom:20px;}
+.hero-stats{display:flex;justify-content:center;gap:32px;}
+.hs{text-align:center;}
+.hs strong{display:block;font-family:'Rajdhani',sans-serif;font-size:22px;font-weight:700;color:var(--gold);}
+.hs small{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;}
+.smm-banner{background:linear-gradient(135deg,#1a0a2e,#0d1a3a);border:1px solid rgba(138,43,226,0.3);border-radius:14px;padding:18px 20px;margin:24px auto 0;max-width:1060px;display:flex;align-items:center;justify-content:space-between;gap:16px;cursor:pointer;transition:all .2s;position:relative;z-index:1;text-decoration:none;}
+.smm-banner:hover{border-color:rgba(138,43,226,0.6);transform:translateY(-2px);box-shadow:0 8px 30px rgba(138,43,226,0.2);}
+.smm-left{display:flex;align-items:center;gap:14px;}
+.smm-icon{width:48px;height:48px;background:linear-gradient(135deg,#833ab4,#fd1d1d,#fcb045);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
+.smm-title{font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:700;color:#fff;}
+.smm-sub{font-size:12px;color:var(--muted);margin-top:2px;}
+.smm-platforms{display:flex;gap:6px;margin-top:6px;flex-wrap:wrap;}
+.smm-plat{background:rgba(255,255,255,0.07);border-radius:4px;padding:2px 8px;font-size:10px;font-weight:600;color:var(--muted);}
+.smm-cta{background:linear-gradient(135deg,#833ab4,#fd1d1d);border:none;border-radius:8px;padding:10px 20px;color:#fff;font-family:'Rajdhani',sans-serif;font-size:15px;font-weight:700;letter-spacing:1px;cursor:pointer;white-space:nowrap;}
+.wrap{max-width:1100px;margin:0 auto;padding:0 20px;position:relative;z-index:1;}
+.sec{padding:32px 0 0;}
+.sec-head{display:flex;align-items:center;gap:12px;margin-bottom:20px;}
+.sec-head h2{font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;white-space:nowrap;}
+.sec-line{flex:1;height:1px;background:linear-gradient(90deg,var(--border),transparent);}
+.sec-icon{width:30px;height:30px;background:rgba(245,197,24,0.1);border:1px solid rgba(245,197,24,0.2);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:14px;}
+.game-tabs{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none;}
+.game-tabs::-webkit-scrollbar{display:none;}
+.game-tab{flex-shrink:0;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:12px 16px;cursor:pointer;transition:all .2s;text-align:center;min-width:100px;}
+.game-tab:hover,.game-tab.active{border-color:rgba(245,197,24,0.5);background:rgba(245,197,24,0.06);}
+.game-tab.active{box-shadow:0 0 15px var(--gold-glow);}
+.gt-icon{font-size:26px;margin-bottom:5px;}
+.gt-name{font-size:10px;font-weight:700;color:var(--muted);letter-spacing:.5px;white-space:nowrap;}
+.game-tab.active .gt-name{color:var(--gold);}
+.gt-currency{font-size:9px;color:var(--muted);margin-top:1px;}
+.pkg-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:12px;margin-top:20px;}
+.pkg{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px 12px;cursor:pointer;transition:all .2s;text-align:center;position:relative;overflow:hidden;}
+.pkg::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:0;transition:.2s;}
+.pkg:hover,.pkg.selected{transform:translateY(-3px);box-shadow:0 8px 25px rgba(0,0,0,0.4);}
+.pkg:hover{border-color:rgba(245,197,24,0.3);}
+.pkg:hover::after,.pkg.selected::after{opacity:1;}
+.pkg.selected{border-color:rgba(245,197,24,0.6);}
+.pkg.popular{border-color:rgba(245,197,24,0.3);}
+.pop-tag{position:absolute;top:0;left:0;background:var(--gold);color:#000;font-size:8px;font-weight:800;padding:3px 8px;border-bottom-right-radius:8px;letter-spacing:1px;}
+.pkg-icon{display:flex;justify-content:center;margin-bottom:6px;}
+.pkg-amount{font-family:'Rajdhani',sans-serif;font-size:22px;font-weight:700;color:var(--gold);}
+.pkg-currency{font-size:10px;color:var(--muted);font-weight:600;letter-spacing:.5px;}
+.pkg-price{font-size:17px;font-weight:800;margin-top:8px;}
+.pkg-price small{font-size:10px;font-weight:400;color:var(--muted);}
+.pkg-btn{width:100%;margin-top:10px;padding:7px;background:rgba(245,197,24,0.07);border:1px solid rgba(245,197,24,0.2);border-radius:6px;color:var(--gold);font-family:'Exo 2',sans-serif;font-size:10px;font-weight:700;cursor:pointer;transition:all .2s;letter-spacing:.5px;}
+.pkg:hover .pkg-btn,.pkg.selected .pkg-btn{background:var(--gold);border-color:var(--gold);color:#000;}
+.order-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-top:24px;}
+.oc-head{background:rgba(245,197,24,0.05);border-bottom:1px solid var(--border);padding:16px 20px;display:flex;align-items:center;gap:10px;}
+.oc-head h3{font-family:'Rajdhani',sans-serif;font-size:16px;font-weight:700;letter-spacing:1px;text-transform:uppercase;}
+.oc-body{padding:20px;}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.fg{display:flex;flex-direction:column;gap:6px;}
+.fg.full{grid-column:1/-1;}
+.fg label{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);}
+.fg input,.fg select,.fg textarea{background:var(--surface2);border:1px solid var(--border);border-radius:7px;padding:10px 12px;color:var(--text);font-family:'Exo 2',sans-serif;font-size:13px;outline:none;transition:border-color .2s;}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--gold);}
+.fg select option{background:#161923;}
+.fg textarea{resize:vertical;min-height:65px;}
+.sel-display{background:var(--surface2);border:1px solid rgba(245,197,24,0.25);border-radius:8px;padding:12px 14px;display:flex;justify-content:space-between;align-items:center;}
+.sel-left{display:flex;align-items:center;gap:10px;}
+.sel-game-icon{font-size:22px;}
+.sel-info-name{font-family:'Rajdhani',sans-serif;font-size:16px;font-weight:700;color:var(--gold);}
+.sel-info-sub{font-size:10px;color:var(--muted);}
+.sel-price{font-size:18px;font-weight:800;}
+.pay-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:8px;}
+.pay-opt{background:var(--surface2);border:1px solid var(--border);border-radius:9px;padding:10px 6px;text-align:center;cursor:pointer;transition:all .2s;}
+.pay-opt:hover,.pay-opt.active{border-color:var(--gold);background:rgba(245,197,24,0.05);}
+.pay-opt .pay-icon{font-size:20px;margin-bottom:4px;}
+.pay-opt .pay-name{font-size:10px;font-weight:700;color:var(--muted);}
+.pay-opt.active .pay-name{color:var(--gold);}
+.paypal-info{background:rgba(0,156,222,0.06);border:1px solid rgba(0,156,222,0.25);border-radius:8px;padding:12px 14px;display:flex;gap:10px;align-items:flex-start;}
+.paypal-info p{font-size:11px;color:var(--muted);line-height:1.6;}
+.paypal-info strong{color:#009cde;}
+.submit-btn{width:100%;padding:14px;background:linear-gradient(135deg,#F5C518,#C9A010);border:none;border-radius:9px;color:#000;font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:700;letter-spacing:2px;cursor:pointer;transition:all .2s;text-transform:uppercase;margin-top:18px;}
+.submit-btn:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(245,197,24,0.35);}
+.submit-btn:disabled{opacity:.5;cursor:not-allowed;transform:none;}
+.loading-bar{width:100%;height:4px;background:var(--surface2);border-radius:2px;margin-top:12px;overflow:hidden;display:none;}
+.loading-bar-inner{height:100%;background:var(--gold);border-radius:2px;animation:loading 1.5s infinite;}
+@keyframes loading{0%{width:0%;margin-right:100%}50%{width:50%;margin-right:50%}100%{width:0%;margin-right:0%}}
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px;}
+.stat{background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:14px;text-align:center;}
+.stat-n{font-family:'Rajdhani',sans-serif;font-size:24px;font-weight:700;color:var(--gold);}
+.stat-l{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-top:2px;}
+.table-wrap{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;overflow-x:auto;}
+table{width:100%;border-collapse:collapse;}
+thead th{background:var(--surface2);padding:11px 14px;text-align:right;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--border);}
+tbody tr{border-bottom:1px solid rgba(255,255,255,0.03);transition:background .15s;}
+tbody tr:hover{background:rgba(255,255,255,0.02);}
+tbody td{padding:12px 14px;font-size:12px;vertical-align:middle;}
+.oid{font-family:'Rajdhani',sans-serif;font-weight:700;color:var(--gold);font-size:13px;}
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:20px;font-size:9px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;}
+.badge::before{content:'';width:4px;height:4px;border-radius:50%;background:currentColor;flex-shrink:0;}
+.badge.pending{background:rgba(255,165,0,0.12);color:orange;}
+.badge.processing{background:rgba(61,126,255,0.12);color:var(--blue);}
+.badge.completed{background:rgba(46,213,115,0.12);color:var(--success);}
+.badge.cancelled{background:rgba(255,71,87,0.12);color:var(--danger);}
+.track-box{max-width:460px;margin:0 auto;}
+.track-row{display:flex;gap:8px;margin-bottom:16px;}
+.track-row input{flex:1;background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:12px;color:var(--text);font-family:'Exo 2',sans-serif;font-size:13px;outline:none;}
+.track-row input:focus{border-color:var(--gold);}
+.track-btn{padding:12px 20px;background:var(--gold);border:none;border-radius:7px;color:#000;font-family:'Rajdhani',sans-serif;font-size:15px;font-weight:700;cursor:pointer;}
+.track-result{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;}
+.tr-row{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid rgba(255,255,255,0.04);}
+.tr-row:last-child{border:none;}
+.tr-k{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;}
+.tr-v{font-size:12px;font-weight:600;}
+.toast{position:fixed;bottom:24px;right:24px;background:var(--surface2);border:1px solid var(--gold);border-radius:9px;padding:12px 18px;font-size:12px;font-weight:600;z-index:999;transform:translateY(50px);opacity:0;transition:all .3s;pointer-events:none;max-width:280px;}
+.toast.show{transform:translateY(0);opacity:1;}
+.page{display:none;}
+.page.active{display:block;}
+footer{border-top:1px solid var(--border);padding:20px;text-align:center;color:var(--muted);font-size:11px;margin-top:40px;position:relative;z-index:1;}
+@media(max-width:640px){.form-grid{grid-template-columns:1fr;}.stats-grid{grid-template-columns:1fr 1fr;}.smm-banner{flex-direction:column;text-align:center;}.smm-left{flex-direction:column;text-align:center;}.smm-platforms{justify-content:center;}.hero-stats{gap:20px;}}
+</style>
+</head>
+<body>
+<header>
+  <div class="header-inner">
+    <div class="logo">
+      <div class="logo-hex">AG</div>
+      <div class="logo-text">AFGHAN<span>STORE</span></div>
+    </div>
+    <nav class="nav">
+      <button class="nav-btn active" onclick="showPage('store',this)">🎮 فروشگاه</button>
+      <button class="nav-btn" onclick="showPage('orders',this)">📦 سفارش‌ها</button>
+      <button class="nav-btn" onclick="showPage('track',this)">🔍 پیگیری</button>
+    </nav>
+  </div>
+</header>
+
+<div id="store" class="page active">
+  <div class="hero">
+    <div class="hero-badge"><span class="hero-dot"></span> موجودی آنی</div>
+    <h1>فروشگاه کاینس<br/><span>بازی‌های آنلاین</span></h1>
+    <p>تحویل فوری · پرداخت امن · پشتیبانی ۲۴/۷</p>
+    <div class="hero-stats">
+      <div class="hs"><strong>1000+</strong><small>مشتری</small></div>
+      <div class="hs"><strong>5000+</strong><small>سفارش</small></div>
+      <div class="hs"><strong>3</strong><small>بازی</small></div>
+      <div class="hs"><strong>4.9★</strong><small>امتیاز</small></div>
+    </div>
+  </div>
+
+  <a href="https://afghanfollowers.shop" target="_blank" class="smm-banner">
+    <div class="smm-left">
+      <div class="smm-icon">📱</div>
+      <div>
+        <div class="smm-title">فالوور شبکه‌های اجتماعی</div>
+        <div class="smm-sub">افزایش فالوور · لایک · ویو · کامنت</div>
+        <div class="smm-platforms">
+          <span class="smm-plat">📸 Instagram</span>
+          <span class="smm-plat">🎵 TikTok</span>
+          <span class="smm-plat">▶️ YouTube</span>
+          <span class="smm-plat">✈️ Telegram</span>
+          <span class="smm-plat">𝕏 Twitter</span>
+        </div>
+      </div>
+    </div>
+    <div class="smm-cta">مشاهده →</div>
+  </a>
+
+  <div class="wrap">
+    <div class="sec">
+      <div class="sec-head"><div class="sec-icon">🎮</div><h2>انتخاب بازی</h2><div class="sec-line"></div></div>
+      <div class="game-tabs" id="gameTabs"></div>
+      <div class="pkg-grid" id="pkgGrid"></div>
+    </div>
+    <div class="sec" style="padding-bottom:40px;">
+      <div class="sec-head"><div class="sec-icon">📋</div><h2>اطلاعات سفارش</h2><div class="sec-line"></div></div>
+      <div class="order-card">
+        <div class="oc-head">
+          <span id="formGameIcon" style="font-size:18px;">🎮</span>
+          <h3>تکمیل سفارش</h3>
+        </div>
+        <div class="oc-body">
+          <div class="form-grid">
+            <div class="fg full">
+              <label>پکیج انتخاب‌شده</label>
+              <div class="sel-display">
+                <div class="sel-left">
+                  <div class="sel-game-icon" id="selGameIcon">💎</div>
+                  <div><div class="sel-info-name" id="selName" style="color:var(--muted);font-size:13px;">هنوز پکیجی انتخاب نشده</div><div class="sel-info-sub" id="selSub"></div></div>
+                </div>
+                <div class="sel-price" id="selPrice"></div>
+              </div>
+            </div>
+            <div class="fg full">
+              <label id="idLabel">شناسه بازیکن / Player ID</label>
+              <input type="text" id="playerId" placeholder="ID خود را وارد کنید"/>
+            </div>
+            <div class="fg full">
+              <label>روش پرداخت</label>
+              <div class="pay-grid">
+                <div class="pay-opt" onclick="selPay(this,'PayPal')"><div class="pay-icon">🅿️</div><div class="pay-name">PayPal</div></div>
+                <div class="pay-opt" onclick="selPay(this,'Bank Transfer')"><div class="pay-icon">🏦</div><div class="pay-name">Bank Transfer</div></div>
+                <div class="pay-opt" onclick="selPay(this,'GCash')"><div class="pay-icon">📲</div><div class="pay-name">GCash</div></div>
+                <div class="pay-opt" onclick="selPay(this,'Crypto')"><div class="pay-icon">₿</div><div class="pay-name">Crypto</div></div>
+                <div class="pay-opt" onclick="selPay(this,'Cash')"><div class="pay-icon">💵</div><div class="pay-name">Cash</div></div>
+              </div>
+            </div>
+            <div class="fg full" id="paypalBox" style="display:none;">
+              <div class="paypal-info"><span style="font-size:20px;">💳</span><p><strong>پرداخت با PayPal:</strong> بعد از ثبت سفارش، لینک پرداخت برای شما ارسال می‌شود.</p></div>
+            </div>
+            <div class="fg full">
+              <label>توضیحات (اختیاری)</label>
+              <textarea id="notes" placeholder="هر اطلاعات اضافه‌ای..."></textarea>
+            </div>
+          </div>
+          <button class="submit-btn" id="submitBtn" onclick="submitOrder()">⚡ ثبت سفارش</button>
+          <div class="loading-bar" id="loadingBar"><div class="loading-bar-inner"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="orders" class="page">
+  <div class="wrap" style="padding-top:32px;">
+    <div class="sec-head"><div class="sec-icon">📊</div><h2>سفارش‌های من</h2><div class="sec-line"></div></div>
+    <div class="stats-grid" id="statsGrid"></div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>شناسه</th><th>بازی</th><th>پکیج</th><th>Player ID</th><th>پرداخت</th><th>مبلغ</th><th>تاریخ</th><th>وضعیت</th></tr></thead>
+        <tbody id="ordersBody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div id="track" class="page">
+  <div class="wrap" style="padding-top:40px;">
+    <div class="track-box">
+      <div class="sec-head" style="margin-bottom:20px;"><div class="sec-icon">🔍</div><h2>پیگیری سفارش</h2><div class="sec-line"></div></div>
+      <div class="track-row">
+        <input type="text" id="trackInput" placeholder="مثلاً: AG-000001"/>
+        <button class="track-btn" onclick="trackOrder()">پیگیری</button>
+      </div>
+      <div id="trackResult"></div>
+    </div>
+  </div>
+</div>
+
+<footer>© 2025 AfghanStore · afghangames.store · همه حقوق محفوظ است</footer>
+<div class="toast" id="toast"></div>
+
+<script>
+const CURRENCY_ICONS = {
+  pubg: '<svg viewBox="0 0 48 48" width="40" height="40" xmlns="http://www.w3.org/2000/svg"><polygon points="24,2 44,13 44,35 24,46 4,35 4,13" fill="#1a1400" stroke="#F5C518" stroke-width="2"/><polygon points="24,8 38,16 38,32 24,40 10,32 10,16" fill="#F5C518" fill-opacity="0.2"/><text x="24" y="29" text-anchor="middle" font-size="13" font-weight="900" fill="#F5C518" font-family="Arial">UC</text></svg>',
+  freefire: '<svg viewBox="0 0 48 48" width="40" height="40" xmlns="http://www.w3.org/2000/svg"><polygon points="24,4 30,16 44,16 34,26 38,40 24,32 10,40 14,26 4,16 18,16" fill="#FF6B35"/><polygon points="24,10 28,19 38,19 31,25 34,34 24,28 14,34 17,25 10,19 20,19" fill="#FF2200" opacity="0.6"/></svg>',
+  mlbb: '<svg viewBox="0 0 48 48" width="40" height="40" xmlns="http://www.w3.org/2000/svg"><polygon points="24,3 40,13 40,33 24,45 8,33 8,13" fill="#0072FF" opacity="0.9"/><polygon points="24,9 35,17 35,31 24,39 13,31 13,17" fill="#00C6FF" opacity="0.5"/><text x="24" y="30" text-anchor="middle" font-size="10" font-weight="900" fill="#fff" font-family="Arial">ML</text></svg>',
+};
+
+// Real FoxReload Product IDs
+const GAMES = [
+  {
+    id:'pubg', name:'PUBG Mobile', icon:'🪖', currency:'UC',
+    idLabel:'PUBG Player ID (account_id)',
+    packages:[
+      {amount:60,   sellPrice:1.29,  productId:'product_01kba2j44sehsv5wf7aq3cbb4g'},
+      {amount:325,  sellPrice:5.99,  productId:'product_01ktefd2zjfnrrhschekxy6m09'},
+      {amount:660,  sellPrice:12.99, productId:'product_01kba2j451eq8sn81xsj54cawg'},
+      {amount:1800, sellPrice:29.99, productId:'product_01ktefd5qde309k54nr07ce4zv', popular:true},
+      {amount:3850, sellPrice:59.99, productId:'product_01kba2j459et0aqcf0cx36t0jz'},
+      {amount:8100, sellPrice:109.99,productId:'product_01ktefd56qe40bwtrxf0nnr1dp'},
+    ]
+  },
+  {
+    id:'freefire', name:'Free Fire', icon:'🔥', currency:'Diamonds',
+    idLabel:'Free Fire Player ID (account_id)',
+    packages:[
+      {amount:110,  sellPrice:1.49,  productId:'product_01krhggvpnehh93qqjhvd0zcec'},
+      {amount:530,  sellPrice:6.99,  productId:'product_01ktefk810fyhr42a4ak532md1'},
+      {amount:1080, sellPrice:13.99, productId:'product_01ktefk81we91ryzegcp24epp5', popular:true},
+      {amount:2200, sellPrice:27.99, productId:'product_01ktefk82nejsvzg0ksskhg3zm'},
+      {amount:6160, sellPrice:54.99, productId:'product_01ktazv1brfq1s45rh5p2tj03r'},
+    ]
+  },
+  {
+    id:'mlbb', name:'Mobile Legends', icon:'⚔️', currency:'Diamonds',
+    idLabel:'MLBB User ID',
+    packages:[
+      {amount:565,  price:11.51, sellPrice:13.99, productId:'product_01ktb0cv4gfegvzd77bv01k2ay'},
+      {amount:1155, price:23.00, sellPrice:27.99, productId:'product_01ktb0cvecefrbrxreznz3ps79', popular:true},
+      {amount:1765, price:34.50, sellPrice:41.99, productId:'product_01ktb0cvmhf71r333xrdsv7813'},
+    ]
+  },
+];
+
+let activeGame = GAMES[0];
+let selPkg = null, selPayMethod = null;
+let orders = JSON.parse(localStorage.getItem('ag_orders')||'[]');
+
+// Build game tabs
+const tabsCont = document.getElementById('gameTabs');
+GAMES.forEach((g,i) => {
+  const t = document.createElement('div');
+  t.className = 'game-tab' + (i===0?' active':'');
+  t.innerHTML = '<div class="gt-icon">'+g.icon+'</div><div class="gt-name">'+g.name+'</div><div class="gt-currency">'+g.currency+'</div>';
+  t.onclick = () => switchGame(g, t);
+  tabsCont.appendChild(t);
+});
+
+function switchGame(g, tab) {
+  activeGame = g;
+  selPkg = null;
+  document.querySelectorAll('.game-tab').forEach(t => t.classList.remove('active'));
+  tab.classList.add('active');
+  renderPkgs();
+  document.getElementById('formGameIcon').textContent = g.icon;
+  document.getElementById('selGameIcon').innerHTML = CURRENCY_ICONS[g.id];
+  document.getElementById('selName').textContent = 'هنوز پکیجی انتخاب نشده';
+  document.getElementById('selName').style.color = 'var(--muted)';
+  document.getElementById('selPrice').textContent = '';
+  document.getElementById('idLabel').textContent = g.idLabel;
+}
+
+function renderPkgs() {
+  const grid = document.getElementById('pkgGrid');
+  grid.innerHTML = '';
+  activeGame.packages.forEach((p,i) => {
+    const c = document.createElement('div');
+    c.className = 'pkg' + (p.popular?' popular':'');
+    c.innerHTML = (p.popular?'<div class="pop-tag">BEST DEAL</div>':'') +
+      '<div class="pkg-icon">'+CURRENCY_ICONS[activeGame.id]+'</div>' +
+      '<div class="pkg-amount">'+p.amount.toLocaleString()+'</div>' +
+      '<div class="pkg-currency">'+activeGame.currency+'</div>' +
+      '<div class="pkg-price">$'+p.sellPrice.toFixed(2)+' <small>USD</small></div>' +
+      '<button class="pkg-btn">انتخاب</button>';
+    c.onclick = () => choosePkg(p, c);
+    grid.appendChild(c);
+  });
+}
+renderPkgs();
+
+function choosePkg(p, card) {
+  selPkg = p;
+  document.querySelectorAll('.pkg').forEach(c => c.classList.remove('selected'));
+  card.classList.add('selected');
+  document.getElementById('selName').textContent = p.amount.toLocaleString()+' '+activeGame.currency;
+  document.getElementById('selName').style.color = 'var(--gold)';
+  document.getElementById('selSub').textContent = activeGame.name;
+  document.getElementById('selPrice').textContent = '$'+p.sellPrice.toFixed(2);
+}
+
+function selPay(el, name) {
+  selPayMethod = name;
+  document.querySelectorAll('.pay-opt').forEach(m => m.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('paypalBox').style.display = name==='PayPal'?'block':'none';
+}
+
+async function submitOrder() {
+  const pid = document.getElementById('playerId').value.trim();
+  if(!selPkg){showToast('⚠️ لطفاً یک پکیج انتخاب کنید','#FF4757');return;}
+  if(!pid){showToast('⚠️ شناسه بازیکن را وارد کنید','#FF4757');return;}
+  if(!selPayMethod){showToast('⚠️ روش پرداخت را انتخاب کنید','#FF4757');return;}
+
+  const btn = document.getElementById('submitBtn');
+  const bar = document.getElementById('loadingBar');
+  btn.disabled = true;
+  btn.textContent = '⏳ در حال پردازش...';
+  bar.style.display = 'block';
+
+  const order = {
+    id:'AG-'+String(orders.length+1).padStart(6,'0'),
+    game:activeGame.name, gameIcon:activeGame.icon,
+    pkg:selPkg.amount.toLocaleString()+' '+activeGame.currency,
+    playerId:pid, payment:selPayMethod,
+    price:selPkg.sellPrice,
+    productId:selPkg.productId,
+    date:new Date().toLocaleDateString('fa-IR'),
+    status:'pending',
+    foxreloadId:null,
+    notes:document.getElementById('notes').value
+  };
+
+  // Call Netlify Function → FoxReload API
+  try {
+    const res = await fetch('/.netlify/functions/order', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        productId: selPkg.productId,
+        playerId: pid,
+        quantity: 1
+      })
+    });
+    const data = await res.json();
+    if(data && data.id) {
+      order.foxreloadId = data.id;
+      order.status = 'processing';
+      showToast('✅ سفارش '+order.id+' ثبت و ارسال شد!','var(--gold)');
+    } else {
+      showToast('✅ سفارش '+order.id+' ثبت شد — پردازش دستی','orange');
+    }
+  } catch(e) {
+    showToast('✅ سفارش '+order.id+' ثبت شد','var(--gold)');
+  }
+
+  orders.unshift(order);
+  localStorage.setItem('ag_orders',JSON.stringify(orders));
+
+  // reset
+  btn.disabled=false;
+  btn.textContent='⚡ ثبت سفارش';
+  bar.style.display='none';
+  selPkg=null;selPayMethod=null;
+  document.querySelectorAll('.pkg').forEach(c=>c.classList.remove('selected'));
+  document.querySelectorAll('.pay-opt').forEach(m=>m.classList.remove('active'));
+  document.getElementById('playerId').value='';
+  document.getElementById('notes').value='';
+  document.getElementById('selName').textContent='هنوز پکیجی انتخاب نشده';
+  document.getElementById('selName').style.color='var(--muted)';
+  document.getElementById('selPrice').textContent='';
+  document.getElementById('paypalBox').style.display='none';
+}
+
+function renderOrders() {
+  const tb=document.getElementById('ordersBody');
+  const statusLabel={pending:'در انتظار',processing:'در حال پردازش',completed:'تکمیل شده',cancelled:'لغو شده'};
+  if(!orders.length){tb.innerHTML='<tr><td colspan="8" style="text-align:center;padding:32px;color:var(--muted);">سفارشی وجود ندارد</td></tr>';return;}
+  tb.innerHTML=orders.map(o=>'<tr><td><span class="oid">'+o.id+'</span></td><td>'+o.gameIcon+' '+o.game+'</td><td>'+o.pkg+'</td><td>'+o.playerId+'</td><td>'+o.payment+'</td><td style="color:var(--gold);font-weight:700;">$'+o.price.toFixed(2)+'</td><td style="color:var(--muted);">'+o.date+'</td><td><span class="badge '+o.status+'">'+(statusLabel[o.status]||o.status)+'</span></td></tr>').join('');
+  const tot=orders.length,pen=orders.filter(o=>o.status==='pending').length,
+        com=orders.filter(o=>o.status==='completed').length,
+        rev=orders.reduce((s,o)=>s+o.price,0);
+  document.getElementById('statsGrid').innerHTML='<div class="stat"><div class="stat-n">'+tot+'</div><div class="stat-l">کل سفارش</div></div><div class="stat"><div class="stat-n">'+pen+'</div><div class="stat-l">در انتظار</div></div><div class="stat"><div class="stat-n">'+com+'</div><div class="stat-l">تکمیل شده</div></div><div class="stat"><div class="stat-n">$'+rev.toFixed(2)+'</div><div class="stat-l">مجموع</div></div>';
+}
+
+function trackOrder() {
+  const id=document.getElementById('trackInput').value.trim().toUpperCase();
+  const res=document.getElementById('trackResult');
+  const o=orders.find(x=>x.id===id);
+  const statusLabel={pending:'در انتظار',processing:'در حال پردازش',completed:'تکمیل شده',cancelled:'لغو شده'};
+  if(!o){res.innerHTML='<div style="background:var(--surface);border:1px solid var(--danger);border-radius:10px;padding:20px;text-align:center;color:var(--danger);">❌ سفارش پیدا نشد</div>';return;}
+  res.innerHTML='<div class="track-result"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;"><span class="oid" style="font-size:18px;">'+o.id+'</span><span class="badge '+o.status+'">'+(statusLabel[o.status]||o.status)+'</span></div><div class="tr-row"><span class="tr-k">بازی</span><span class="tr-v">'+o.gameIcon+' '+o.game+'</span></div><div class="tr-row"><span class="tr-k">پکیج</span><span class="tr-v" style="color:var(--gold);">'+o.pkg+'</span></div><div class="tr-row"><span class="tr-k">Player ID</span><span class="tr-v">'+o.playerId+'</span></div><div class="tr-row"><span class="tr-k">پرداخت</span><span class="tr-v">'+o.payment+'</span></div><div class="tr-row"><span class="tr-k">تاریخ</span><span class="tr-v">'+o.date+'</span></div><div class="tr-row"><span class="tr-k">مبلغ</span><span class="tr-v" style="font-weight:800;">$'+o.price.toFixed(2)+'</span></div>'+(o.foxreloadId?'<div class="tr-row"><span class="tr-k">FoxReload ID</span><span class="tr-v" style="font-size:10px;">'+o.foxreloadId+'</span></div>':'')+'</div>';
+}
+
+function showPage(id,btn){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+  if(id==='orders') renderOrders();
+}
+
+function showToast(msg,color){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.style.color=color||'var(--gold)';t.style.borderColor=color||'var(--gold)';
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),4000);
+}
+</script>
+</body>
+</html>
