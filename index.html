@@ -695,7 +695,7 @@ async function submitOrder() {
         payment: selPayMethod
       })
     });
-    const data = await res.json();
+    const data = await res.json();       // Telegram notification       fetch('/.netlify/functions/notify', {         method: 'POST',         headers: {'Content-Type': 'application/json'},         body: JSON.stringify({           playerName: pid,           uid: pid,           amount: order.pkg,           price: selPkg.sellPrice,           orderId: order.id         })       }).catch(()=>{});
     if(data && data.foxreloadId) {
       order.foxreloadId = data.foxreloadId;
       order.status = 'processing';
