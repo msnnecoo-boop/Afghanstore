@@ -152,7 +152,7 @@ tbody td{padding:12px 14px;font-size:12px;vertical-align:middle;}
 footer{border-top:1px solid var(--border);padding:20px;text-align:center;color:var(--muted);font-size:11px;margin-top:40px;position:relative;z-index:1;}
 @media(max-width:640px){.form-grid{grid-template-columns:1fr;}.stats-grid{grid-template-columns:1fr 1fr;}.smm-banner{flex-direction:column;text-align:center;}.smm-left{flex-direction:column;text-align:center;}.smm-platforms{justify-content:center;}.hero-stats{gap:20px;}}
 </style>
-</head>
+<script src="https://www.paypal.com/sdk/js?client-id=AWBVppkA-3paznHH5rYrA_aJFCCFIgODJIQvgxwMbLSYb9n22hoaKx5vrk32Q5mtDiHJak_pQFVf4QJr&currency=USD"></script> </head>
 <body>
 <header>
   <div class="header-inner">
@@ -279,7 +279,7 @@ footer{border-top:1px solid var(--border);padding:20px;text-align:center;color:v
                   <div id="paypalAmountBadge" style="background:rgba(0,112,243,0.15);color:#0070f3;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:700;"></div>
                 </div>
                 <div style="font-size:12px;color:var(--muted);line-height:1.7;margin-bottom:12px;">روی دکمه کلیک کنید، پرداخت را انجام دهید، سپس دکمه تأیید را بزنید.</div>
-                <div id="paypalStep1">
+                <div id="paypalStep1"><div id="paypal-button-container" style="display:none;margin-top:10px;"></div>
                   <button onclick="goPayPal()" style="width:100%;padding:12px;background:#0070f3;border:none;border-radius:8px;color:#fff;font-family:'Exo 2',sans-serif;font-size:14px;font-weight:700;cursor:pointer;margin-bottom:8px;">
                     💳 رفتن به PayPal برای پرداخت
                   </button>
@@ -631,7 +631,7 @@ function updateAmounts() {
 function goPayPal() {
   if(!selPkg) { showToast('⚠️ اول پکیج انتخاب کنید','#FF4757'); return; }
   const amount = selPkg.sellPrice.toFixed(2);
-  window.open('https://www.paypal.com/paypalme/afgfollowers/'+amount+'USD', '_blank');
+  paypal.Buttons({   createOrder: function(data, actions) {     return actions.order.create({       purchase_units: [{         amount: { value: amount }       }]     });   },   onApprove: function(data, actions) {     return actions.order.capture().then(function(details) {       confirmPayPal();     });   } }).render('#paypal-button-container'); document.getElementById('paypal-button-container').style.display='block';
   document.getElementById('paypalStep1').style.display='none';
   document.getElementById('paypalStep2').style.display='block';
 }
