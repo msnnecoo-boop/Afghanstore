@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>پنل ادمین - Afghan Games</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', Tahoma, sans-serif; background: #0F0F1A; color: #E2E8F0; min-height: 100vh; direction: rtl; }
+
+    /* LOGIN */
+    #loginScreen { display: flex; align-items: center; justify-content: center; min-height: 100vh; background: linear-gradient(135deg, #0F0F1A, #1A1A2E); }
+    .login-box { background: #1E1E3A; border: 1px solid #2D2D4E; border-radius: 20px; padding: 40px 32px; width: 340px; text-align: center; }
+    .login-logo { width: 64px; height: 64px; border-radius: 16px; background: linear-gradient(135deg, #6366F1, #8B5CF6); display: flex; align-items: center; justify-content: center; font-size: 32px; margin: 0 auto 20px; }
+    .login-title { font-size: 22px; font-weight: 700; color: #fff; margin-bottom: 6px; }
+    .login-sub { font-size: 13px; color: #94A3B8; margin-bottom: 28px; }
+    .login-input { width: 100%; padding: 12px 16px; border-radius: 12px; border: 1px solid #2D2D4E; background: #252545; color: #fff; font-size: 14px; font-family: inherit; direction: rtl; margin-bottom: 12px; outline: none; transition: border-color 0.2s; }
+    .login-input:focus { border-color: #6366F1; }
+    .login-btn { width: 100%; padding: 14px; border-radius: 12px; border: none; background: linear-gradient(135deg, #6366F1, #8B5CF6); color: #fff; font-size: 15px; font-weight: 700; font-family: inherit; cursor: pointer; transition: opacity 0.2s; }
+    .login-btn:hover { opacity: 0.9; }
+    .login-error { color: #EF4444; font-size: 12px; margin-top: 8px; display: none; }
+
+    /* MAIN */
+    #mainPanel { display: none; }
+
+    /* HEADER */
+    .header { background: linear-gradient(135deg, #1A1A2E, #16213E); border-bottom: 1px solid #2D2D4E; padding: 14px 20px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
+    .header-logo { display: flex; align-items: center; gap: 10px; }
+    .header-icon { width: 38px; height: 38px; border-radius: 10px; background: linear-gradient(135deg, #6366F1, #8B5CF6); display: flex; align-items: center; justify-content: center; font-size: 18px; }
+    .header-title { font-size: 15px; font-weight: 700; color: #fff; }
+    .header-sub { font-size: 10px; color: #6366F1; }
+    .status-dot { display: flex; align-items: center; gap: 6px; }
+    .dot { width: 8px; height: 8px; border-radius: 50%; background: #10B981; }
+    .status-text { font-size: 12px; color: #10B981; }
+
+    /* NAV */
+    .nav { background: #1A1A2E; border-bottom: 1px solid #2D2D4E; display: flex; overflow-x: auto; }
+    .nav-btn { padding: 14px 18px; background: none; border: none; border-bottom: 2px solid transparent; color: #94A3B8; cursor: pointer; font-size: 13px; font-family: inherit; display: flex; align-items: center; gap: 6px; white-space: nowrap; transition: all 0.2s; }
+    .nav-btn.active { color: #6366F1; border-bottom-color: #6366F1; font-weight: 600; }
+
+    /* CONTENT */
+    .content { padding: 20px; max-width: 900px; margin: 0 auto; }
+
+    /* TABS */
+    .tab { display: none; }
+    .tab.active { display: block; }
+
+    /* STATS GRID */
+    .stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 24px; }
+    .stat-card { background: linear-gradient(135deg, #1E1E3A, #252545); border: 1px solid #2D2D4E; border-radius: 14px; padding: 16px; }
+    .stat-icon { font-size: 24px; margin-bottom: 8px; }
+    .stat-value { font-size: 18px; font-weight: 700; color: #fff; }
+    .stat-label { font-size: 11px; color: #94A3B8; margin-top: 4px; }
+    .stat-change { font-size: 11px; color: #10B981; margin-top: 4px; }
+
+    /* SECTION CARD */
+    .section-card { background: #1E1E3A; border: 1px solid #2D2D4E; border-radius: 14px; padding: 16px; margin-bottom: 16px; }
+    .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+    .section-title { font-size: 14px; font-weight: 600; color: #fff; }
+    .view-all { background: none; border: none; color: #6366F1; cursor: pointer; font-size: 12px; font-family: inherit; }
+
+    /* ORDER ITEM (dashboard) */
+    .order-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #2D2D4E; }
+    .order-row:last-child { border-bottom: none; }
+    .order-name { font-size: 13px; font-weight: 600; color: #fff; }
+    .order-meta { font-size: 11px; color: #94A3B8; margin-top: 2px; }
+
+    /* BADGE */
+    .badge { padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+    .badge-pending { background: #FFF3CD; color: #856404; }
+    .badge-completed { background: #D1FAE5; color: #065F46; }
+    .badge-cancelled { background: #FEE2E2; color: #991B1B; }
+
+    /* FILTER */
+    .filter-row { display: flex; gap: 8px; margin-bottom: 14px; overflow-x: auto; padding-bottom: 4px; }
+    .filter-btn { padding: 8px 14px; border-radius: 20px; border: 1px solid #2D2D4E; background: transparent; color: #94A3B8; cursor: pointer; font-size: 12px; font-family: inherit; white-space: nowrap; transition: all 0.2s; }
+    .filter-btn.active { background: #6366F1; border-color: #6366F1; color: #fff; }
+
+    /* ORDER CARD */
+    .order-card { background: #1E1E3A; border: 1px solid #2D2D4E; border-radius: 14px; padding: 16px; margin-bottom: 10px; }
+    .order-card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
+    .order-player { font-size: 14px; font-weight: 700; color: #fff; }
+    .order-uid { font-size: 11px; color: #6366F1; margin-top: 2px; }
+    .order-info-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 12px; }
+    .info-box { background: #252545; border-radius: 8px; padding: 8px 10px; }
+    .info-label { font-size: 10px; color: #94A3B8; }
+    .info-value { font-size: 12px; font-weight: 600; color: #fff; margin-top: 2px; }
+    .info-value.green { color: #10B981; }
+    .action-row { display: flex; gap: 8px; }
+    .btn-complete { flex: 1; padding: 10px; border-radius: 10px; border: none; background: linear-gradient(135deg, #10B981, #059669); color: #fff; cursor: pointer; font-size: 13px; font-family: inherit; font-weight: 600; }
+    .btn-cancel { flex: 1; padding: 10px; border-radius: 10px; border: 1px solid #EF4444; background: transparent; color: #EF4444; cursor: pointer; font-size: 13px; font-family: inherit; }
+
+    /* CHAT */
+    .chat-wrap { display: flex; flex-direction: column; height: calc(100vh - 210px); }
+    .chat-title { font-size: 18px; font-weight: 700; color: #fff; margin-bottom: 14px; }
+    .quick-btns { display: flex; gap: 8px; margin-bottom: 12px; overflow-x: auto; padding-bottom: 4px; }
+    .quick-btn { padding: 8px 14px; border-radius: 20px; border: 1px solid #2D2D4E; background: #1E1E3A; color: #94A3B8; cursor: pointer; font-size: 11px; font-family: inherit; white-space: nowrap; flex-shrink: 0; }
+    .messages { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; margin-bottom: 12px; padding: 4px 0; }
+    .msg { display: flex; }
+    .msg.user { justify-content: flex-start; }
+    .msg.assistant { justify-content: flex-end; }
+    .msg-bubble { max-width: 85%; padding: 12px 16px; font-size: 13px; line-height: 1.7; white-space: pre-wrap; }
+    .msg.user .msg-bubble { background: linear-gradient(135deg, #6366F1, #8B5CF6); border-radius: 18px 18px 4px 18px; color: #fff; }
+    .msg.assistant .msg-bubble { background: #1E1E3A; border: 1px solid #2D2D4E; border-radius: 18px 18px 18px 4px; color: #E2E8F0; }
+    .typing { color: #6366F1; font-size: 13px; }
+    .chat-input-wrap { display: flex; gap: 10px; background: #1E1E3A; border: 1px solid #2D2D4E; border-radius: 14px; padding: 10px 14px; }
+    .chat-input { flex: 1; background: none; border: none; outline: none; color: #fff; font-size: 13px; font-family: inherit; direction: rtl; }
+    .chat-input::placeholder { color: #4B5563; }
+    .send-btn { padding: 8px 16px; border-radius: 10px; border: none; background: linear-gradient(135deg, #6366F1, #8B5CF6); color: #fff; cursor: pointer; font-size: 13px; font-family: inherit; font-weight: 600; transition: opacity 0.2s; }
+    .send-btn:disabled { background: #2D2D4E; cursor: not-allowed; }
+
+    h2 { font-size: 18px; color: #fff; margin-bottom: 18px; }
+  </style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="loginScreen">
+  <div class="login-box">
+    <div class="login-logo">🎮</div>
+    <div class="login-title">Afghan Games</div>
+    <div class="login-sub">ورود به پنل مدیریت</div>
+    <input class="login-input" id="loginUser" type="text" placeholder="نام کاربری" />
+    <input class="login-input" id="loginPass" type="password" placeholder="رمز عبور" />
+    <button class="login-btn" onclick="doLogin()">ورود</button>
+    <div class="login-error" id="loginError">نام کاربری یا رمز اشتباه است</div>
+  </div>
+</div>
+
+<!-- MAIN PANEL -->
+<div id="mainPanel">
+  <div class="header">
+    <div class="header-logo">
+      <div class="header-icon">🎮</div>
+      <div>
+        <div class="header-title">Afghan Games</div>
+        <div class="header-sub">پنل مدیریت</div>
+      </div>
+    </div>
+    <div class="status-dot">
+      <div class="dot"></div>
+      <span class="status-text">آنلاین</span>
+    </div>
+  </div>
+
+  <div class="nav">
+    <button class="nav-btn active" onclick="showTab('dashboard', this)">📊 داشبورد</button>
+    <button class="nav-btn" onclick="showTab('orders', this)">📦 سفارشات</button>
+    <button class="nav-btn" onclick="showTab('ai', this)">🤖 دستیار AI</button>
+  </div>
+
+  <div class="content">
+
+    <!-- DASHBOARD TAB -->
+    <div id="tab-dashboard" class="tab active">
+      <h2>خوش اومدی، ادمین 👋</h2>
+      <div class="stats-grid">
+        <div class="stat-card"><div class="stat-icon">💰</div><div class="stat-value">1,480,000 AFN</div><div class="stat-label">فروش امروز</div><div class="stat-change">+12%</div></div>
+        <div class="stat-card"><div class="stat-icon">📦</div><div class="stat-value">18</div><div class="stat-label">سفارشات امروز</div><div class="stat-change">+5</div></div>
+        <div class="stat-card"><div class="stat-icon">⏳</div><div class="stat-value" id="pendingCount">2</div><div class="stat-label">در انتظار</div></div>
+        <div class="stat-card"><div class="stat-icon">🎮</div><div class="stat-value">8,400</div><div class="stat-label">UC فروخته شده</div><div class="stat-change">+800</div></div>
+      </div>
+      <div class="section-card">
+        <div class="section-header">
+          <span class="section-title">سفارشات اخیر</span>
+          <button class="view-all" onclick="showTab('orders', document.querySelectorAll('.nav-btn')[1])">مشاهده همه</button>
+        </div>
+        <div id="recentOrders"></div>
+      </div>
+    </div>
+
+    <!-- ORDERS TAB -->
+    <div id="tab-orders" class="tab">
+      <h2>مدیریت سفارشات</h2>
+      <div class="filter-row">
+        <button class="filter-btn active" onclick="filterOrders('all', this)">همه</button>
+        <button class="filter-btn" onclick="filterOrders('pending', this)">در انتظار</button>
+        <button class="filter-btn" onclick="filterOrders('completed', this)">تکمیل شده</button>
+        <button class="filter-btn" onclick="filterOrders('cancelled', this)">لغو شده</button>
+      </div>
+      <div id="ordersList"></div>
+    </div>
+
+    <!-- AI TAB -->
+    <div id="tab-ai" class="tab">
+      <div class="chat-wrap">
+        <div class="chat-title">🤖 دستیار هوشمند Claude</div>
+        <div class="quick-btns">
+          <button class="quick-btn" onclick="setInput('سفارشات در انتظار رو بررسی کن')">سفارشات در انتظار</button>
+          <button class="quick-btn" onclick="setInput('آمار فروش امروز رو تحلیل کن')">تحلیل فروش</button>
+          <button class="quick-btn" onclick="setInput('یه پیام برای مشتری تاخیردار بنویس')">پیام مشتری</button>
+          <button class="quick-btn" onclick="setInput('بهترین پکیج UC کدومه؟')">بهترین پکیج</button>
+        </div>
+        <div class="messages" id="messages"></div>
+        <div class="chat-input-wrap">
+          <input class="chat-input" id="chatInput" placeholder="سوال بپرس یا دستور بده..." onkeydown="if(event.key==='Enter') sendMsg()" />
+          <button class="send-btn" id="sendBtn" onclick="sendMsg()">ارسال</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const ADMIN_USER = "admin";
+const ADMIN_PASS = "afghangames2024";
+
+let orders = [
+  { id:"ORD-001", player:"Ahmad_PUBG", uid:"5123456789", amount:"600 UC", price:"150,000 AFN", status:"pending", time:"10 دقیقه پیش" },
+  { id:"ORD-002", player:"Karimi99", uid:"9876543210", amount:"1800 UC", price:"420,000 AFN", status:"completed", time:"25 دقیقه پیش" },
+  { id:"ORD-003", player:"ZahirGamer", uid:"1122334455", amount:"300 UC", price:"80,000 AFN", status:"pending", time:"1 ساعت پیش" },
+  { id:"ORD-004", player:"NajibPro", uid:"6677889900", amount:"3000 UC", price:"680,000 AFN", status:"completed", time:"2 ساعت پیش" },
+  { id:"ORD-005", player:"FarhadX", uid:"3344556677", amount:"600 UC", price:"150,000 AFN", status:"cancelled", time:"3 ساعت پیش" },
+];
+
+let chatHistory = [];
+let currentFilter = "all";
+const CLAUDE_API = "https://api.anthropic.com/v1/messages";
+
+const statusLabel = { pending:"در انتظار", completed:"تکمیل شده", cancelled:"لغو شده" };
+const statusClass = { pending:"badge-pending", completed:"badge-completed", cancelled:"badge-cancelled" };
+
+function doLogin() {
+  const u = document.getElementById("loginUser").value;
+  const p = document.getElementById("loginPass").value;
+  if (u === ADMIN_USER && p === ADMIN_PASS) {
+    document.getElementById("loginScreen").style.display = "none";
+    document.getElementById("mainPanel").style.display = "block";
+    renderRecent();
+    renderOrders();
+    addMsg("assistant", "سلام! من دستیار هوشمند پنل ادمین afghangames.store هستم. چطور می‌تونم کمکت کنم؟ می‌تونم سفارشات رو تحلیل کنم، پیام برای مشتریان بنویسم، یا هر سوالی داری جواب بدم. 🎮");
+  } else {
+    document.getElementById("loginError").style.display = "block";
+  }
+}
+
+function showTab(name, btn) {
+  document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+  document.querySelectorAll(".nav-btn").forEach(b => b.classList.remove("active"));
+  document.getElementById("tab-" + name).classList.add("active");
+  btn.classList.add("active");
+}
+
+function filterOrders(f, btn) {
+  currentFilter = f;
+  document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
+  btn.classList.add("active");
+  renderOrders();
+}
+
+function renderRecent() {
+  const el = document.getElementById("recentOrders");
+  const pending = orders.filter(o => o.status === "pending").length;
+  document.getElementById("pendingCount").textContent = pending;
+  el.innerHTML = orders.slice(0,3).map(o => `
+    <div class="order-row">
+      <div><div class="order-name">${o.player}</div><div class="order-meta">${o.amount} • ${o.time}</div></div>
+      <span class="badge ${statusClass[o.status]}">${statusLabel[o.status]}</span>
+    </div>
+  `).join("");
+}
+
+function renderOrders() {
+  const list = currentFilter === "all" ? orders : orders.filter(o => o.status === currentFilter);
+  document.getElementById("ordersList").innerHTML = list.map(o => `
+    <div class="order-card">
+      <div class="order-card-header">
+        <div><div class="order-player">${o.player}</div><div class="order-uid">UID: ${o.uid}</div></div>
+        <span class="badge ${statusClass[o.status]}">${statusLabel[o.status]}</span>
+      </div>
+      <div class="order-info-grid">
+        <div class="info-box"><div class="info-label">مقدار</div><div class="info-value">${o.amount}</div></div>
+        <div class="info-box"><div class="info-label">قیمت</div><div class="info-value green">${o.price}</div></div>
+        <div class="info-box"><div class="info-label">زمان</div><div class="info-value">${o.time}</div></div>
+      </div>
+      ${o.status === "pending" ? `
+      <div class="action-row">
+        <button class="btn-complete" onclick="completeOrder('${o.id}')">✅ تکمیل سفارش</button>
+        <button class="btn-cancel" onclick="cancelOrder('${o.id}')">❌ لغو</button>
+      </div>` : ""}
+    </div>
+  `).join("");
+}
+
+function completeOrder(id) {
+  orders = orders.map(o => o.id === id ? {...o, status:"completed"} : o);
+  renderOrders(); renderRecent();
+}
+
+function cancelOrder(id) {
+  orders = orders.map(o => o.id === id ? {...o, status:"cancelled"} : o);
+  renderOrders(); renderRecent();
+}
+
+function addMsg(role, text) {
+  const el = document.getElementById("messages");
+  const div = document.createElement("div");
+  div.className = `msg ${role}`;
+  div.innerHTML = `<div class="msg-bubble">${text}</div>`;
+  el.appendChild(div);
+  el.scrollTop = el.scrollHeight;
+}
+
+function setInput(text) {
+  document.getElementById("chatInput").value = text;
+  document.getElementById("chatInput").focus();
+}
+
+async function sendMsg() {
+  const input = document.getElementById("chatInput");
+  const btn = document.getElementById("sendBtn");
+  const text = input.value.trim();
+  if (!text) return;
+  input.value = "";
+  btn.disabled = true;
+
+  addMsg("user", text);
+  chatHistory.push({ role:"user", content: text });
+
+  const typingDiv = document.createElement("div");
+  typingDiv.className = "msg assistant";
+  typingDiv.innerHTML = '<div class="msg-bubble typing">در حال تایپ...</div>';
+  document.getElementById("messages").appendChild(typingDiv);
+
+  const orderSummary = orders.map(o => `${o.id}: ${o.player} - ${o.amount} - ${o.price} - ${statusLabel[o.status]}`).join("\n");
+
+  try {
+    const res = await fetch(CLAUDE_API, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: "claude-sonnet-4-20250514",
+        max_tokens: 1000,
+        system: `تو دستیار هوشمند پنل ادمین afghangames.store هستی - فروشگاه فروش UC بازی PUBG برای بازار افغانستان.
+وضعیت فعلی سفارشات:
+${orderSummary}
+آمار امروز: فروش 1,480,000 افغانی | 18 سفارش | 8,400 UC فروخته شده
+به فارسی پاسخ بده. مختصر، مفید و حرفه‌ای باش.`,
+        messages: chatHistory
+      })
+    });
+    const data = await res.json();
+    const reply = data.content?.[0]?.text || "خطا در دریافت پاسخ";
+    typingDiv.remove();
+    addMsg("assistant", reply);
+    chatHistory.push({ role:"assistant", content: reply });
+  } catch(e) {
+    typingDiv.remove();
+    addMsg("assistant", "❌ خطا در اتصال. لطفاً دوباره تلاش کن.");
+  }
+  btn.disabled = false;
+}
+
+document.getElementById("loginPass").addEventListener("keydown", e => { if(e.key==="Enter") doLogin(); });
+</script>
+</body>
+</html>
