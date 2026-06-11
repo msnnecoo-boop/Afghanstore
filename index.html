@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" id="htmlRoot">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>AfghanStore - Game Coins / فروش کاینس بازی</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&family=Exo+2:wght@300;400;600;800&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --gold:#F5C518;--gold-dark:#C9A010;--gold-glow:rgba(245,197,24,0.3);
+  --bg:#07090D;--surface:#0F1117;--surface2:#161923;--surface3:#1C2130;
+  --border:rgba(255,255,255,0.08);--text:#E8EAF0;--muted:#6B7593;
+  --danger:#FF4757;--success:#2ED573;--blue:#3D7EFF;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:'Exo 2',sans-serif;min-height:100vh;overflow-x:hidden;}
+body::after{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(245,197,24,0.02) 1px,transparent 1px),linear-gradient(90deg,rgba(245,197,24,0.02) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;z-index:0;}
+header{border-bottom:1px solid rgba(245,197,24,0.15);background:rgba(7,9,13,0.95);backdrop-filter:blur(16px);position:sticky;top:0;z-index:100;}
+.header-inner{display:flex;align-items:center;justify-content:space-between;padding:12px 20px;max-width:1100px;margin:0 auto;}
+.logo{display:flex;align-items:center;gap:10px;}
+.logo-hex{width:38px;height:38px;background:linear-gradient(135deg,#F5C518,#C9A010);clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:900;color:#000;font-family:'Rajdhani',sans-serif;}
+.logo-text{font-family:'Rajdhani',sans-serif;font-size:20px;font-weight:700;letter-spacing:2px;}
+.logo-text span{color:var(--gold);}
+.nav{display:flex;gap:4px;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:3px;}
+.nav-btn{padding:7px 14px;border:none;background:transparent;color:var(--muted);font-family:'Exo 2',sans-serif;font-size:11px;font-weight:700;letter-spacing:.5px;cursor:pointer;border-radius:5px;transition:all .2s;white-space:nowrap;}
+.nav-btn.active{background:var(--gold);color:#000;}
+.nav-btn:hover:not(.active){color:var(--text);}
+.hero{background:linear-gradient(160deg,#0a0c12 0%,#0f1520 50%,#0a0c12 100%);border-bottom:1px solid rgba(245,197,24,0.1);padding:40px 20px;text-align:center;position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;top:-50%;left:50%;transform:translateX(-50%);width:600px;height:600px;background:radial-gradient(circle,rgba(245,197,24,0.06) 0%,transparent 70%);pointer-events:none;}
+.hero-badge{display:inline-flex;align-items:center;gap:7px;background:rgba(245,197,24,0.1);border:1px solid rgba(245,197,24,0.25);border-radius:20px;padding:5px 14px;font-size:11px;font-weight:700;color:var(--gold);letter-spacing:1px;text-transform:uppercase;margin-bottom:16px;}
+.hero-dot{width:6px;height:6px;background:#2ED573;border-radius:50%;animation:blink 1.4s infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+.hero h1{font-family:'Rajdhani',sans-serif;font-size:clamp(30px,6vw,54px);font-weight:700;letter-spacing:1px;line-height:1.1;margin-bottom:10px;}
+.hero h1 span{color:var(--gold);}
+.hero p{color:var(--muted);font-size:14px;margin-bottom:20px;}
+.hero-stats{display:flex;justify-content:center;gap:32px;}
+.hs{text-align:center;}
+.hs strong{display:block;font-family:'Rajdhani',sans-serif;font-size:22px;font-weight:700;color:var(--gold);}
+.hs small{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;}
+.smm-banner{background:linear-gradient(135deg,#1a0a2e,#0d1a3a);border:1px solid rgba(138,43,226,0.3);border-radius:14px;padding:18px 20px;margin:24px auto 0;max-width:1060px;display:flex;align-items:center;justify-content:space-between;gap:16px;cursor:pointer;transition:all .2s;position:relative;z-index:1;text-decoration:none;}
+.smm-banner:hover{border-color:rgba(138,43,226,0.6);transform:translateY(-2px);box-shadow:0 8px 30px rgba(138,43,226,0.2);}
+.smm-left{display:flex;align-items:center;gap:14px;}
+.smm-icon{width:48px;height:48px;background:linear-gradient(135deg,#833ab4,#fd1d1d,#fcb045);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
+.smm-title{font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:700;color:#fff;}
+.smm-sub{font-size:12px;color:var(--muted);margin-top:2px;}
+.smm-platforms{display:flex;gap:6px;margin-top:6px;flex-wrap:wrap;}
+.smm-plat{background:rgba(255,255,255,0.07);border-radius:4px;padding:2px 8px;font-size:10px;font-weight:600;color:var(--muted);}
+.smm-cta{background:linear-gradient(135deg,#833ab4,#fd1d1d);border:none;border-radius:8px;padding:10px 20px;color:#fff;font-family:'Rajdhani',sans-serif;font-size:15px;font-weight:700;letter-spacing:1px;cursor:pointer;white-space:nowrap;}
+.wrap{max-width:1100px;margin:0 auto;padding:0 20px;position:relative;z-index:1;}
+.sec{padding:32px 0 0;}
+.sec-head{display:flex;align-items:center;gap:12px;margin-bottom:20px;}
+.sec-head h2{font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;white-space:nowrap;}
+.sec-line{flex:1;height:1px;background:linear-gradient(90deg,var(--border),transparent);}
+.sec-icon{width:30px;height:30px;background:rgba(245,197,24,0.1);border:1px solid rgba(245,197,24,0.2);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:14px;}
+.game-tabs{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none;}
+.game-tabs::-webkit-scrollbar{display:none;}
+.game-tab{flex-shrink:0;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:12px 16px;cursor:pointer;transition:all .2s;text-align:center;min-width:100px;}
+.game-tab:hover,.game-tab.active{border-color:rgba(245,197,24,0.5);background:rgba(245,197,24,0.06);}
+.game-tab.active{box-shadow:0 0 15px var(--gold-glow);}
+.gt-icon{font-size:26px;margin-bottom:5px;}
+.gt-name{font-size:10px;font-weight:700;color:var(--muted);letter-spacing:.5px;white-space:nowrap;}
+.game-tab.active .gt-name{color:var(--gold);}
+.gt-currency{font-size:9px;color:var(--muted);margin-top:1px;}
+.pkg-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:12px;margin-top:20px;}
+.pkg{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px 12px;cursor:pointer;transition:all .2s;text-align:center;position:relative;overflow:hidden;}
+.pkg::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:0;transition:.2s;}
+.pkg:hover,.pkg.selected{transform:translateY(-3px);box-shadow:0 8px 25px rgba(0,0,0,0.4);}
+.pkg:hover{border-color:rgba(245,197,24,0.3);}
+.pkg:hover::after,.pkg.selected::after{opacity:1;}
+.pkg.selected{border-color:rgba(245,197,24,0.6);}
+.pkg.popular{border-color:rgba(245,197,24,0.3);}
+.pop-tag{position:absolute;top:0;left:0;background:var(--gold);color:#000;font-size:8px;font-weight:800;padding:3px 8px;border-bottom-right-radius:8px;letter-spacing:1px;}
+.pkg-icon{display:flex;justify-content:center;margin-bottom:6px;}
+.pkg-amount{font-family:'Rajdhani',sans-serif;font-size:22px;font-weight:700;color:var(--gold);}
+.pkg-currency{font-size:10px;color:var(--muted);font-weight:600;letter-spacing:.5px;}
+.pkg-price{font-size:17px;font-weight:800;margin-top:8px;}
+.pkg-price small{font-size:10px;font-weight:400;color:var(--muted);}
+.pkg-btn{width:100%;margin-top:10px;padding:7px;background:rgba(245,197,24,0.07);border:1px solid rgba(245,197,24,0.2);border-radius:6px;color:var(--gold);font-family:'Exo 2',sans-serif;font-size:10px;font-weight:700;cursor:pointer;transition:all .2s;letter-spacing:.5px;}
+.pkg:hover .pkg-btn,.pkg.selected .pkg-btn{background:var(--gold);border-color:var(--gold);color:#000;}
+.order-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-top:24px;}
+.oc-head{background:rgba(245,197,24,0.05);border-bottom:1px solid var(--border);padding:16px 20px;display:flex;align-items:center;gap:10px;}
+.oc-head h3{font-family:'Rajdhani',sans-serif;font-size:16px;font-weight:700;letter-spacing:1px;text-transform:uppercase;}
+.oc-body{padding:20px;}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.fg{display:flex;flex-direction:column;gap:6px;}
+.fg.full{grid-column:1/-1;}
+.fg label{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);}
+.fg input,.fg select,.fg textarea{background:var(--surface2);border:1px solid var(--border);border-radius:7px;padding:10px 12px;color:var(--text);font-family:'Exo 2',sans-serif;font-size:13px;outline:none;transition:border-color .2s;}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--gold);}
+.fg select option{background:#161923;}
+.fg textarea{resize:vertical;min-height:65px;}
+.sel-display{background:var(--surface2);border:1px solid rgba(245,197,24,0.25);border-radius:8px;padding:12px 14px;display:flex;justify-content:space-between;align-items:center;}
+.sel-left{display:flex;align-items:center;gap:10px;}
+.sel-game-icon{font-size:22px;}
+.sel-info-name{font-family:'Rajdhani',sans-serif;font-size:16px;font-weight:700;color:var(--gold);}
+.sel-info-sub{font-size:10px;color:var(--muted);}
+.sel-price{font-size:18px;font-weight:800;}
+.pay-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:8px;}
+.pay-opt{background:var(--surface2);border:1px solid var(--border);border-radius:9px;padding:10px 6px;text-align:center;cursor:pointer;transition:all .2s;}
+.pay-opt:hover,.pay-opt.active{border-color:var(--gold);background:rgba(245,197,24,0.05);}
+.pay-opt .pay-icon{font-size:20px;margin-bottom:4px;}
+.pay-opt .pay-name{font-size:10px;font-weight:700;color:var(--muted);}
+.pay-opt.active .pay-name{color:var(--gold);}
+.paypal-info{background:rgba(0,156,222,0.06);border:1px solid rgba(0,156,222,0.25);border-radius:8px;padding:12px 14px;display:flex;gap:10px;align-items:flex-start;}
+.paypal-info p{font-size:11px;color:var(--muted);line-height:1.6;}
+.paypal-info strong{color:#009cde;}
+.submit-btn{width:100%;padding:14px;background:linear-gradient(135deg,#F5C518,#C9A010);border:none;border-radius:9px;color:#000;font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:700;letter-spacing:2px;cursor:pointer;transition:all .2s;text-transform:uppercase;margin-top:18px;}
+.submit-btn:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(245,197,24,0.35);}
+.submit-btn:disabled{opacity:.5;cursor:not-allowed;transform:none;}
+.loading-bar{width:100%;height:4px;background:var(--surface2);border-radius:2px;margin-top:12px;overflow:hidden;display:none;}
+.loading-bar-inner{height:100%;background:var(--gold);border-radius:2px;animation:loading 1.5s infinite;}
+@keyframes loading{0%{width:0%;margin-right:100%}50%{width:50%;margin-right:50%}100%{width:0%;margin-right:0%}}
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px;}
+.stat{background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:14px;text-align:center;}
+.stat-n{font-family:'Rajdhani',sans-serif;font-size:24px;font-weight:700;color:var(--gold);}
+.stat-l{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-top:2px;}
+.table-wrap{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;overflow-x:auto;}
+table{width:100%;border-collapse:collapse;}
+thead th{background:var(--surface2);padding:11px 14px;text-align:right;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--border);}
+tbody tr{border-bottom:1px solid rgba(255,255,255,0.03);transition:background .15s;}
+tbody tr:hover{background:rgba(255,255,255,0.02);}
+tbody td{padding:12px 14px;font-size:12px;vertical-align:middle;}
+.oid{font-family:'Rajdhani',sans-serif;font-weight:700;color:var(--gold);font-size:13px;}
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:20px;font-size:9px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;}
+.badge::before{content:'';width:4px;height:4px;border-radius:50%;background:currentColor;flex-shrink:0;}
+.badge.pending{background:rgba(255,165,0,0.12);color:orange;}
+.badge.processing{background:rgba(61,126,255,0.12);color:var(--blue);}
+.badge.completed{background:rgba(46,213,115,0.12);color:var(--success);}
+.badge.cancelled{background:rgba(255,71,87,0.12);color:var(--danger);}
+.track-box{max-width:460px;margin:0 auto;}
+.track-row{display:flex;gap:8px;margin-bottom:16px;}
+.track-row input{flex:1;background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:12px;color:var(--text);font-family:'Exo 2',sans-serif;font-size:13px;outline:none;}
+.track-row input:focus{border-color:var(--gold);}
+.track-btn{padding:12px 20px;background:var(--gold);border:none;border-radius:7px;color:#000;font-family:'Rajdhani',sans-serif;font-size:15px;font-weight:700;cursor:pointer;}
+.track-result{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;}
+.tr-row{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid rgba(255,255,255,0.04);}
+.tr-row:last-child{border:none;}
+.tr-k{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;}
+.tr-v{font-size:12px;font-weight:600;}
+.toast{position:fixed;bottom:24px;right:24px;background:var(--surface2);border:1px solid var(--gold);border-radius:9px;padding:12px 18px;font-size:12px;font-weight:600;z-index:999;transform:translateY(50px);opacity:0;transition:all .3s;pointer-events:none;max-width:280px;}
+.toast.show{transform:translateY(0);opacity:1;}
+.page{display:none;}
+.page.active{display:block;}
+.proof-upload-zone{border:2px dashed rgba(245,197,24,0.3);border-radius:8px;padding:20px;text-align:center;cursor:pointer;transition:all .2s;background:rgba(0,0,0,0.2);}
+.proof-upload-zone:hover{border-color:var(--gold);background:rgba(245,197,24,0.03);}
+.puz-icon{font-size:24px;margin-bottom:6px;}
+.puz-text{font-size:12px;color:var(--muted);}
+.proof-status{background:rgba(245,197,24,0.1);border:1px solid rgba(245,197,24,0.3);border-radius:8px;padding:10px 14px;font-size:12px;font-weight:700;color:var(--gold);text-align:center;margin-top:8px;}
+.proof-img{max-width:100%;max-height:150px;border-radius:7px;border:1px solid var(--border);}
+.cur-btn{padding:7px 16px;background:var(--surface);border:1px solid var(--border);border-radius:20px;color:var(--muted);font-family:'Exo 2',sans-serif;font-size:12px;font-weight:700;cursor:pointer;transition:all .2s;}
+.cur-btn.active{background:var(--gold);border-color:var(--gold);color:#000;}
+footer{border-top:1px solid var(--border);padding:20px;text-align:center;color:var(--muted);font-size:11px;margin-top:40px;position:relative;z-index:1;}
+@media(max-width:640px){.form-grid{grid-template-columns:1fr;}.stats-grid{grid-template-columns:1fr 1fr;}.smm-banner{flex-direction:column;text-align:center;}.smm-left{flex-direction:column;text-align:center;}.smm-platforms{justify-content:center;}.hero-stats{gap:20px;}}
+</style>
+</head>
+<body>
+<header>
+  <div class="header-inner">
+    <div class="logo">
+      <div class="logo-hex">AG</div>
+      <div class="logo-text">AFGHAN<span>STORE</span></div>
+    </div>
+    <nav class="nav">
+      <button class="nav-btn active" onclick="showPage('store',this)" data-fa="🎮 فروشگاه" data-en="🎮 Store">🎮 فروشگاه</button>
+      <button class="nav-btn" onclick="showPage('orders',this)" data-fa="📦 سفارش‌ها" data-en="📦 Orders">📦 سفارش‌ها</button>
+      <button class="nav-btn" onclick="showPage('track',this)" data-fa="🔍 پیگیری" data-en="🔍 Track">🔍 پیگیری</button>
+      <button class="nav-btn" onclick="toggleLang(this)" style="border-right:1px solid var(--border);padding-right:14px;" id="langBtn">EN</button>
+    </nav>
+  </div>
+</header>
+
+<div id="store" class="page active">
+  <div class="hero">
+    <div class="hero-badge"><span class="hero-dot"></span> موجودی آنی</div>
+    <h1>فروشگاه کاینس<br/><span>بازی‌های آنلاین</span></h1>
+    <p>تحویل فوری · پرداخت امن · پشتیبانی ۲۴/۷</p>
+    <div style="display:flex;justify-content:center;gap:8px;margin:14px 0;">
+      <button class="cur-btn active" onclick="setCurrency('USD','$',1)">🇺🇸 USD</button>
+      <button class="cur-btn" onclick="setCurrency('EUR','€',0.92)">🇪🇺 EUR</button>
+      <button class="cur-btn" onclick="setCurrency('AFN','؋',89)">🇦🇫 افغانی</button>
+      <button class="cur-btn" onclick="setCurrency('IRR','﷼',1790000)">🇮🇷 ریال</button>
+    </div>
+    <div class="hero-stats">
+      <div class="hs"><strong>1000+</strong><small>مشتری</small></div>
+      <div class="hs"><strong>5000+</strong><small>سفارش</small></div>
+      <div class="hs"><strong>3</strong><small>بازی</small></div>
+      <div class="hs"><strong>4.9★</strong><small>امتیاز</small></div>
+    </div>
+  </div>
+
+  <a href="https://afghanfollowers.shop" target="_blank" class="smm-banner">
+    <div class="smm-left">
+      <div class="smm-icon">📱</div>
+      <div>
+        <div class="smm-title">فالوور شبکه‌های اجتماعی</div>
+        <div class="smm-sub">افزایش فالوور · لایک · ویو · کامنت</div>
+        <div class="smm-platforms">
+          <span class="smm-plat">📸 Instagram</span>
+          <span class="smm-plat">🎵 TikTok</span>
+          <span class="smm-plat">▶️ YouTube</span>
+          <span class="smm-plat">✈️ Telegram</span>
+          <span class="smm-plat">𝕏 Twitter</span>
+        </div>
+      </div>
+    </div>
+    <div class="smm-cta">مشاهده →</div>
+  </a>
+
+  <div class="wrap">
+    <div class="sec">
+      <div class="sec-head"><div class="sec-icon">🎮</div><h2>انتخاب بازی</h2><div class="sec-line"></div></div>
+      <div class="game-tabs" id="gameTabs"></div>
+      <div class="pkg-grid" id="pkgGrid"></div>
+    </div>
+    <div class="sec" style="padding-bottom:40px;">
+      <div class="sec-head"><div class="sec-icon">📋</div><h2>اطلاعات سفارش</h2><div class="sec-line"></div></div>
+      <div class="order-card">
+        <div class="oc-head">
+          <span id="formGameIcon" style="font-size:18px;">🎮</span>
+          <h3>تکمیل سفارش</h3>
+        </div>
+        <div class="oc-body">
+          <div class="form-grid">
+            <div class="fg full">
+              <label>پکیج انتخاب‌شده</label>
+              <div class="sel-display">
+                <div class="sel-left">
+                  <div class="sel-game-icon" id="selGameIcon">💎</div>
+                  <div><div class="sel-info-name" id="selName" style="color:var(--muted);font-size:13px;">هنوز پکیجی انتخاب نشده</div><div class="sel-info-sub" id="selSub"></div></div>
+                </div>
+                <div class="sel-price" id="selPrice"></div>
+              </div>
+            </div>
+            <div class="fg full">
+              <label id="idLabel">شناسه بازیکن / Player ID</label>
+              <input type="text" id="playerId" placeholder="ID خود را وارد کنید"/>
+            </div>
+            <div class="fg full">
+              <label>روش پرداخت</label>
+              <div class="pay-grid">
+                <div class="pay-opt" onclick="selPay(this,'PayPal')">
+                  <div class="pay-icon" style="display:flex;align-items:center;justify-content:center;height:32px;">
+                    <svg viewBox="0 0 80 28" width="64" height="24"><text x="0" y="22" font-size="22" font-weight="900" font-family="Arial" fill="#003087">Pay</text><text x="36" y="22" font-size="22" font-weight="900" font-family="Arial" fill="#009cde">Pal</text></svg>
+                  </div><div class="pay-name">PayPal</div>
+                </div>
+                <div class="pay-opt" onclick="selPay(this,'Apple Pay')">
+                  <div class="pay-icon" style="display:flex;align-items:center;justify-content:center;height:32px;">
+                    <svg viewBox="0 0 70 28" width="64" height="26"><rect x="0" y="0" width="70" height="28" rx="5" fill="#000"/><text x="35" y="19" text-anchor="middle" font-size="11" font-weight="700" font-family="-apple-system,Arial" fill="#fff">Apple Pay</text></svg>
+                  </div><div class="pay-name">Apple Pay</div>
+                </div>
+                <div class="pay-opt" onclick="selPay(this,'Mastercard')">
+                  <div class="pay-icon" style="display:flex;align-items:center;justify-content:center;height:32px;">
+                    <svg viewBox="0 0 50 30" width="48" height="30"><circle cx="18" cy="15" r="13" fill="#EB001B"/><circle cx="32" cy="15" r="13" fill="#F79E1B"/><path d="M25 4.5a13 13 0 0 1 0 21A13 13 0 0 1 25 4.5z" fill="#FF5F00"/></svg>
+                  </div><div class="pay-name">Mastercard</div>
+                </div>
+                <div class="pay-opt" onclick="selPay(this,'Hesab')">
+                  <div class="pay-icon" style="display:flex;align-items:center;justify-content:center;height:32px;">
+                    <svg viewBox="0 0 70 28" width="64" height="26"><rect x="0" y="0" width="70" height="28" rx="5" fill="#6c3fc5"/><text x="35" y="19" text-anchor="middle" font-size="12" font-weight="800" font-family="Arial" fill="#fff">HESAB</text></svg>
+                  </div><div class="pay-name">Hesab</div>
+                </div>
+                <div class="pay-opt" onclick="selPay(this,'Binance')">
+                  <div class="pay-icon" style="display:flex;align-items:center;justify-content:center;height:32px;">
+                    <svg viewBox="0 0 70 28" width="64" height="26"><rect x="0" y="0" width="70" height="28" rx="5" fill="#181A20"/><text x="35" y="19" text-anchor="middle" font-size="12" font-weight="900" font-family="Arial" fill="#F3BA2F">Binance</text></svg>
+                  </div><div class="pay-name">Binance</div>
+                </div>
+                <div class="pay-opt" onclick="selPay(this,'Bank Transfer')">
+                  <div class="pay-icon" style="display:flex;align-items:center;justify-content:center;height:32px;">
+                    <svg viewBox="0 0 50 30" width="48" height="30"><rect x="2" y="8" width="46" height="20" rx="3" fill="none" stroke="#2ED573" stroke-width="2"/><rect x="2" y="8" width="46" height="7" rx="2" fill="#2ED573" fill-opacity=".4"/><rect x="8" y="20" width="10" height="4" rx="1" fill="#2ED573"/><rect x="22" y="20" width="10" height="4" rx="1" fill="#2ED573"/></svg>
+                  </div><div class="pay-name">Bank Transfer</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- PayPal -->
+            <div class="fg full pay-info-box" id="box-PayPal" style="display:none;">
+              <div style="background:rgba(0,112,243,0.08);border:1px solid rgba(0,112,243,0.3);border-radius:10px;padding:14px 16px;">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+                  <div style="font-weight:700;font-size:13px;color:#0070f3;">🅿️ پرداخت با PayPal</div>
+                  <div id="paypalAmountBadge" style="background:rgba(0,112,243,0.15);color:#0070f3;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:700;"></div>
+                </div>
+                <div style="font-size:12px;color:var(--muted);line-height:1.7;margin-bottom:12px;">روی دکمه کلیک کنید، پرداخت را انجام دهید، سپس دکمه تأیید را بزنید.</div>
+                <div id="paypalStep1">
+                  <button onclick="goPayPal()" style="width:100%;padding:12px;background:#0070f3;border:none;border-radius:8px;color:#fff;font-family:'Exo 2',sans-serif;font-size:14px;font-weight:700;cursor:pointer;margin-bottom:8px;">
+                    💳 رفتن به PayPal برای پرداخت
+                  </button>
+                </div>
+                <div id="paypalStep2" style="display:none;">
+                  <button onclick="confirmPayPal()" style="width:100%;padding:12px;background:#2ED573;border:none;border-radius:8px;color:#000;font-family:'Exo 2',sans-serif;font-size:14px;font-weight:700;cursor:pointer;">
+                    ✅ پرداخت را انجام دادم
+                  </button>
+                </div>
+                <div id="paypalSuccess" style="display:none;background:rgba(46,213,115,0.1);border:1px solid var(--success);border-radius:8px;padding:20px;text-align:center;">
+                  <div style="font-size:36px;margin-bottom:10px;">✅</div>
+                  <div style="font-weight:700;color:var(--success);font-size:16px;" data-fa="پرداخت تأیید شد!" data-en="Payment Confirmed!">پرداخت تأیید شد!</div>
+                  <div style="font-size:13px;color:var(--text);margin-top:10px;line-height:1.8;" data-fa="سفارش شما ثبت شد و در صف پردازش است." data-en="Your order has been registered and is being processed.">سفارش شما ثبت شد و در صف پردازش است.</div>
+                  <div style="background:rgba(245,197,24,0.1);border:1px solid rgba(245,197,24,0.3);border-radius:8px;padding:12px;margin-top:12px;">
+                    <div style="font-size:20px;margin-bottom:6px;">⏱️</div>
+                    <div style="font-weight:700;color:var(--gold);font-size:13px;" data-fa="زمان تحویل کاینس" data-en="Delivery Time">زمان تحویل کاینس</div>
+                    <div style="font-size:22px;font-weight:900;color:var(--gold);margin:6px 0;" data-fa="۵ تا ۳۰ دقیقه" data-en="5 to 30 Minutes">۵ تا ۳۰ دقیقه</div>
+                    <div style="font-size:11px;color:var(--muted);" data-fa="لطفاً صبور باشید. کاینس به حساب بازی شما ارسال خواهد شد." data-en="Please be patient. Coins will be sent to your game account.">لطفاً صبور باشید. کاینس به حساب بازی شما ارسال خواهد شد.</div>
+                  </div>
+                  <div style="font-size:12px;color:var(--muted);margin-top:10px;" data-fa="در صورت تأخیر بیشتر از ۳۰ دقیقه با پشتیبانی تماس بگیرید." data-en="If delivery takes more than 30 minutes, please contact support.">در صورت تأخیر بیشتر از ۳۰ دقیقه با پشتیبانی تماس بگیرید.</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Apple Pay -->
+            <div class="fg full pay-info-box" id="box-Apple Pay" style="display:none;">
+              <div style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.15);border-radius:10px;padding:14px 16px;display:flex;gap:12px;align-items:flex-start;">
+                <span style="font-size:24px;">🍎</span>
+                <div>
+                  <div style="font-weight:700;font-size:13px;color:#fff;margin-bottom:4px;">پرداخت با Apple Pay</div>
+                  <div style="font-size:12px;color:var(--muted);line-height:1.7;">از طریق PayPal پرداخت انجام می‌شود:<br/>
+                  <strong style="color:var(--text);">paypal.me/afgfollowers</strong><br/>
+                  بعد از پرداخت، شناسه تراکنش رو در توضیحات بنویسید.</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Mastercard -->
+            <div class="fg full pay-info-box" id="box-Mastercard" style="display:none;">
+              <div style="background:rgba(235,0,27,0.07);border:1px solid rgba(235,0,27,0.25);border-radius:10px;padding:14px 16px;display:flex;gap:12px;align-items:flex-start;">
+                <span style="font-size:24px;">💳</span>
+                <div>
+                  <div style="font-weight:700;font-size:13px;color:#eb001b;margin-bottom:4px;">پرداخت با Mastercard</div>
+                  <div style="font-size:12px;color:var(--muted);line-height:1.7;">از طریق PayPal پرداخت انجام می‌شود:<br/>
+                  <strong style="color:var(--text);">paypal.me/afgfollowers</strong><br/>
+                  بعد از پرداخت، شناسه تراکنش رو در توضیحات بنویسید.</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Bank Transfer -->
+            <div class="fg full pay-info-box" id="box-Bank Transfer" style="display:none;">
+              <div style="background:rgba(46,213,115,0.07);border:1px solid rgba(46,213,115,0.25);border-radius:10px;padding:14px 16px;">
+                <div style="font-weight:700;font-size:13px;color:var(--success);margin-bottom:10px;">🏦 Bank Transfer (SEPA)</div>
+                <div style="font-size:12px;color:var(--muted);line-height:1.9;margin-bottom:12px;">
+                  نام: <strong style="color:var(--text);">Mohsen Necoo</strong><br/>
+                  IBAN: <strong style="color:var(--text);">DE40 5002 4024 5414 7581 01</strong><br/>
+                  BIC: <strong style="color:var(--text);">DEFFDEFFXXX</strong>
+                </div>
+                <div style="font-size:12px;color:var(--muted);margin-bottom:8px;">📎 بعد از پرداخت، رسید را آپلود کنید:</div>
+                <div class="proof-upload-zone" onclick="document.getElementById('proofFile-bank').click()">
+                  <div class="puz-icon">📷</div>
+                  <div class="puz-text">عکس رسید پرداخت را آپلود کنید</div>
+                  <input type="file" id="proofFile-bank" accept="image/*,application/pdf" style="display:none;" onchange="handleProof(this,'bank')"/>
+                </div>
+                <div id="proofPreview-bank" style="display:none;margin-top:8px;"></div>
+                <div id="proofStatus-bank" style="display:none;" class="proof-status">⏳ در انتظار تأیید ادمین</div>
+              </div>
+            </div>
+
+            <!-- Hesab -->
+            <div class="fg full pay-info-box" id="box-Hesab" style="display:none;">
+              <div style="background:rgba(138,43,226,0.08);border:1px solid rgba(138,43,226,0.3);border-radius:10px;padding:14px 16px;">
+                <div style="font-weight:700;font-size:13px;color:#9b59b6;margin-bottom:10px;">💜 پرداخت با Hesab Wallet</div>
+                <div style="font-size:12px;color:var(--muted);line-height:1.8;margin-bottom:12px;">
+                  اپ Hesab رو باز کنید → Send Money → شماره زیر را وارد کنید:<br/>
+                  <div style="display:flex;align-items:center;gap:8px;margin-top:8px;">
+                    <strong style="color:var(--text);font-size:14px;">+49 936 403 567 5</strong>
+                    <button onclick="copyText('+4993640356750')" style="padding:4px 10px;background:rgba(155,89,182,0.2);border:1px solid #9b59b6;border-radius:5px;color:#9b59b6;font-size:11px;cursor:pointer;font-family:'Exo 2',sans-serif;">کپی</button>
+                  </div>
+                  <div style="margin-top:8px;">مبلغ: <strong id="hesabAmount" style="color:var(--gold);">—</strong></div>
+                </div>
+                <div style="font-size:12px;color:var(--muted);margin-bottom:8px;">📎 بعد از پرداخت، رسید را آپلود کنید:</div>
+                <div class="proof-upload-zone" onclick="document.getElementById('proofFile-hesab').click()">
+                  <div class="puz-icon">📷</div>
+                  <div class="puz-text">عکس رسید پرداخت را آپلود کنید</div>
+                  <input type="file" id="proofFile-hesab" accept="image/*" style="display:none;" onchange="handleProof(this,'hesab')"/>
+                </div>
+                <div id="proofPreview-hesab" style="display:none;margin-top:8px;"></div>
+                <div id="proofStatus-hesab" style="display:none;" class="proof-status">⏳ در انتظار تأیید ادمین</div>
+              </div>
+            </div>
+
+            <!-- Binance -->
+            <div class="fg full pay-info-box" id="box-Binance" style="display:none;">
+              <div style="background:rgba(243,186,47,0.08);border:1px solid rgba(243,186,47,0.3);border-radius:10px;padding:14px 16px;">
+                <div style="font-weight:700;font-size:13px;color:#f3ba2f;margin-bottom:10px;">🟡 پرداخت با Binance Pay (USDT)</div>
+                <div style="font-size:12px;color:var(--muted);line-height:1.8;margin-bottom:12px;">
+                  اپ Binance رو باز کنید → Pay → Send → Binance ID زیر را وارد کنید:<br/>
+                  <div style="display:flex;align-items:center;gap:8px;margin-top:8px;">
+                    <strong style="color:var(--text);font-size:16px;">470330651</strong>
+                    <button onclick="copyText('470330651')" style="padding:4px 10px;background:rgba(243,186,47,0.2);border:1px solid #f3ba2f;border-radius:5px;color:#f3ba2f;font-size:11px;cursor:pointer;font-family:'Exo 2',sans-serif;">کپی</button>
+                  </div>
+                  <div style="margin-top:8px;">مبلغ USDT: <strong id="binanceAmount" style="color:var(--gold);">—</strong></div>
+                </div>
+                <div style="font-size:12px;color:var(--muted);margin-bottom:8px;">📎 بعد از پرداخت، رسید را آپلود کنید:</div>
+                <div class="proof-upload-zone" onclick="document.getElementById('proofFile-binance').click()">
+                  <div class="puz-icon">📷</div>
+                  <div class="puz-text">اسکرین‌شات رسید را آپلود کنید</div>
+                  <input type="file" id="proofFile-binance" accept="image/*" style="display:none;" onchange="handleProof(this,'binance')"/>
+                </div>
+                <div id="proofPreview-binance" style="display:none;margin-top:8px;"></div>
+                <div id="proofStatus-binance" style="display:none;" class="proof-status">⏳ در انتظار تأیید ادمین</div>
+              </div>
+            </div>
+            <div class="fg full">
+              <label>توضیحات (اختیاری)</label>
+              <textarea id="notes" placeholder="هر اطلاعات اضافه‌ای..."></textarea>
+            </div>
+          </div>
+          <button class="submit-btn" id="submitBtn" onclick="submitOrder()">⚡ ثبت سفارش</button>
+          <div class="loading-bar" id="loadingBar"><div class="loading-bar-inner"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="orders" class="page">
+  <div class="wrap" style="padding-top:32px;">
+    <div class="sec-head"><div class="sec-icon">📊</div><h2>سفارش‌های من</h2><div class="sec-line"></div></div>
+    <div class="stats-grid" id="statsGrid"></div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>شناسه</th><th>بازی</th><th>پکیج</th><th>Player ID</th><th>پرداخت</th><th>مبلغ</th><th>تاریخ</th><th>وضعیت</th></tr></thead>
+        <tbody id="ordersBody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div id="track" class="page">
+  <div class="wrap" style="padding-top:40px;">
+    <div class="track-box">
+      <div class="sec-head" style="margin-bottom:20px;"><div class="sec-icon">🔍</div><h2>پیگیری سفارش</h2><div class="sec-line"></div></div>
+      <div class="track-row">
+        <input type="text" id="trackInput" placeholder="مثلاً: AG-000001"/>
+        <button class="track-btn" onclick="trackOrder()">پیگیری</button>
+      </div>
+      <div id="trackResult"></div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div style="display:flex;justify-content:center;gap:12px;margin-bottom:16px;">
+    <a href="https://wa.me/4915210984525" target="_blank" style="display:flex;align-items:center;gap:8px;background:#25D366;color:#000;padding:10px 20px;border-radius:8px;text-decoration:none;font-weight:700;font-size:13px;">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="#000"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.125.555 4.122 1.524 5.855L0 24l6.335-1.502A11.954 11.954 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.006-1.371l-.36-.214-3.733.885.916-3.618-.235-.372A9.818 9.818 0 1112 21.818z"/></svg>
+      WhatsApp Support
+    </a>
+    <a href="https://t.me/afghanfollowers" target="_blank" style="display:flex;align-items:center;gap:8px;background:#229ED9;color:#fff;padding:10px 20px;border-radius:8px;text-decoration:none;font-weight:700;font-size:13px;">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="#fff"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.248l-2.014 9.49c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L6.26 14.4l-2.95-.924c-.64-.204-.654-.64.136-.954l11.527-4.448c.537-.194 1.006.131.589 1.174z"/></svg>
+      Telegram Support
+    </a>
+  </div>
+  <div>© 2025 AfghanStore · afghangames.store · همه حقوق محفوظ است</div>
+</footer>
+<div class="toast" id="toast"></div>
+
+<!-- Floating Support -->
+<div style="position:fixed;bottom:24px;left:24px;z-index:200;display:flex;flex-direction:column;gap:8px;">
+  <a href="https://wa.me/4915210984525" target="_blank" style="width:50px;height:50px;background:#25D366;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 15px rgba(37,211,102,0.4);text-decoration:none;" title="WhatsApp Support">
+    <svg viewBox="0 0 24 24" width="26" height="26" fill="#fff"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.125.555 4.122 1.524 5.855L0 24l6.335-1.502A11.954 11.954 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.006-1.371l-.36-.214-3.733.885.916-3.618-.235-.372A9.818 9.818 0 1112 21.818z"/></svg>
+  </a>
+  <a href="https://t.me/afghanfollowers" target="_blank" style="width:50px;height:50px;background:#229ED9;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 15px rgba(34,158,217,0.4);text-decoration:none;" title="Telegram Support">
+    <svg viewBox="0 0 24 24" width="26" height="26" fill="#fff"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.248l-2.014 9.49c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L6.26 14.4l-2.95-.924c-.64-.204-.654-.64.136-.954l11.527-4.448c.537-.194 1.006.131.589 1.174z"/></svg>
+  </a>
+</div>
+
+<script>
+// Handle PayPal return
+const urlParams = new URLSearchParams(window.location.search);
+if(urlParams.get('payment') === 'success') {
+  setTimeout(() => showToast('✅ پرداخت موفق! کاینس در حال ارسال است...','var(--success)'), 500);
+}
+
+// Currency
+let curCode = 'USD', curSymbol = '$', curRate = 1;
+function setCurrency(code, symbol, rate) {
+  curCode = code; curSymbol = symbol; curRate = rate;
+  document.querySelectorAll('.cur-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+  renderPkgs();
+  if(selPkg) updateAmounts();
+}
+function fmtPrice(usd) {
+  const val = usd * curRate;
+  if(curCode === 'IRR') {
+    return Math.round(val).toLocaleString('fa-IR') + ' ﷼';
+  }
+  if(curCode === 'AFN') {
+    return curSymbol + Math.round(val).toLocaleString();
+  }
+  return curSymbol + val.toFixed(2);
+}
+
+// Game logos SVG
+const GAME_LOGOS = {
+  pubg: '<svg viewBox="0 0 60 40" width="48" height="32"><rect x="0" y="0" width="60" height="40" rx="6" fill="#1a1200"/><text x="30" y="18" text-anchor="middle" font-size="8" font-weight="900" fill="#F5C518" font-family="Arial">PUBG</text><text x="30" y="30" text-anchor="middle" font-size="7" font-weight="700" fill="#F5C518" font-family="Arial">MOBILE</text></svg>',
+  freefire: '<svg viewBox="0 0 60 40" width="48" height="32"><rect x="0" y="0" width="60" height="40" rx="6" fill="#1a0800"/><text x="30" y="18" text-anchor="middle" font-size="8" font-weight="900" fill="#FF6B35" font-family="Arial">FREE</text><text x="30" y="30" text-anchor="middle" font-size="8" font-weight="900" fill="#FF6B35" font-family="Arial">FIRE</text></svg>',
+  mlbb: '<svg viewBox="0 0 60 40" width="48" height="32"><rect x="0" y="0" width="60" height="40" rx="6" fill="#000d2e"/><text x="30" y="16" text-anchor="middle" font-size="6" font-weight="900" fill="#00C6FF" font-family="Arial">MOBILE</text><text x="30" y="26" text-anchor="middle" font-size="6" font-weight="900" fill="#00C6FF" font-family="Arial">LEGENDS</text><text x="30" y="35" text-anchor="middle" font-size="5" font-weight="700" fill="#fff" font-family="Arial">BANG BANG</text></svg>',
+};
+
+const CURRENCY_ICONS = {
+  pubg: '<svg viewBox="0 0 48 48" width="40" height="40" xmlns="http://www.w3.org/2000/svg"><polygon points="24,2 44,13 44,35 24,46 4,35 4,13" fill="#1a1400" stroke="#F5C518" stroke-width="2"/><polygon points="24,8 38,16 38,32 24,40 10,32 10,16" fill="#F5C518" fill-opacity="0.2"/><text x="24" y="29" text-anchor="middle" font-size="13" font-weight="900" fill="#F5C518" font-family="Arial">UC</text></svg>',
+  freefire: '<svg viewBox="0 0 48 48" width="40" height="40" xmlns="http://www.w3.org/2000/svg"><polygon points="24,4 30,16 44,16 34,26 38,40 24,32 10,40 14,26 4,16 18,16" fill="#FF6B35"/><polygon points="24,10 28,19 38,19 31,25 34,34 24,28 14,34 17,25 10,19 20,19" fill="#FF2200" opacity="0.6"/></svg>',
+  mlbb: '<svg viewBox="0 0 48 48" width="40" height="40" xmlns="http://www.w3.org/2000/svg"><polygon points="24,3 40,13 40,33 24,45 8,33 8,13" fill="#0072FF" opacity="0.9"/><polygon points="24,9 35,17 35,31 24,39 13,31 13,17" fill="#00C6FF" opacity="0.5"/><text x="24" y="30" text-anchor="middle" font-size="10" font-weight="900" fill="#fff" font-family="Arial">ML</text></svg>',
+};
+
+// Real FoxReload Product IDs
+const GAMES = [
+  {
+    id:'pubg', name:'PUBG Mobile', icon:'🪖', currency:'UC',
+    idLabel:'PUBG Player ID (account_id)',
+    packages:[
+      {amount:60,   sellPrice:0.89,  productId:'product_01kba2j44sehsv5wf7aq3cbb4g'},
+      {amount:325,  sellPrice:4.49,  productId:'product_01ktefd2zjfnrrhschekxy6m09'},
+      {amount:660,  sellPrice:8.99,  productId:'product_01kba2j451eq8sn81xsj54cawg'},
+      {amount:1800, sellPrice:27.99, productId:'product_01ktefd5qde309k54nr07ce4zv', popular:true},
+      {amount:3850, sellPrice:46.99, productId:'product_01kba2j459et0aqcf0cx36t0jz'},
+      {amount:8100, sellPrice:94.99, productId:'product_01ktefd56qe40bwtrxf0nnr1dp'},
+    ]
+  },
+  {
+    id:'freefire', name:'Free Fire', icon:'🔥', currency:'Diamonds',
+    idLabel:'Free Fire Player ID (account_id)',
+    packages:[
+      {amount:110,  sellPrice:1.49,  productId:'product_01krhggvpnehh93qqjhvd0zcec'},
+      {amount:530,  sellPrice:6.99,  productId:'product_01ktefk810fyhr42a4ak532md1'},
+      {amount:1080, sellPrice:13.99, productId:'product_01ktefk81we91ryzegcp24epp5', popular:true},
+      {amount:2200, sellPrice:27.99, productId:'product_01ktefk82nejsvzg0ksskhg3zm'},
+      {amount:6160, sellPrice:54.99, productId:'product_01ktazv1brfq1s45rh5p2tj03r'},
+    ]
+  },
+  {
+    id:'mlbb', name:'Mobile Legends', icon:'⚔️', currency:'Diamonds',
+    idLabel:'MLBB User ID',
+    packages:[
+      {amount:565,  price:11.51, sellPrice:13.99, productId:'product_01ktb0cv4gfegvzd77bv01k2ay'},
+      {amount:1155, price:23.00, sellPrice:27.99, productId:'product_01ktb0cvecefrbrxreznz3ps79', popular:true},
+      {amount:1765, price:34.50, sellPrice:41.99, productId:'product_01ktb0cvmhf71r333xrdsv7813'},
+    ]
+  },
+];
+
+let activeGame = GAMES[0];
+let selPkg = null, selPayMethod = null;
+let orders = JSON.parse(localStorage.getItem('ag_orders')||'[]');
+
+// Build game tabs
+const tabsCont = document.getElementById('gameTabs');
+GAMES.forEach((g,i) => {
+  const t = document.createElement('div');
+  t.className = 'game-tab' + (i===0?' active':'');
+  t.innerHTML = '<div class="gt-icon" style="display:flex;justify-content:center;">'+GAME_LOGOS[g.id]+'</div><div class="gt-name">'+g.name+'</div><div class="gt-currency">'+g.currency+'</div>';
+  t.onclick = () => switchGame(g, t);
+  tabsCont.appendChild(t);
+});
+
+function switchGame(g, tab) {
+  activeGame = g;
+  selPkg = null;
+  document.querySelectorAll('.game-tab').forEach(t => t.classList.remove('active'));
+  tab.classList.add('active');
+  renderPkgs();
+  document.getElementById('formGameIcon').textContent = g.icon;
+  document.getElementById('selGameIcon').innerHTML = CURRENCY_ICONS[g.id];
+  document.getElementById('selName').textContent = 'هنوز پکیجی انتخاب نشده';
+  document.getElementById('selName').style.color = 'var(--muted)';
+  document.getElementById('selPrice').textContent = '';
+  document.getElementById('idLabel').textContent = g.idLabel;
+}
+
+function renderPkgs() {
+  const grid = document.getElementById('pkgGrid');
+  grid.innerHTML = '';
+  activeGame.packages.forEach((p,i) => {
+    const c = document.createElement('div');
+    c.className = 'pkg' + (p.popular?' popular':'');
+    c.innerHTML = (p.popular?'<div class="pop-tag">BEST DEAL</div>':'') +
+      '<div class="pkg-icon">'+CURRENCY_ICONS[activeGame.id]+'</div>' +
+      '<div class="pkg-amount">'+p.amount.toLocaleString()+'</div>' +
+      '<div class="pkg-currency">'+activeGame.currency+'</div>' +
+      '<div class="pkg-price">'+fmtPrice(p.sellPrice)+' <small>'+curCode+'</small></div>' +
+      '<button class="pkg-btn">انتخاب</button>';
+    c.onclick = () => choosePkg(p, c);
+    grid.appendChild(c);
+  });
+}
+renderPkgs();
+
+function choosePkg(p, card) {
+  selPkg = p;
+  document.querySelectorAll('.pkg').forEach(c => c.classList.remove('selected'));
+  card.classList.add('selected');
+  document.getElementById('selName').textContent = p.amount.toLocaleString()+' '+activeGame.currency;
+  document.getElementById('selName').style.color = 'var(--gold)';
+  document.getElementById('selSub').textContent = activeGame.name;
+  document.getElementById('selPrice').textContent = '$'+p.sellPrice.toFixed(2);
+}
+
+function handleProof(input, type) {
+  const file = input.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const preview = document.getElementById('proofPreview-'+type);
+    preview.innerHTML = `<img src="${e.target.result}" class="proof-img"/>`;
+    preview.style.display = 'block';
+    const status = document.getElementById('proofStatus-'+type);
+    status.style.display = 'block';
+    status.textContent = '⏳ رسید آپلود شد — در انتظار تأیید ادمین';
+    // store proof in memory
+    window['proof_'+type] = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+function copyText(text) {
+  navigator.clipboard.writeText(text).then(() => showToast('✅ کپی شد!','var(--gold)'));
+}
+
+function openHesab() {}
+function openBinance() {}
+
+function updateAmounts() {
+  if(!selPkg) return;
+  const usd = selPkg.sellPrice.toFixed(2);
+  const badge = document.getElementById('paypalAmountBadge');
+  if(badge) badge.textContent = fmtPrice(selPkg.sellPrice)+' '+curCode;
+  const bAmt = document.getElementById('binanceAmount');
+  if(bAmt) bAmt.textContent = usd+' USDT';
+  const hAmt = document.getElementById('hesabAmount');
+  if(hAmt) hAmt.textContent = fmtPrice(selPkg.sellPrice);
+  const pPrice = document.getElementById('selPrice');
+  if(pPrice) pPrice.textContent = fmtPrice(selPkg.sellPrice);
+}
+
+function goPayPal() {
+  if(!selPkg) { showToast('⚠️ اول پکیج انتخاب کنید','#FF4757'); return; }
+  const amount = selPkg.sellPrice.toFixed(2);
+  window.open('https://www.paypal.com/paypalme/afgfollowers/'+amount+'USD', '_blank');
+  document.getElementById('paypalStep1').style.display='none';
+  document.getElementById('paypalStep2').style.display='block';
+}
+
+function confirmPayPal() {
+  document.getElementById('paypalStep2').style.display='none';
+  document.getElementById('paypalSuccess').style.display='block';
+  showToast('✅ پرداخت تأیید شد! کاینس در حال ارسال است','var(--success)');
+}
+
+function openPayPal() { goPayPal(); }
+
+function selPay(el, name) {
+  selPayMethod = name;
+  document.querySelectorAll('.pay-opt').forEach(m => m.classList.remove('active'));
+  el.classList.add('active');
+  document.querySelectorAll('.pay-info-box').forEach(b => b.style.display='none');
+  const box = document.getElementById('box-'+name);
+  if(box) box.style.display='block';
+  updateAmounts();
+}
+
+async function submitOrder() {
+  const pid = document.getElementById('playerId').value.trim();
+  if(!selPkg){showToast('⚠️ لطفاً یک پکیج انتخاب کنید','#FF4757');return;}
+  if(!pid){showToast('⚠️ شناسه بازیکن را وارد کنید','#FF4757');return;}
+  if(!selPayMethod){showToast('⚠️ روش پرداخت را انتخاب کنید','#FF4757');return;}
+
+  const btn = document.getElementById('submitBtn');
+  const bar = document.getElementById('loadingBar');
+  btn.disabled = true;
+  btn.textContent = '⏳ در حال پردازش...';
+  bar.style.display = 'block';
+
+  const order = {
+    id:'AG-'+String(orders.length+1).padStart(6,'0'),
+    game:activeGame.name, gameIcon:activeGame.icon,
+    pkg:selPkg.amount.toLocaleString()+' '+activeGame.currency,
+    playerId:pid, payment:selPayMethod,
+    price:selPkg.sellPrice,
+    productId:selPkg.productId,
+    date:new Date().toLocaleDateString('fa-IR'),
+    status:'pending',
+    foxreloadId:null,
+    notes:document.getElementById('notes').value
+  };
+
+  // Call Netlify Function → Telegram + FoxReload
+  try {
+    const res = await fetch('/.netlify/functions/order', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        orderId: order.id,
+        productId: selPkg.productId,
+        playerId: pid,
+        quantity: 1,
+        game: activeGame.name,
+        pkg: order.pkg,
+        price: selPkg.sellPrice,
+        payment: selPayMethod
+      })
+    });
+    const data = await res.json();
+    if(data && data.foxreloadId) {
+      order.foxreloadId = data.foxreloadId;
+      order.status = 'processing';
+      showToast('✅ سفارش '+order.id+' ثبت و ارسال شد!','var(--gold)');
+    } else {
+      showToast('✅ سفارش '+order.id+' ثبت شد!','var(--gold)');
+    }
+  } catch(e) {
+    showToast('✅ سفارش '+order.id+' ثبت شد','var(--gold)');
+  }
+
+  orders.unshift(order);
+  localStorage.setItem('ag_orders',JSON.stringify(orders));
+
+  // reset
+  btn.disabled=false;
+  btn.textContent='⚡ ثبت سفارش';
+  bar.style.display='none';
+  selPkg=null;selPayMethod=null;
+  document.querySelectorAll('.pkg').forEach(c=>c.classList.remove('selected'));
+  document.querySelectorAll('.pay-opt').forEach(m=>m.classList.remove('active'));
+  document.getElementById('playerId').value='';
+  document.getElementById('notes').value='';
+  document.getElementById('selName').textContent='هنوز پکیجی انتخاب نشده';
+  document.getElementById('selName').style.color='var(--muted)';
+  document.getElementById('selPrice').textContent='';
+  document.querySelectorAll('.pay-info-box').forEach(b=>b.style.display='none');
+  const s1=document.getElementById('paypalStep1');
+  const s2=document.getElementById('paypalStep2');
+  const ss=document.getElementById('paypalSuccess');
+  if(s1)s1.style.display='block';
+  if(s2)s2.style.display='none';
+  if(ss)ss.style.display='none';
+}
+
+function renderOrders() {
+  const tb=document.getElementById('ordersBody');
+  const statusLabel={pending:'در انتظار',processing:'در حال پردازش',completed:'تکمیل شده',cancelled:'لغو شده'};
+  if(!orders.length){tb.innerHTML='<tr><td colspan="8" style="text-align:center;padding:32px;color:var(--muted);">سفارشی وجود ندارد</td></tr>';return;}
+  tb.innerHTML=orders.map(o=>`
+    <tr>
+      <td><span class="oid">${o.id}</span></td>
+      <td>${o.gameIcon||''} ${o.game}</td>
+      <td>${o.pkg}</td>
+      <td>${o.playerId}</td>
+      <td>${o.payment}</td>
+      <td style="color:var(--gold);font-weight:700;">$${o.price.toFixed(2)}</td>
+      <td style="color:var(--muted);">${o.date}</td>
+      <td>
+        <span class="badge ${o.status}">
+          ${o.status==='pending'?'⏳ در انتظار تأیید':
+            o.status==='processing'?'🔄 در حال پردازش':
+            o.status==='completed'?'✅ تکمیل شده':'❌ لغو شده'}
+        </span>
+        ${o.status==='completed'?'<div style="font-size:10px;color:var(--success);margin-top:4px;">کاینس ارسال شد 🎉</div>':''}
+      </td>
+    </tr>
+  `).join('');
+  const tot=orders.length,pen=orders.filter(o=>o.status==='pending').length,
+        com=orders.filter(o=>o.status==='completed').length,
+        rev=orders.reduce((s,o)=>s+o.price,0);
+  document.getElementById('statsGrid').innerHTML='<div class="stat"><div class="stat-n">'+tot+'</div><div class="stat-l">کل سفارش</div></div><div class="stat"><div class="stat-n">'+pen+'</div><div class="stat-l">در انتظار</div></div><div class="stat"><div class="stat-n">'+com+'</div><div class="stat-l">تکمیل شده</div></div><div class="stat"><div class="stat-n">$'+rev.toFixed(2)+'</div><div class="stat-l">مجموع</div></div>';
+}
+
+async function trackOrder() {
+  const id = document.getElementById('trackInput').value.trim().toUpperCase();
+  const res = document.getElementById('trackResult');
+  if(!id) return;
+  res.innerHTML = '<div style="text-align:center;padding:20px;color:var(--muted);">⏳ در حال جستجو...</div>';
+  // Try server first
+  try {
+    const r = await fetch('/.netlify/functions/get-order?id='+id);
+    if(r.ok) { renderTrackResult(res, await r.json()); return; }
+  } catch(e) {}
+  // Fallback localStorage
+  const o = orders.find(x=>x.id===id);
+  if(!o) { res.innerHTML='<div style="background:var(--surface);border:1px solid var(--danger);border-radius:10px;padding:20px;text-align:center;color:var(--danger);">❌ سفارش پیدا نشد</div>'; return; }
+  renderTrackResult(res, o);
+}
+
+function renderTrackResult(res, o) {
+  const statusLabel={pending:'⏳ در انتظار',processing:'🔄 در حال پردازش',completed:'✅ تکمیل شده',cancelled:'❌ لغو شده'};
+  const isPending = o.status==='pending'||o.status==='processing';
+  const isCompleted = o.status==='completed';
+  res.innerHTML = `
+    <div class="track-result">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+        <span class="oid" style="font-size:18px;">${o.id}</span>
+        <span class="badge ${o.status}">${statusLabel[o.status]||o.status}</span>
+      </div>
+      ${isPending?`<div style="background:rgba(245,197,24,0.08);border:1px solid rgba(245,197,24,0.3);border-radius:8px;padding:14px;text-align:center;margin-bottom:14px;">
+        <div style="font-size:28px;margin-bottom:6px;">⏳</div>
+        <div style="font-weight:700;color:var(--gold);font-size:14px;">سفارش در حال پردازش است</div>
+        <div style="font-size:12px;color:var(--muted);margin-top:6px;">زمان تحویل: <strong style="color:var(--text);">۵ تا ۳۰ دقیقه</strong></div>
+        <button onclick="trackOrder()" style="margin-top:10px;padding:7px 18px;background:var(--gold);border:none;border-radius:6px;color:#000;font-family:'Exo 2',sans-serif;font-size:12px;font-weight:700;cursor:pointer;">🔄 بررسی وضعیت</button>
+      </div>`:''}
+      ${isCompleted?`<div style="background:rgba(46,213,115,0.08);border:1px solid var(--success);border-radius:8px;padding:14px;text-align:center;margin-bottom:14px;">
+        <div style="font-size:32px;margin-bottom:6px;">🎉</div>
+        <div style="font-weight:700;color:var(--success);font-size:15px;">کاینس با موفقیت ارسال شد!</div>
+        <div style="font-size:12px;color:var(--muted);margin-top:6px;">کاینس به حساب بازی شما اضافه شده است.</div>
+      </div>`:''}
+      <div class="tr-row"><span class="tr-k">بازی</span><span class="tr-v">${o.game}</span></div>
+      <div class="tr-row"><span class="tr-k">پکیج</span><span class="tr-v" style="color:var(--gold);">${o.pkg}</span></div>
+      <div class="tr-row"><span class="tr-k">Player ID</span><span class="tr-v">${o.playerId}</span></div>
+      <div class="tr-row"><span class="tr-k">پرداخت</span><span class="tr-v">${o.payment}</span></div>
+      <div class="tr-row"><span class="tr-k">مبلغ</span><span class="tr-v" style="font-weight:800;">$${parseFloat(o.price).toFixed(2)}</span></div>
+      ${o.completedAt?`<div class="tr-row"><span class="tr-k">زمان تکمیل</span><span class="tr-v">${new Date(o.completedAt).toLocaleString('fa-IR')}</span></div>`:''}
+    </div>`;
+}
+
+function showPage(id,btn){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+  if(id==='orders') renderOrders();
+}
+
+// Language system
+let currentLang = 'fa';
+const T = {
+  fa: {
+    store:'🎮 فروشگاه', orders:'📦 سفارش‌ها', track:'🔍 پیگیری',
+    hero1:'فروشگاه کاینس', hero2:'بازی‌های آنلاین',
+    heroSub:'تحویل فوری · پرداخت امن · پشتیبانی ۲۴/۷',
+    customers:'مشتری', ordersStat:'سفارش', games:'بازی', rating:'امتیاز',
+    selectGame:'انتخاب بازی', orderDetails:'اطلاعات سفارش',
+    selectedPkg:'پکیج انتخاب‌شده', noPkg:'هنوز پکیجی انتخاب نشده',
+    playerId:'شناسه بازیکن / Player ID', playerIdPh:'ID خود را وارد کنید',
+    payMethod:'روش پرداخت', notes:'توضیحات (اختیاری)', notesPh:'هر اطلاعات اضافه‌ای...',
+    submit:'⚡ ثبت سفارش', submitting:'⏳ در حال پردازش...',
+    myOrders:'سفارش‌های من', trackOrder:'پیگیری سفارش',
+    trackPh:'مثلاً: AG-000001', trackBtn:'پیگیری',
+    live:'موجودی آنی', select:'انتخاب',
+    smm:'فالوور شبکه‌های اجتماعی', smmSub:'افزایش فالوور · لایک · ویو · کامنت', view:'مشاهده →',
+    paypalGo:'💳 رفتن به PayPal برای پرداخت', paypalDone:'✅ پرداخت را انجام دادم',
+    deliveryTitle:'زمان تحویل کاینس', deliveryTime:'۵ تا ۳۰ دقیقه',
+    deliverySub:'لطفاً صبور باشید. کاینس به حساب بازی شما ارسال خواهد شد.',
+    deliveryNote:'در صورت تأخیر بیشتر از ۳۰ دقیقه با پشتیبانی تماس بگیرید.',
+    langBtn:'EN'
+  },
+  en: {
+    store:'🎮 Store', orders:'📦 Orders', track:'🔍 Track',
+    hero1:'Game Coins', hero2:'Online Store',
+    heroSub:'Instant Delivery · Secure Payment · 24/7 Support',
+    customers:'Customers', ordersStat:'Orders', games:'Games', rating:'Rating',
+    selectGame:'Select Game', orderDetails:'Order Details',
+    selectedPkg:'Selected Package', noPkg:'No package selected yet',
+    playerId:'Player ID', playerIdPh:'Enter your Player ID',
+    payMethod:'Payment Method', notes:'Notes (Optional)', notesPh:'Any additional info...',
+    submit:'⚡ Submit Order', submitting:'⏳ Processing...',
+    myOrders:'My Orders', trackOrder:'Track Order',
+    trackPh:'e.g. AG-000001', trackBtn:'Track',
+    live:'In Stock', select:'Select',
+    smm:'Social Media Followers', smmSub:'Followers · Likes · Views · Comments', view:'View →',
+    paypalGo:'💳 Go to PayPal to Pay', paypalDone:'✅ I have paid',
+    deliveryTitle:'Coin Delivery Time', deliveryTime:'5 to 30 Minutes',
+    deliverySub:'Please be patient. Coins will be sent to your game account.',
+    deliveryNote:'If delivery takes more than 30 minutes, please contact support.',
+    langBtn:'فا'
+  }
+};
+
+function toggleLang(btn) {
+  currentLang = currentLang === 'fa' ? 'en' : 'fa';
+  const html = document.getElementById('htmlRoot');
+  html.lang = currentLang;
+  html.dir = currentLang === 'fa' ? 'rtl' : 'ltr';
+  btn.textContent = T[currentLang].langBtn;
+  applyLang();
+}
+
+function applyLang() {
+  const t = T[currentLang];
+  // nav buttons
+  document.querySelectorAll('.nav-btn[data-fa]').forEach(b => {
+    b.textContent = t[b.getAttribute('data-fa').includes('فروشگاه')?'store':b.getAttribute('data-fa').includes('سفارش')?'orders':'track'];
+  });
+  // hero
+  const h1 = document.querySelector('.hero h1');
+  if(h1) h1.innerHTML = t.hero1+'<br/><span>'+t.hero2+'</span>';
+  const hp = document.querySelector('.hero > p');
+  if(hp) hp.textContent = t.heroSub;
+  // hero stats
+  const hss = document.querySelectorAll('.hs small');
+  if(hss[0]) hss[0].textContent = t.customers;
+  if(hss[1]) hss[1].textContent = t.ordersStat;
+  if(hss[2]) hss[2].textContent = t.games;
+  if(hss[3]) hss[3].textContent = t.rating;
+  // dynamic data-fa elements
+  document.querySelectorAll('[data-fa]').forEach(el => {
+    const key = el.getAttribute('data-'+currentLang);
+    if(key) el.textContent = key;
+  });
+  // re-render packages
+  renderPkgs();
+  // submit btn
+  const sb = document.getElementById('submitBtn');
+  if(sb && !sb.disabled) sb.textContent = t.submit;
+  // player id
+  const pid = document.getElementById('playerId');
+  if(pid) pid.placeholder = t.playerIdPh;
+  const notes = document.getElementById('notes');
+  if(notes) notes.placeholder = t.notesPh;
+}
+
+function showToast(msg,color){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.style.color=color||'var(--gold)';t.style.borderColor=color||'var(--gold)';
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),4000);
+}
+</script>
+</body>
+</html>
