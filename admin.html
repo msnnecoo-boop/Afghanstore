@@ -349,7 +349,7 @@ function init() {
   renderPayments();
   renderStats();
   applyLang();
-  addMsg('assistant', currentLang === 'fa' ? 'سلام! من دستیار هوشمند پنل ادمین afghangames.store هستم. می‌تونم سفارشات رو تحلیل کنم، پیام برای مشتریان بنویسم، یا هر سوالی داری جواب بدم. 🎮' : 'Hello! I am the smart assistant for afghangames.store admin panel. I can analyze orders, write messages for customers, or answer any questions you have. 🎮');
+  addMsg('assistant', currentLang === 'fa' ? 'سلام! من دستیار هوشمند پنل ادمینafghancoins.online هستم. می‌تونم سفارشات رو تحلیل کنم، پیام برای مشتریان بنویسم، یا هر سوالی داری جواب بدم. 🎮' : 'Hello! I am the smart assistant forafghancoins.online admin panel. I can analyze orders, write messages for customers, or answer any questions you have. 🎮');
 }
 
 // ============ TAB ============
@@ -745,7 +745,7 @@ async function sendMsg() {
       body:JSON.stringify({
         model:'llama3-70b-8192',
         max_tokens:1000,
-        system:`تو دستیار هوشمند پنل ادمین afghangames.store هستی.
+        system:`تو دستیار هوشمند پنل ادمینafghancoins.online هستی.
 آمار:
 - کل سفارشات: ${orders.length}
 - در انتظار: ${orders.filter(o=>o.status==='pending').length}
