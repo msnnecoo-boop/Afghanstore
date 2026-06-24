@@ -349,7 +349,7 @@ function init() {
   renderPayments();
   renderStats();
   applyLang();
-  addMsg('assistant', currentLang === 'fa' ? 'سلام! من دستیار هوشمند پنل ادمین afghangames.store هستم. می‌تونم سفارشات رو تحلیل کنم، پیام برای مشتریان بنویسم، یا هر سوالی داری جواب بدم. 🎮' : 'Hello! I am the smart assistant for afghangames.store admin panel. I can analyze orders, write messages for customers, or answer any questions you have. 🎮');
+  addMsg('assistant', currentLang === 'fa' ? 'سلام! من دستیار هوشمند پنل ادمین afghancoins.online هستم. می‌تونم سفارشات رو تحلیل کنم، پیام برای مشتریان بنویسم، یا هر سوالی داری جواب بدم. 🎮' : 'Hello! I am the smart assistant for afghancoins.online admin panel. I can analyze orders, write messages for customers, or answer any questions you have. 🎮');
 }
 
 // ============ TAB ============
@@ -737,7 +737,7 @@ async function sendMsg() {
   const gameNames = games.map(function(g){return g.name;}).join(', ');
   const payNames = payments.map(function(p){return p.name;}).join(', ');
 
-  const systemMsg = 'تو دستیار هوشمند پنل ادمین afghangames.store هستی. آمار سایت: کل سفارشات '+orders.length+', در انتظار '+pending+', تکمیل شده '+completed+', درآمد $'+revenue+'. سفارشات اخیر: '+( summary||'هیچ سفارشی نیست')+'. بازیها: '+gameNames+'. روشهای پرداخت: '+payNames+'. به فارسی پاسخ کوتاه و مفید بده.';
+  const systemMsg = 'تو دستیار هوشمند پنل ادمین afghancoins.online هستی. آمار سایت: کل سفارشات '+orders.length+', در انتظار '+pending+', تکمیل شده '+completed+', درآمد $'+revenue+'. سفارشات اخیر: '+( summary||'هیچ سفارشی نیست')+'. بازیها: '+gameNames+'. روشهای پرداخت: '+payNames+'. به فارسی پاسخ کوتاه و مفید بده.';
 
   chatHistory.push({role:'user', content:text});
 
