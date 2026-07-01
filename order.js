@@ -1,0 +1,80 @@
+const { getStore } = require('@netlify/blobs');
+
+exports.handler = async function(event) {
+  if (event.httpMethod !== 'POST') {
+    return { statusCode: 405, body: 'Method Not Allowed' };
+  }
+
+  const TELEGRAM_TOKEN = process.env.TELEGRAM_BOT_TOKEN || '7634398182:AAH_VVcSUmvDTqtQyjer7G_YsAAAydg4zWs';
+  const CHAT_ID = process.env.TELEGRAM_CHAT_ID || '221207676';
+  const FOXRELOAD_KEY = process.env.FOXRELOAD_API_KEY;
+  const CALLMEBOT_PHONE = process.env.CALLMEBOT_PHONE;
+  const CALLMEBOT_APIKEY = process.env.CALLMEBOT_APIKEY;
+
+  let body;
+  try { body = JSON.parse(event.body); }
+  catch(e) { return { statusCode: 400, body: JSON.stringify({ error: 'Invalid JSON' }) }; }
+
+  const { orderId, productId, playerId, game, pkg, price, payment } = body;
+
+  // Save order to Netlify Blobs
+  try {
+    const store = getStore('orders');
+    const orderData = {
+      id: orderId,
+      game, pkg, playerId, payment,
+      price, productId,
+      status: 'pending',
+      createdAt: new Date().toISOString(),
+      completedAt: null
+    };
+    await store.setJSON(orderId, orderData);
+  } catch(e) {
+    console.error('Blob save error:', e);
+  }
+
+  const msg = `🛒 سفارش جدید!\n\n🆔 ${orderId}\n🎮 ${game}\n💎 ${pkg}\n👤 Player ID: ${playerId}\n💰 $${price}\n💳 ${payment}`;
+
+  // Send Telegram notification
+  const telegramMsg = `🛒 *سفارش جدید!*\n\n🆔 \`${orderId}\`\n🎮 ${game}\n💎 ${pkg}\n👤 Player ID: \`${playerId}\`\n💰 $${price}\n💳 ${payment}\n\nبرای تأیید:\n/confirm_${orderId}`;
+  try {
+    await fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ chat_id: CHAT_ID, text: telegramMsg, parse_mode: 'Markdown' })
+    });
+  } catch(e) { console.error('Telegram error:', e); }
+
+  // Send WhatsApp notification via CallMeBot
+  if (CALLMEBOT_PHONE && CALLMEBOT_APIKEY) {
+    try {
+      const waUrl = `https://api.callmebot.com/whatsapp.php?phone=${CALLMEBOT_PHONE}&text=${encodeURIComponent(msg)}&apikey=${CALLMEBOT_APIKEY}`;
+      await fetch(waUrl);
+    } catch(e) { console.error('CallMeBot WhatsApp error:', e); }
+  }
+
+  // Try FoxReload
+  let foxreloadId = null;
+  if (FOXRELOAD_KEY && productId && playerId) {
+    try {
+      const res = await fetch('https://public-api.foxreload.com/api/orders', {
+        method: 'POST',
+        headers: { 'X-API-Key': FOXRELOAD_KEY, 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({ product_id: productId, recipient: playerId, quantity: 1 })
+      });
+      const data = await res.json();
+      foxreloadId = data?.id || null;
+      if (foxreloadId) {
+        const store = getStore('orders');
+        const order = await store.get(orderId, { type: 'json' });
+        if (order) { order.status = 'processing'; order.foxreloadId = foxreloadId; await store.setJSON(orderId, order); }
+      }
+    } catch(e) { console.error('FoxReload error:', e); }
+  }
+
+  return {
+    statusCode: 200,
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ success: true, orderId, foxreloadId })
+  };
+};
