@@ -1,0 +1,1314 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>AfghanCoins - فروش کاینس بازی</title>
+<link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@300;400;600;800&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --gold:#F5C518;--gold-dark:#C9A010;
+  --bg:#07090D;--surface:#0F1117;--surface2:#161923;
+  --border:rgba(255,255,255,0.08);--text:#E8EAF0;--muted:#6B7593;
+  --success:#2ED573;--danger:#FF4757;
+}
+body{background:var(--bg);color:var(--text);font-family:'Exo 2',sans-serif;min-height:100vh;}
+
+/* HEADER */
+.header{background:rgba(7,9,13,0.95);backdrop-filter:blur(16px);border-bottom:1px solid rgba(245,197,24,0.15);position:sticky;top:0;z-index:100;padding:0 20px;}
+.header-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:60px;}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none;}
+.logo-icon{width:36px;height:36px;background:linear-gradient(135deg,#F5C518,#C9A010);clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:900;color:#000;}
+.logo-text{font-family:'Rajdhani',sans-serif;font-size:20px;font-weight:700;color:#fff;letter-spacing:2px;}
+.logo-text span{color:var(--gold);}
+.header-nav{display:flex;align-items:center;gap:4px;}
+.header-nav a{padding:8px 14px;color:var(--muted);text-decoration:none;font-size:13px;font-weight:600;border-radius:8px;transition:all .2s;display:flex;align-items:center;gap:6px;}
+.header-nav a:hover,.header-nav a.active{background:rgba(245,197,24,0.1);color:var(--gold);}
+.header-right{display:flex;align-items:center;gap:10px;}
+.lang-btn{padding:6px 12px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;font-size:12px;font-family:inherit;}
+
+/* BOTTOM NAV (mobile) */
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:rgba(15,17,23,0.98);backdrop-filter:blur(10px);border-top:1px solid var(--border);display:flex;z-index:100;padding:8px 0 calc(8px + env(safe-area-inset-bottom));}
+.bn-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px;cursor:pointer;color:var(--muted);font-size:10px;font-weight:600;transition:color .2s;text-decoration:none;}
+.bn-item.active,.bn-item:hover{color:var(--gold);}
+.bn-icon{font-size:20px;}
+
+/* PAGES */
+.page{display:none;padding-bottom:80px;}
+.page.active{display:block;}
+
+/* HOME HERO */
+.hero{background:linear-gradient(160deg,#0a0c12,#0f1520,#0a0c12);padding:32px 20px 24px;text-align:center;position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;top:-100px;left:50%;transform:translateX(-50%);width:600px;height:600px;background:radial-gradient(circle,rgba(245,197,24,0.06),transparent 70%);pointer-events:none;}
+.hero-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(245,197,24,0.1);border:1px solid rgba(245,197,24,0.25);border-radius:20px;padding:5px 14px;font-size:11px;font-weight:700;color:var(--gold);letter-spacing:1px;margin-bottom:14px;}
+.hero-dot{width:6px;height:6px;background:var(--success);border-radius:50%;animation:blink 1.4s infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+.hero h1{font-family:'Rajdhani',sans-serif;font-size:32px;font-weight:700;line-height:1.2;margin-bottom:8px;}
+.hero h1 span{color:var(--gold);}
+.hero p{color:var(--muted);font-size:13px;margin-bottom:20px;}
+.hero-stats{display:flex;justify-content:center;gap:24px;}
+.hs strong{display:block;font-family:'Rajdhani',sans-serif;font-size:20px;font-weight:700;color:var(--gold);}
+.hs small{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;}
+
+/* SECTION */
+.section{padding:24px 16px 0;max-width:1200px;margin:0 auto;}
+.section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+.section-title{font-family:'Rajdhani',sans-serif;font-size:16px;font-weight:700;letter-spacing:1px;text-transform:uppercase;display:flex;align-items:center;gap:8px;}
+.section-title::before{content:'';width:3px;height:18px;background:var(--gold);border-radius:2px;}
+.view-all{font-size:12px;color:var(--gold);text-decoration:none;font-weight:600;}
+
+/* GAME CARDS */
+.games-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+.game-card{border-radius:12px;overflow:hidden;cursor:pointer;position:relative;background:var(--surface);border:1px solid var(--border);transition:transform .2s,box-shadow .2s;}
+.game-card:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,0.4);}
+.game-card img{width:100%;aspect-ratio:3/4;object-fit:cover;display:block;}
+.game-card-info{padding:8px 10px;}
+.game-card-name{font-size:12px;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.game-card-price{font-size:11px;color:var(--gold);margin-top:2px;}
+.game-card-badge{position:absolute;top:8px;right:8px;background:#EF4444;color:#fff;font-size:9px;font-weight:800;padding:2px 6px;border-radius:10px;}
+.game-card-sold{position:absolute;bottom:46px;left:0;right:0;background:linear-gradient(transparent,rgba(0,0,0,0.7));padding:8px 10px 4px;font-size:10px;color:rgba(255,255,255,0.7);}
+
+/* HORIZONTAL SCROLL */
+.scroll-row{display:flex;gap:10px;overflow-x:auto;padding-bottom:8px;scrollbar-width:none;}
+.scroll-row::-webkit-scrollbar{display:none;}
+.scroll-card{flex-shrink:0;width:140px;border-radius:12px;overflow:hidden;cursor:pointer;background:var(--surface);border:1px solid var(--border);transition:transform .2s;}
+.scroll-card:hover{transform:translateY(-3px);}
+.scroll-card img{width:100%;height:100px;object-fit:cover;}
+.scroll-card-info{padding:8px;}
+.scroll-card-name{font-size:11px;font-weight:700;color:#fff;}
+.scroll-card-price{font-size:10px;color:var(--gold);margin-top:2px;}
+
+/* PROMO BANNER */
+.promo-banner{background:linear-gradient(135deg,#1a0a2e,#0d1a3a);border:1px solid rgba(138,43,226,0.3);border-radius:14px;padding:16px;margin:0 16px;display:flex;align-items:center;gap:14px;cursor:pointer;text-decoration:none;}
+.promo-icon{width:48px;height:48px;background:linear-gradient(135deg,#833ab4,#fd1d1d);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
+.promo-title{font-family:'Rajdhani',sans-serif;font-size:16px;font-weight:700;color:#fff;}
+.promo-sub{font-size:11px;color:var(--muted);margin-top:2px;}
+.promo-arrow{margin-right:auto;color:#833ab4;font-size:18px;}
+
+/* ORDER FORM */
+.order-modal{position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:200;display:flex;align-items:flex-end;}
+.order-sheet{background:var(--surface);border-radius:20px 20px 0 0;padding:24px 20px;width:100%;max-height:90vh;overflow-y:auto;}
+.order-sheet-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;}
+.order-sheet-title{font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:700;}
+.close-btn{width:32px;height:32px;border-radius:50%;background:var(--surface2);border:none;color:var(--text);cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;}
+.pkg-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:16px;}
+.pkg-item{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px;cursor:pointer;text-align:center;transition:all .2s;}
+.pkg-item.selected,.pkg-item:hover{border-color:var(--gold);background:rgba(245,197,24,0.08);}
+.pkg-item.popular{border-color:rgba(245,197,24,0.4);}
+.pkg-amount{font-family:'Rajdhani',sans-serif;font-size:20px;font-weight:700;color:var(--gold);}
+.pkg-currency{font-size:10px;color:var(--muted);}
+.pkg-price-alt{font-size:9px;color:var(--muted);margin-top:2px;line-height:1.6;}
+.price-alt-inline{display:block;font-size:9px;color:var(--muted);margin-top:1px;font-weight:400;}
+.pkg-price{font-size:15px;font-weight:800;margin-top:4px;}
+.pkg-best{background:var(--gold);color:#000;font-size:8px;font-weight:800;padding:2px 6px;border-radius:10px;display:inline-block;margin-bottom:4px;}
+.form-input{width:100%;padding:12px 14px;border-radius:10px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font-family:inherit;font-size:14px;outline:none;margin-bottom:12px;}
+.form-input:focus{border-color:var(--gold);}
+.pay-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px;}
+.pay-item{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:10px 6px;text-align:center;cursor:pointer;transition:all .2s;}
+.pay-item.selected,.pay-item:hover{border-color:var(--gold);}
+.pay-item-icon{font-size:18px;margin-bottom:4px;}
+.pay-item-name{font-size:10px;font-weight:700;color:var(--muted);}
+.pay-item.selected .pay-item-name{color:var(--gold);}
+.submit-btn{width:100%;padding:14px;background:linear-gradient(135deg,#F5C518,#C9A010);border:none;border-radius:12px;color:#000;font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:700;cursor:pointer;letter-spacing:1px;}
+.pay-info{background:rgba(0,112,243,0.08);border:1px solid rgba(0,112,243,0.3);border-radius:10px;padding:12px;margin-bottom:12px;font-size:12px;color:var(--muted);display:none;}
+#paypal-btn-container{margin-bottom:12px;}
+
+/* BLOG */
+.blog-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:12px;cursor:pointer;}
+.blog-img{width:100%;height:160px;object-fit:cover;}
+.blog-body{padding:14px;}
+.blog-tag{display:inline-block;background:rgba(245,197,24,0.1);color:var(--gold);font-size:10px;font-weight:700;padding:3px 10px;border-radius:20px;margin-bottom:8px;}
+.blog-title{font-family:'Rajdhani',sans-serif;font-size:16px;font-weight:700;color:#fff;margin-bottom:6px;line-height:1.3;}
+.blog-excerpt{font-size:12px;color:var(--muted);line-height:1.6;}
+.blog-meta{display:flex;align-items:center;gap:10px;margin-top:10px;font-size:11px;color:var(--muted);}
+
+/* GAMES PAGE */
+.games-filter{display:flex;gap:8px;overflow-x:auto;padding:0 16px 12px;scrollbar-width:none;}
+.games-filter::-webkit-scrollbar{display:none;}
+.filter-chip{flex-shrink:0;padding:7px 14px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;font-size:12px;font-family:inherit;font-weight:600;transition:all .2s;}
+.filter-chip.active{background:var(--gold);border-color:var(--gold);color:#000;}
+.games-list{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;padding:0 16px;}
+.game-list-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;cursor:pointer;transition:transform .2s;}
+.game-list-card:hover{transform:translateY(-2px);}
+.game-list-card img{width:100%;height:140px;object-fit:cover;}
+.game-list-info{padding:10px;}
+.game-list-name{font-size:13px;font-weight:700;color:#fff;}
+.game-list-currency{font-size:11px;color:var(--muted);margin-top:2px;}
+.game-list-price{font-size:12px;color:var(--gold);font-weight:700;margin-top:4px;}
+.game-list-btn{width:100%;padding:8px;background:rgba(245,197,24,0.1);border:1px solid rgba(245,197,24,0.3);border-radius:8px;color:var(--gold);font-size:12px;font-weight:700;cursor:pointer;margin-top:8px;font-family:inherit;}
+
+/* TOAST */
+.toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--surface2);border:1px solid var(--gold);border-radius:10px;padding:10px 20px;font-size:12px;font-weight:600;z-index:300;opacity:0;transition:all .3s;pointer-events:none;white-space:nowrap;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+@media(min-width:640px){
+  .games-grid{grid-template-columns:repeat(4,1fr);}
+  .games-list{grid-template-columns:repeat(3,1fr);}
+  .bottom-nav{display:none;}
+  .header-nav{display:flex;}
+  .page{padding-bottom:20px;}
+}
+@media(max-width:639px){.header-nav{display:none;}}
+</style>
+<script src="https://www.paypal.com/sdk/js?client-id=AWBVppkA-3paznHH5rYrA_aJFCCFIgODJIQvgxwMbLSYb9n22hoaKx5vrk32Q5mtDiHJak_pQFVf4QJr&currency=USD"></script>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header">
+  <div class="header-inner">
+    <a href="#" class="logo" onclick="showPage('home')">
+      <div class="logo-icon">AC</div>
+      <div class="logo-text">AFGHAN<span>COINS</span></div>
+    </a>
+    <nav class="header-nav">
+      <a href="#" onclick="showPage('home')" class="active" id="nav-home">🏠 خانه</a>
+      <a href="#" onclick="showPage('games')" id="nav-games">🎮 بازی‌ها</a>
+      <a href="#" onclick="showPage('special')" id="nav-special">✨ ویژه</a>
+      <a href="#" onclick="showPage('blog')" id="nav-blog">📝 بلاگ</a>
+      <a href="#" onclick="showPage('orders')" id="nav-orders">📦 سفارشات</a>
+    </nav>
+    <div class="header-right">
+      <button class="lang-btn" id="curBtn" onclick="toggleCurrency()" style="margin-left:6px;">$</button>
+      <button class="lang-btn" onclick="toggleLang()">EN</button>
+    </div>
+  </div>
+</header>
+
+<!-- HOME PAGE -->
+<div id="page-home" class="page active">
+  <div class="hero">
+    <div class="hero-badge"><span class="hero-dot"></span> موجودی آنی</div>
+    <h1>فروشگاه کاینس<br/><span>بازی‌های آنلاین</span></h1>
+    <p>تحویل فوری · پرداخت امن · پشتیبانی ۲۴/۷</p>
+    <div class="hero-stats">
+      <div class="hs"><strong>1000+</strong><small>مشتری</small></div>
+      <div class="hs"><strong>5000+</strong><small>سفارش</small></div>
+      <div class="hs"><strong>4.9★</strong><small>امتیاز</small></div>
+    </div>
+  </div>
+
+  <!-- Hot Games -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-title">🔥 بازی‌های پرفروش</div>
+      <a href="#" class="view-all" onclick="showPage('games')">همه →</a>
+    </div>
+    <div class="games-grid">
+      <div class="game-card" onclick="openOrder('pubg')">
+        <img src="https://raw.githubusercontent.com/msnnecoo-boop/Afghanstore/main/netlify/functions/IMG_3929.jpeg" alt="PUBG" onerror="this.style.background='linear-gradient(135deg,#1a1400,#3a2a00)';this.style.minHeight='200px'"/>
+        <div class="game-card-badge">-17%</div>
+        <div class="game-card-sold">100k+ فروخته شده</div>
+        <div class="game-card-info">
+          <div class="game-card-name">PUBG Mobile</div>
+          <div class="game-card-price">از $0.89</div>
+        </div>
+      </div>
+      <div class="game-card" onclick="openOrder('freefire')">
+        <img src="https://raw.githubusercontent.com/msnnecoo-boop/Afghanstore/main/netlify/functions/IMG_3930.webp" alt="Free Fire" onerror="this.src='https://via.placeholder.com/300x400/1a0800/FF6B35?text=Free+Fire'"/>
+        <div class="game-card-badge">-20%</div>
+        <div class="game-card-sold">100k+ فروخته شده</div>
+        <div class="game-card-info">
+          <div class="game-card-name">Free Fire</div>
+          <div class="game-card-price">از $1.49</div>
+        </div>
+      </div>
+      <div class="game-card" onclick="openOrder('mlbb')">
+        <img src="https://raw.githubusercontent.com/msnnecoo-boop/Afghanstore/main/netlify/functions/IMG_3931.jpeg" alt="MLBB" onerror="this.src='https://via.placeholder.com/300x400/000d2e/00C6FF?text=MLBB'"/>
+        <div class="game-card-sold">100k+ فروخته شده</div>
+        <div class="game-card-info">
+          <div class="game-card-name">Mobile Legends</div>
+          <div class="game-card-price">از $13.99</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- New Games -->
+  <div class="section" style="margin-top:20px;">
+    <div class="section-header">
+      <div class="section-title">✨ بازی‌های جدید</div>
+    </div>
+    <div class="scroll-row">
+      <div class="scroll-card" onclick="openOrder('genshin')">
+        <img src="https://raw.githubusercontent.com/msnnecoo-boop/Afghanstore/main/netlify/functions/genshin-cover.jpg" alt="Genshin" onerror="this.onerror=null;this.style.background='linear-gradient(135deg,#1a1a2e,#4a2e6e)';this.style.minHeight='100px'"/>
+        <div class="scroll-card-info">
+          <div class="scroll-card-name">Genshin Impact</div>
+          <div class="scroll-card-price">از $4.99</div>
+        </div>
+      </div>
+      <div class="scroll-card" onclick="openOrder('starrail')">
+        <img src="https://raw.githubusercontent.com/msnnecoo-boop/Afghanstore/main/netlify/functions/IMG_3933.jpeg" alt="Star Rail" onerror="this.src='https://via.placeholder.com/140x100/0a0a1a/6366F1?text=Star+Rail'"/>
+        <div class="scroll-card-info">
+          <div class="scroll-card-name">Honkai: Star Rail</div>
+          <div class="scroll-card-price">از $4.99</div>
+        </div>
+      </div>
+      <div class="scroll-card" onclick="openOrder('cod')">
+        <img src="https://raw.githubusercontent.com/msnnecoo-boop/Afghanstore/main/netlify/functions/IMG_3936.jpeg" alt="COD" onerror="this.src='https://via.placeholder.com/140x100/0a0f1a/3D7EFF?text=COD'"/>
+        <div class="scroll-card-info">
+          <div class="scroll-card-name">Call of Duty</div>
+          <div class="scroll-card-price">از $4.99</div>
+        </div>
+      </div>
+      <div class="scroll-card" onclick="openOrder('clash')">
+        <img src="https://raw.githubusercontent.com/msnnecoo-boop/Afghanstore/main/netlify/functions/IMG_3934.jpeg" alt="Clash" onerror="this.src='https://via.placeholder.com/140x100/1a0800/FF6B35?text=Clash'"/>
+        <div class="scroll-card-info">
+          <div class="scroll-card-name">Clash of Clans</div>
+          <div class="scroll-card-price">از $2.99</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SMM Banner -->
+  <div style="margin:20px 16px 0;">
+    <a href="https://afghanfollowers.shop" target="_blank" class="promo-banner">
+      <div class="promo-icon">📱</div>
+      <div>
+        <div class="promo-title">فالوور شبکه‌های اجتماعی</div>
+        <div class="promo-sub">Instagram · TikTok · YouTube · Telegram</div>
+      </div>
+      <div class="promo-arrow">→</div>
+    </a>
+  </div>
+
+  <!-- Virtual Account Banner -->
+  <div style="margin:12px 16px 0;">
+    <a href="#" onclick="showVirtualAccountInfo();return false;" class="promo-banner">
+      <div class="promo-icon">🆔</div>
+      <div>
+        <div class="promo-title">ساخت اکونت مجازی تلگرام و واتساپ</div>
+        <div class="promo-sub">هماهنگی سریع از طریق واتساپ یا تلگرام</div>
+      </div>
+      <div class="promo-arrow">→</div>
+    </a>
+  </div>
+
+  <!-- Mastercard Affiliate Banner -->
+  <div style="margin:12px 16px 0;">
+    <a href="https://refer.gebuhrenfrei.com/NRYtNf" target="_blank" class="promo-banner" style="background:linear-gradient(135deg,rgba(255,165,0,0.12),rgba(255,165,0,0.04));border-color:rgba(255,165,0,0.25);">
+      <div class="promo-icon">💳</div>
+      <div>
+        <div class="promo-title">مسترکارت رایگان با ۷۰ یورو بانوس</div>
+        <div class="promo-sub">با کد من فعال کن و بانوس بگیر (ساکنین اروپا)</div>
+      </div>
+      <div class="promo-arrow">→</div>
+    </a>
+  </div>
+
+  <!-- Temu Affiliate Banner -->
+  <div style="margin:12px 16px 0;">
+    <a href="https://temu.to/k/ejjr78foalq" target="_blank" class="promo-banner" style="background:linear-gradient(135deg,rgba(255,102,0,0.12),rgba(255,102,0,0.04));border-color:rgba(255,102,0,0.25);">
+      <div class="promo-icon">🛍️</div>
+      <div>
+        <div class="promo-title">خرید از Temu با تخفیف ویژه</div>
+        <div class="promo-sub">با این لینک وارد شو و از تخفیف‌های Temu لذت ببر</div>
+      </div>
+      <div class="promo-arrow">→</div>
+    </a>
+  </div>
+
+  <!-- Send Credit to Afghanistan Banner -->
+  <div style="margin:12px 16px 0;">
+    <a href="https://reb.tel/jYdPvX" target="_blank" class="promo-banner" style="background:linear-gradient(135deg,rgba(46,213,115,0.12),rgba(46,213,115,0.04));border-color:rgba(46,213,115,0.25);">
+      <div class="promo-icon">📲</div>
+      <div>
+        <div class="promo-title">ارسال کردیت به افغانستان</div>
+        <div class="promo-sub">شارژ سریع و مطمئن برای خانواده و دوستان</div>
+      </div>
+      <div class="promo-arrow">→</div>
+    </a>
+  </div>
+
+  <!-- TikTok Coin Affiliate Banner -->
+  <div style="margin:12px 16px 0;">
+    <a href="https://www.tiktok.com/coin?rc=WEGQH5E3&rie=" target="_blank" class="promo-banner" style="background:linear-gradient(135deg,rgba(37,244,238,0.12),rgba(254,44,85,0.06));border-color:rgba(37,244,238,0.25);">
+      <div class="promo-icon">🎵</div>
+      <div>
+        <div class="promo-title">خرید ارزان کوین تیک‌تاک</div>
+        <div class="promo-sub">مستقیم از اپلیکیشن رسمی TikTok با تخفیف</div>
+      </div>
+      <div class="promo-arrow">→</div>
+    </a>
+  </div>
+
+  <!-- Support -->
+  <div style="display:flex;justify-content:center;gap:10px;margin:24px 16px 0;">
+    <a href="https://wa.me/4915210984525" target="_blank" style="flex:1;display:flex;align-items:center;justify-content:center;gap:8px;background:#25D366;color:#000;padding:12px;border-radius:12px;text-decoration:none;font-weight:700;font-size:13px;">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="#000"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.125.555 4.122 1.524 5.855L0 24l6.335-1.502A11.954 11.954 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.006-1.371l-.36-.214-3.733.885.916-3.618-.235-.372A9.818 9.818 0 1112 21.818z"/></svg>
+      WhatsApp
+    </a>
+    <a href="https://t.me/afghanfollowers" target="_blank" style="flex:1;display:flex;align-items:center;justify-content:center;gap:8px;background:#229ED9;color:#fff;padding:12px;border-radius:12px;text-decoration:none;font-weight:700;font-size:13px;">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="#fff"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.248l-2.014 9.49c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L6.26 14.4l-2.95-.924c-.64-.204-.654-.64.136-.954l11.527-4.448c.537-.194 1.006.131.589 1.174z"/></svg>
+      Telegram
+    </a>
+  </div>
+</div>
+
+<!-- SPECIAL PAGE (IMO & TikTok) -->
+<div id="page-special" class="page">
+  <div style="padding:20px 16px 12px;">
+    <h2 style="font-family:'Rajdhani',sans-serif;font-size:20px;font-weight:700;color:#fff;margin-bottom:6px;">✨ خدمات ویژه</h2>
+    <div style="font-size:12px;color:var(--muted);margin-bottom:18px;">خرید IMO Diamond و TikTok Coins</div>
+
+    <div style="background:linear-gradient(135deg,#0a3d1a,#1fb141);border-radius:16px;padding:20px;margin-bottom:16px;cursor:pointer;" onclick="openOrder('imo')">
+      <div style="font-size:40px;margin-bottom:10px;">💎</div>
+      <div style="font-size:17px;font-weight:700;color:#fff;margin-bottom:4px;">IMO Diamond</div>
+      <div style="font-size:12px;color:rgba(255,255,255,0.85);margin-bottom:14px;">شارژ فوری و مطمئن Diamond اپلیکیشن IMO</div>
+      <div style="display:flex;align-items:center;justify-content:space-between;">
+        <span style="font-size:13px;color:#fff;font-weight:700;">از $3.14</span>
+        <span style="background:rgba(255,255,255,0.2);color:#fff;padding:8px 16px;border-radius:10px;font-size:12px;font-weight:700;">خرید →</span>
+      </div>
+    </div>
+
+    <div style="background:linear-gradient(135deg,#000000,#25252b);border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:20px;cursor:pointer;" onclick="openTikTokOrder()">
+      <div style="font-size:40px;margin-bottom:10px;">🎵</div>
+      <div style="font-size:17px;font-weight:700;color:#fff;margin-bottom:4px;">TikTok Coins</div>
+      <div style="font-size:12px;color:rgba(255,255,255,0.7);margin-bottom:14px;">قیمت بر اساس نرخ روز، هماهنگی از طریق واتساپ/تلگرام</div>
+      <div style="display:flex;align-items:center;justify-content:space-between;">
+        <span style="font-size:13px;color:#fff;font-weight:700;">تماس برای قیمت</span>
+        <span style="background:rgba(255,255,255,0.15);color:#fff;padding:8px 16px;border-radius:10px;font-size:12px;font-weight:700;">ثبت درخواست →</span>
+      </div>
+    </div>
+    <a href="https://www.tiktok.com/coin?rc=WEGQH5E3&rie=" target="_blank" style="display:block;text-align:center;margin-top:10px;font-size:12px;color:var(--muted);text-decoration:underline;">یا مستقیم از اپلیکیشن رسمی TikTok با تخفیف بخرید ↗</a>
+  </div>
+</div>
+
+<!-- GAMES PAGE -->
+<div id="page-games" class="page">
+  <div style="padding:20px 16px 12px;">
+    <h2 style="font-family:'Rajdhani',sans-serif;font-size:20px;font-weight:700;color:#fff;margin-bottom:14px;">🎮 همه بازی‌ها</h2>
+    <input type="search" placeholder="جستجوی بازی..." style="width:100%;padding:10px 14px;border-radius:10px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font-family:inherit;font-size:13px;outline:none;margin-bottom:14px;" oninput="filterGames(this.value)"/>
+  </div>
+  <div class="games-filter">
+    <button class="filter-chip active" onclick="filterCategory('all',this)">همه</button>
+    <button class="filter-chip" onclick="filterCategory('battle',this)">Battle Royale</button>
+    <button class="filter-chip" onclick="filterCategory('moba',this)">MOBA</button>
+    <button class="filter-chip" onclick="filterCategory('rpg',this)">RPG</button>
+    <button class="filter-chip" onclick="filterCategory('strategy',this)">Strategy</button>
+    <button class="filter-chip" onclick="filterCategory('social',this)">اپلیکیشن</button>
+  </div>
+  <div class="games-list" id="gamesList">
+    <div class="game-list-card" data-cat="battle" onclick="openOrder('pubg')">
+      <img src="https://raw.githubusercontent.com/msnnecoo-boop/Afghanstore/main/netlify/functions/IMG_3929.jpeg" alt="PUBG" onerror="this.src='https://via.placeholder.com/300x140/1a1400/F5C518?text=PUBG'"/>
+      <div class="game-list-info">
+        <div class="game-list-name">PUBG Mobile</div>
+        <div class="game-list-currency">UC</div>
+        <div class="game-list-price">از $0.89</div>
+        <button class="game-list-btn">خرید UC</button>
+      </div>
+    </div>
+    <div class="game-list-card" data-cat="battle" onclick="openOrder('freefire')">
+      <img src="https://raw.githubusercontent.com/msnnecoo-boop/Afghanstore/main/netlify/functions/IMG_3930.webp" alt="Free Fire" onerror="this.src='https://via.placeholder.com/300x140/1a0800/FF6B35?text=Free+Fire'"/>
+      <div class="game-list-info">
+        <div class="game-list-name">Free Fire</div>
+        <div class="game-list-currency">Diamonds</div>
+        <div class="game-list-price">از $1.49</div>
+        <button class="game-list-btn">خرید Diamond</button>
+      </div>
+    </div>
+    <div class="game-list-card" data-cat="moba" onclick="openOrder('mlbb')">
+      <img src="https://raw.githubusercontent.com/msnnecoo-boop/Afghanstore/main/netlify/functions/IMG_3931.jpeg" alt="MLBB" onerror="this.src='https://via.placeholder.com/300x140/000d2e/00C6FF?text=MLBB'"/>
+      <div class="game-list-info">
+        <div class="game-list-name">Mobile Legends</div>
+        <div class="game-list-currency">Diamonds</div>
+        <div class="game-list-price">از $13.99</div>
+        <button class="game-list-btn">خرید Diamond</button>
+      </div>
+    </div>
+    <div class="game-list-card" data-cat="rpg" onclick="openOrder('genshin')">
+      <img src="https://raw.githubusercontent.com/msnnecoo-boop/Afghanstore/main/netlify/functions/genshin-cover.jpg" alt="Genshin" onerror="this.onerror=null;this.style.background='linear-gradient(135deg,#1a1a2e,#4a2e6e)';this.style.minHeight='140px'"/>
+      <div class="game-list-info">
+        <div class="game-list-name">Genshin Impact</div>
+        <div class="game-list-currency">Genesis Crystals</div>
+        <div class="game-list-price">از $4.99</div>
+        <button class="game-list-btn">خرید Crystal</button>
+      </div>
+    </div>
+    <div class="game-list-card" data-cat="rpg" onclick="openOrder('starrail')">
+      <img src="https://raw.githubusercontent.com/msnnecoo-boop/Afghanstore/main/netlify/functions/IMG_3933.jpeg" alt="Star Rail" onerror="this.src='https://via.placeholder.com/300x140/0a0a1a/6366F1?text=Star+Rail'"/>
+      <div class="game-list-info">
+        <div class="game-list-name">Honkai: Star Rail</div>
+        <div class="game-list-currency">Oneiric Shards</div>
+        <div class="game-list-price">از $4.99</div>
+        <button class="game-list-btn">خرید Shard</button>
+      </div>
+    </div>
+    <div class="game-list-card" data-cat="strategy" onclick="openOrder('clash')">
+      <img src="https://raw.githubusercontent.com/msnnecoo-boop/Afghanstore/main/netlify/functions/IMG_3934.jpeg" alt="Clash" onerror="this.src='https://via.placeholder.com/300x140/1a0800/FF6B35?text=Clash'"/>
+      <div class="game-list-info">
+        <div class="game-list-name">Clash of Clans</div>
+        <div class="game-list-currency">Gems</div>
+        <div class="game-list-price">از $2.99</div>
+        <button class="game-list-btn">خرید Gem</button>
+      </div>
+    </div>
+    <div class="game-list-card" data-cat="social" onclick="openOrder('imo')">
+      <div style="width:100%;height:140px;background:linear-gradient(135deg,#0a3d1a,#1fb141);display:flex;align-items:center;justify-content:center;font-size:44px;">💎</div>
+      <div class="game-list-info">
+        <div class="game-list-name">IMO</div>
+        <div class="game-list-currency">Diamond</div>
+        <div class="game-list-price">از $3.14</div>
+        <button class="game-list-btn">خرید Diamond</button>
+      </div>
+    </div>
+    <div class="game-list-card" data-cat="social" onclick="openTikTokOrder()">
+      <div style="width:100%;height:140px;background:linear-gradient(135deg,#000000,#25252b);display:flex;align-items:center;justify-content:center;font-size:44px;">🎵</div>
+      <div class="game-list-info">
+        <div class="game-list-name">TikTok Coins</div>
+        <div class="game-list-currency">بر اساس نرخ روز</div>
+        <div class="game-list-price">تماس برای قیمت</div>
+        <button class="game-list-btn">ثبت درخواست</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- BLOG PAGE -->
+<div id="page-blog" class="page">
+  <div style="padding:20px 16px 12px;">
+    <h2 style="font-family:'Rajdhani',sans-serif;font-size:20px;font-weight:700;color:#fff;margin-bottom:16px;">📝 بلاگ و راهنما</h2>
+    <div id="dynamicBlogPosts"></div>
+    <div class="blog-card">
+      <img class="blog-img" src="https://cdn.cloudflare.steamstatic.com/steam/apps/578080/ss_1.jpg" alt="PUBG Guide" onerror="this.style.display='none'"/>
+      <div class="blog-body">
+        <span class="blog-tag">راهنما</span>
+        <div class="blog-title">چطور UC بخریم؟ راهنمای کامل خرید UC در PUBG Mobile</div>
+        <div class="blog-excerpt">در این مقاله به صورت قدم به قدم توضیح می‌دهیم چطور UC بخرید و به حساب بازی خود اضافه کنید...</div>
+        <div class="blog-meta"><span>📅 ۱۴۰۴/۳/۱</span><span>⏱️ ۵ دقیقه</span></div>
+      </div>
+    </div>
+    <div class="blog-card">
+      <div class="blog-body">
+        <span class="blog-tag">تیپس</span>
+        <div class="blog-title">بهترین پکیج‌های UC برای بازیکنان حرفه‌ای</div>
+        <div class="blog-excerpt">اگر می‌خواهید بیشترین ارزش را از خرید UC بگیرید، این مقاله را بخوانید. پکیج‌های پرفروش را معرفی می‌کنیم...</div>
+        <div class="blog-meta"><span>📅 ۱۴۰۴/۲/۲۸</span><span>⏱️ ۳ دقیقه</span></div>
+      </div>
+    </div>
+    <div class="blog-card">
+      <div class="blog-body">
+        <span class="blog-tag">اخبار</span>
+        <div class="blog-title">آپدیت جدید PUBG Mobile - سیزن ۳۲</div>
+        <div class="blog-excerpt">آخرین اخبار از آپدیت جدید PUBG Mobile و تغییرات مهم این سیزن را اینجا بخوانید...</div>
+        <div class="blog-meta"><span>📅 ۱۴۰۴/۲/۲۵</span><span>⏱️ ۴ دقیقه</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ORDERS PAGE -->
+<div id="page-orders" class="page">
+  <div style="padding:20px 16px;">
+    <h2 style="font-family:'Rajdhani',sans-serif;font-size:20px;font-weight:700;color:#fff;margin-bottom:16px;">📦 سفارشات من</h2>
+
+    <!-- Logged OUT state -->
+    <div id="authBox" style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:16px;">
+      <div id="authTabs" style="display:flex;gap:8px;margin-bottom:14px;">
+        <button id="authTabLogin" onclick="switchAuthTab('login')" style="flex:1;padding:10px;border-radius:10px;border:none;font-weight:700;font-size:13px;background:var(--gold);color:#000;">ورود</button>
+        <button id="authTabRegister" onclick="switchAuthTab('register')" style="flex:1;padding:10px;border-radius:10px;border:1px solid var(--border);font-weight:700;font-size:13px;background:transparent;color:var(--text);">ثبت‌نام</button>
+      </div>
+      <input class="form-input" id="authEmail" type="email" placeholder="ایمیل" style="margin-bottom:10px;"/>
+      <input class="form-input" id="authPhone" type="tel" placeholder="شماره تماس (اختیاری)" style="margin-bottom:10px;display:none;"/>
+      <input class="form-input" id="authPassword" type="password" placeholder="رمز عبور" style="margin-bottom:10px;"/>
+      <button class="submit-btn" onclick="submitAuth()" id="authSubmitBtn">ورود</button>
+      <div id="authError" style="color:var(--danger);font-size:12px;margin-top:8px;display:none;"></div>
+    </div>
+
+    <!-- Logged IN state -->
+    <div id="accountBox" style="display:none;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:16px;align-items:center;justify-content:space-between;">
+      <div style="font-size:13px;color:var(--text);">👤 <span id="accountEmail"></span></div>
+      <button onclick="logoutCustomer()" style="background:transparent;border:1px solid var(--border);color:var(--muted);padding:6px 14px;border-radius:10px;font-size:12px;cursor:pointer;">خروج</button>
+    </div>
+
+    <div id="ordersList" style="font-size:13px;color:var(--muted);text-align:center;padding:40px;">هیچ سفارشی وجود ندارد</div>
+  </div>
+</div>
+
+<!-- TIKTOK COINS MODAL -->
+<div class="order-modal" id="tiktokModal" style="display:none;" onclick="if(event.target===this)closeTikTokOrder()">
+  <div class="order-sheet">
+    <div class="order-sheet-header">
+      <div class="order-sheet-title">🎵 درخواست TikTok Coins</div>
+      <button class="close-btn" onclick="closeTikTokOrder()">×</button>
+    </div>
+    <div style="background:rgba(255,165,0,0.1);border:1px solid rgba(255,165,0,0.3);border-radius:10px;padding:12px;margin-bottom:16px;font-size:12px;color:#ffb84d;line-height:1.8;">
+      ⚠️ چون قیمت TikTok Coins روزانه تغییر می‌کند، شارژ حساب به‌صورت مستقیم و دستی توسط تیم ما انجام می‌شود. برای این کار به یوزرنیم و رمز عبور اکانت تیک‌تاک‌تان نیاز داریم. با ثبت این فرم، به تیم ما اجازه می‌دهید برای شارژ حساب وارد اکانت‌تان شوید. پس از تکمیل، پیشنهاد می‌کنیم رمز عبورتان را تغییر دهید.
+    </div>
+    <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">یوزرنیم TikTok</div>
+    <input class="form-input" id="ttUsername" placeholder="مثال: @username" style="margin-bottom:14px;"/>
+    <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">رمز عبور TikTok</div>
+    <input class="form-input" id="ttPassword" type="password" placeholder="رمز عبور اکانت" style="margin-bottom:14px;"/>
+    <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">راه ارتباطی برای تعیین قیمت</div>
+    <div class="pay-grid" style="margin-bottom:10px;">
+      <div class="pay-item" onclick="selTtContact(this,'واتساپ')">
+        <div class="pay-item-icon">💬</div>
+        <div class="pay-item-name">WhatsApp</div>
+      </div>
+      <div class="pay-item" onclick="selTtContact(this,'تلگرام')">
+        <div class="pay-item-icon">✈️</div>
+        <div class="pay-item-name">Telegram</div>
+      </div>
+    </div>
+    <input class="form-input" id="ttContactValue" placeholder="شماره واتساپ یا یوزرنیم تلگرام‌تان" style="margin-bottom:14px;"/>
+    <label style="display:flex;align-items:flex-start;gap:8px;font-size:12px;color:var(--muted);margin-bottom:16px;cursor:pointer;">
+      <input type="checkbox" id="ttConsent" style="margin-top:3px;"/>
+      <span>موافقم که اطلاعات اکانتم فقط برای شارژ کوین استفاده شود و تیم پشتیبانی از طریق واتساپ/تلگرام با من در مورد نرخ روز تماس بگیرد.</span>
+    </label>
+    <button class="submit-btn" onclick="submitTikTokOrder()">📩 ارسال درخواست</button>
+  </div>
+</div>
+
+<!-- ORDER MODAL -->
+<div class="order-modal" id="orderModal" style="display:none;" onclick="if(event.target===this)closeOrder()">
+  <div class="order-sheet">
+    <div class="order-sheet-header">
+      <div class="order-sheet-title" id="modalTitle">خرید UC</div>
+      <button class="close-btn" onclick="closeOrder()">×</button>
+    </div>
+    <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;">پکیج را انتخاب کنید</div>
+    <div class="pkg-grid" id="pkgGrid"></div>
+    <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">Player ID</div>
+    <input class="form-input" id="playerIdInput" placeholder="شناسه بازیکن را وارد کنید"/>
+    <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">روش پرداخت</div>
+    <div class="pay-grid">
+      <div class="pay-item" onclick="selPay(this,'PayPal')">
+        <div class="pay-item-icon">🅿️</div>
+        <div class="pay-item-name">PayPal</div>
+      </div>
+      <div class="pay-item" onclick="selPay(this,'Hesab')">
+        <div class="pay-item-icon">💜</div>
+        <div class="pay-item-name">Hesab</div>
+      </div>
+      <div class="pay-item" onclick="selPay(this,'CardToCard')">
+        <div class="pay-item-icon">💳</div>
+        <div class="pay-item-name">کارت به کارت</div>
+      </div>
+      <div class="pay-item" onclick="selPay(this,'Binance')">
+        <div class="pay-item-icon">🟡</div>
+        <div class="pay-item-name">Binance</div>
+      </div>
+    </div>
+    <div style="background:var(--surface2);border-radius:10px;padding:10px 12px;margin-bottom:16px;font-size:12px;color:var(--muted);text-align:center;">
+      برای هماهنگی بیشتر می‌توانید تماس بگیرید:
+      <a href="https://wa.me/4915210984525" target="_blank" style="color:#25D366;font-weight:600;">واتساپ</a> ·
+      <a href="https://t.me/afghanfollowers" target="_blank" style="color:#229ED9;font-weight:600;">تلگرام</a>
+    </div>
+    <div class="pay-info" id="payInfo"></div>
+    <div id="paypal-btn-container"></div>
+    <button class="submit-btn" id="submitBtn" onclick="submitOrder()">⚡ ثبت سفارش</button>
+  </div>
+</div>
+
+<!-- PROCESSING MODAL -->
+<div id="processingModal" style="display:none;position:fixed;inset:0;z-index:400;background:rgba(0,0,0,0.75);backdrop-filter:blur(4px);align-items:center;justify-content:center;padding:20px;">
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:32px 24px;max-width:340px;width:100%;text-align:center;">
+    <div id="processingIcon" style="font-size:44px;margin-bottom:14px;">⏳</div>
+    <div id="processingTitle" style="font-size:17px;font-weight:700;color:var(--text);margin-bottom:8px;">سفارش شما ثبت شد!</div>
+    <div id="processingDesc" style="font-size:13px;color:var(--muted);line-height:1.8;margin-bottom:20px;">لطفاً منتظر بمانید تا ادمین سفارش شما را تأیید کند. معمولاً بین ۱ دقیقه تا ۳۰ دقیقه طول می‌کشد.</div>
+    <div id="processingTimerWrap" style="background:var(--surface2);border-radius:14px;padding:16px;margin-bottom:20px;">
+      <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">زمان تقریبی باقی‌مانده</div>
+      <div id="processingTimer" style="font-size:32px;font-weight:800;color:var(--gold);font-variant-numeric:tabular-nums;">30:00</div>
+    </div>
+    <div id="processingOrderId" style="font-size:12px;color:var(--muted);margin-bottom:18px;"></div>
+    <button onclick="closeProcessingModal()" style="width:100%;padding:13px;background:var(--surface2);color:var(--text);border:1px solid var(--border);border-radius:12px;font-weight:600;font-size:14px;cursor:pointer;">باشه، متوجه شدم</button>
+  </div>
+</div>
+
+<!-- BOTTOM NAV -->
+<nav class="bottom-nav">
+  <a href="#" class="bn-item active" id="bn-home" onclick="showPage('home')">
+    <span class="bn-icon">🏠</span>خانه
+  </a>
+  <a href="#" class="bn-item" id="bn-games" onclick="showPage('games')">
+    <span class="bn-icon">🎮</span>بازی‌ها
+  </a>
+  <a href="#" class="bn-item" id="bn-special" onclick="showPage('special')">
+    <span class="bn-icon">✨</span>ویژه
+  </a>
+  <a href="#" class="bn-item" id="bn-blog" onclick="showPage('blog')">
+    <span class="bn-icon">📝</span>بلاگ
+  </a>
+  <a href="#" class="bn-item" id="bn-orders" onclick="showPage('orders')">
+    <span class="bn-icon">📦</span>سفارشات
+  </a>
+</nav>
+
+<div class="toast" id="toast"></div>
+
+<!-- Floating Support -->
+<div style="position:fixed;bottom:80px;left:16px;z-index:150;display:flex;flex-direction:column;gap:8px;">
+  <a href="https://wa.me/4915210984525" target="_blank" style="width:46px;height:46px;background:#25D366;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 15px rgba(37,211,102,0.4);text-decoration:none;">
+    <svg viewBox="0 0 24 24" width="24" height="24" fill="#fff"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.125.555 4.122 1.524 5.855L0 24l6.335-1.502A11.954 11.954 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.006-1.371l-.36-.214-3.733.885.916-3.618-.235-.372A9.818 9.818 0 1112 21.818z"/></svg>
+  </a>
+  <a href="https://t.me/afghanfollowers" target="_blank" style="width:46px;height:46px;background:#229ED9;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 15px rgba(34,158,217,0.4);text-decoration:none;">
+    <svg viewBox="0 0 24 24" width="24" height="24" fill="#fff"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.248l-2.014 9.49c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L6.26 14.4l-2.95-.924c-.64-.204-.654-.64.136-.954l11.527-4.448c.537-.194 1.006.131.589 1.174z"/></svg>
+  </a>
+</div>
+
+<script>
+// EXCHANGE RATES - fetched live daily from /.netlify/functions/fx-rates, cached 24h in localStorage
+const FX_RATES = { AFN: 64, EUR: 0.88, IRR: 1600000 }; // fallback defaults while loading
+const CURRENCY_SYMBOLS = { USD:'$', AFN:'؋', EUR:'€', IRR:'﷼' };
+const CURRENCY_CYCLE = ['USD','AFN','EUR','IRR'];
+let selectedCurrency = localStorage.getItem('selected_currency') || 'AFN';
+
+function toggleCurrency() {
+  const idx = CURRENCY_CYCLE.indexOf(selectedCurrency);
+  selectedCurrency = CURRENCY_CYCLE[(idx + 1) % CURRENCY_CYCLE.length];
+  localStorage.setItem('selected_currency', selectedCurrency);
+  document.getElementById('curBtn').textContent = CURRENCY_SYMBOLS[selectedCurrency];
+  convertStaticPrices();
+}
+
+function formatAltCurrencies(usd) {
+  if (selectedCurrency === 'USD') return '';
+  if (selectedCurrency === 'AFN') return `≈ ${Math.round(usd * FX_RATES.AFN).toLocaleString('en-US')} افغانی`;
+  if (selectedCurrency === 'EUR') return `≈ €${(usd * FX_RATES.EUR).toFixed(2)}`;
+  if (selectedCurrency === 'IRR') return `≈ ${Math.round(usd * FX_RATES.IRR).toLocaleString('en-US')} ریال`;
+  return '';
+}
+function convertStaticPrices() {
+  document.querySelectorAll('.game-card-price, .scroll-card-price, .game-list-price').forEach(el => {
+    let span = el.querySelector('.price-alt-inline');
+    const match = el.textContent.match(/\$([0-9.]+)/);
+    if (!match) return;
+    const usd = parseFloat(match[1]);
+    const text = formatAltCurrencies(usd);
+    if (!text) { if(span) span.remove(); return; }
+    if (!span) {
+      span = document.createElement('span');
+      span.className = 'price-alt-inline';
+      el.appendChild(span);
+    }
+    span.textContent = text;
+  });
+  // Refresh the currently open order modal price line too, if visible
+  if (typeof selectedPkg !== 'undefined' && selectedPkg) {
+    const altEl = document.querySelector('.pkg-price-alt');
+    if (altEl) altEl.textContent = formatAltCurrencies(selectedPkg.price);
+  }
+}
+async function loadFxRates() {
+  const CACHE_KEY = 'fx_rates_cache_v1';
+  const CACHE_HOURS = 24;
+  try {
+    const cached = JSON.parse(localStorage.getItem(CACHE_KEY) || 'null');
+    if (cached && (Date.now() - cached.ts) < CACHE_HOURS * 3600 * 1000) {
+      Object.assign(FX_RATES, cached.rates);
+      convertStaticPrices();
+      return;
+    }
+  } catch(e) {}
+
+  try {
+    const res = await fetch('/.netlify/functions/fx-rates');
+    const data = await res.json();
+    if (data.rates) {
+      Object.assign(FX_RATES, { AFN: data.rates.AFN, EUR: data.rates.EUR, IRR: data.rates.IRR });
+      localStorage.setItem(CACHE_KEY, JSON.stringify({ rates: FX_RATES, ts: Date.now() }));
+      convertStaticPrices();
+    }
+
+  } catch(e) { /* keep fallback defaults */ }
+}
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('curBtn').textContent = CURRENCY_SYMBOLS[selectedCurrency];
+  convertStaticPrices();
+  loadFxRates();
+});
+
+function round2(n) { return Math.round(n * 100) / 100; }
+
+const GAMES_DATA = {
+  pubg: {
+    name:'PUBG Mobile', currency:'UC', idPlaceholder:'PUBG Player ID (account_id)',
+    packages:[
+      {amount:60, price:0.89},
+      {amount:325, price:4.49},
+      {amount:660, price:8.99},
+      {amount:1800, price:27.99, popular:true},
+      {amount:3850, price:46.99},
+      {amount:8100, price:94.99},
+    ]
+  },
+  freefire: {
+    name:'Free Fire', currency:'Diamonds', idPlaceholder:'Free Fire Player ID',
+    packages:[
+      {amount:110, price:1.49},
+      {amount:530, price:6.99},
+      {amount:1080, price:13.99, popular:true},
+      {amount:2200, price:27.99},
+      {amount:6160, price:54.99},
+    ]
+  },
+  mlbb: {
+    name:'Mobile Legends', currency:'Diamonds', idPlaceholder:'MLBB User ID',
+    packages:[
+      {amount:565, price:13.99},
+      {amount:1155, price:27.99, popular:true},
+      {amount:1765, price:41.99},
+    ]
+  },
+  genshin: {
+    name:'Genshin Impact', currency:'Genesis Crystals', idPlaceholder:'Genshin UID',
+    packages:[
+      {amount:60, price:0.99},
+      {amount:300, price:4.99},
+      {amount:980, price:14.99, popular:true},
+      {amount:1980, price:29.99},
+    ]
+  },
+  starrail: {
+    name:'Honkai: Star Rail', currency:'Oneiric Shards', idPlaceholder:'Star Rail UID',
+    packages:[
+      {amount:60, price:0.99},
+      {amount:300, price:4.99},
+      {amount:980, price:14.99, popular:true},
+    ]
+  },
+  clash: {
+    name:'Clash of Clans', currency:'Gems', idPlaceholder:'Clash Player Tag',
+    packages:[
+      {amount:80, price:0.99},
+      {amount:500, price:4.99},
+      {amount:1200, price:9.99, popular:true},
+      {amount:2500, price:19.99},
+    ]
+  },
+  cod: {
+    name:'Call of Duty Mobile', currency:'CP', idPlaceholder:'COD Player ID',
+    packages:[
+      {amount:80, price:0.99},
+      {amount:400, price:4.99},
+      {amount:800, price:9.99, popular:true},
+    ]
+  },
+  imo: {
+    name:'IMO', currency:'Diamond', idPlaceholder:'شماره موبایل ثبت‌شده در IMO',
+    packages:[
+      {amount:100, price:3.14},
+      {amount:500, price:15.70},
+      {amount:1000, price:31.40, popular:true},
+      {amount:2100, price:65.94},
+    ]
+  },
+};
+
+// TikTok Coins: sold via login (username + password), price negotiated by current rate
+const TIKTOK_INFO = { name: 'TikTok Coins' };
+
+let currentGame = null;
+let selectedPkg = null;
+let selectedPay = null;
+let orders = JSON.parse(localStorage.getItem('ac_orders') || '[]');
+let paypalRendered = false;
+
+function showPageCore(name) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.bn-item').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.header-nav a').forEach(a => a.classList.remove('active'));
+  document.getElementById('page-'+name).classList.add('active');
+  const bn = document.getElementById('bn-'+name);
+  if(bn) bn.classList.add('active');
+  const nav = document.getElementById('nav-'+name);
+  if(nav) nav.classList.add('active');
+  if(name === 'orders') renderOrders();
+  if(name === 'blog') loadDynamicBlogPosts();
+  return false;
+}
+
+function openOrder(gameId) {
+  currentGame = GAMES_DATA[gameId];
+  if(!currentGame) return;
+  selectedPkg = null; selectedPay = null; paypalRendered = false;
+  document.getElementById('modalTitle').textContent = 'خرید ' + currentGame.currency + ' - ' + currentGame.name;
+  document.getElementById('playerIdInput').placeholder = currentGame.idPlaceholder;
+  document.getElementById('playerIdInput').value = '';
+  document.getElementById('payInfo').style.display = 'none';
+  document.getElementById('payInfo').innerHTML = '';
+  document.getElementById('paypal-btn-container').innerHTML = '';
+  document.getElementById('submitBtn').style.display = 'block';
+  document.querySelectorAll('.pay-item').forEach(p => p.classList.remove('selected'));
+
+  const grid = document.getElementById('pkgGrid');
+  grid.innerHTML = currentGame.packages.map((p,i) => `
+    <div class="pkg-item ${p.popular?'popular':''}" onclick="selectPkg(${i})">
+      ${p.popular ? '<div class="pkg-best">BEST DEAL</div>' : ''}
+      <div class="pkg-amount">${p.amount.toLocaleString()}</div>
+      <div class="pkg-currency">${currentGame.currency}</div>
+      <div class="pkg-price">$${p.price.toFixed(2)}</div>
+      <div class="pkg-price-alt">${formatAltCurrencies(p.price)}</div>
+    </div>
+  `).join('');
+
+  document.getElementById('orderModal').style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+
+function closeOrder() {
+  document.getElementById('orderModal').style.display = 'none';
+  document.body.style.overflow = '';
+}
+
+// ============ TIKTOK COINS (login-based, contact for pricing) ============
+let ttContactMethod = '';
+function openTikTokOrder() {
+  document.getElementById('ttUsername').value = '';
+  document.getElementById('ttPassword').value = '';
+  document.getElementById('ttContactValue').value = '';
+  document.getElementById('ttConsent').checked = false;
+  ttContactMethod = '';
+  document.querySelectorAll('#tiktokModal .pay-item').forEach(p => p.classList.remove('selected'));
+  document.getElementById('tiktokModal').style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+function closeTikTokOrder() {
+  document.getElementById('tiktokModal').style.display = 'none';
+  document.body.style.overflow = '';
+}
+function selTtContact(el, name) {
+  ttContactMethod = name;
+  document.querySelectorAll('#tiktokModal .pay-item').forEach(p => p.classList.remove('selected'));
+  el.classList.add('selected');
+}
+async function submitTikTokOrder() {
+  const username = document.getElementById('ttUsername').value.trim();
+  const password = document.getElementById('ttPassword').value;
+  const contactValue = document.getElementById('ttContactValue').value.trim();
+  const consent = document.getElementById('ttConsent').checked;
+
+  if (!username) { showToast('⚠️ یوزرنیم را وارد کنید'); return; }
+  if (!password) { showToast('⚠️ رمز عبور را وارد کنید'); return; }
+  if (!ttContactMethod) { showToast('⚠️ راه ارتباطی را انتخاب کنید'); return; }
+  if (!contactValue) { showToast('⚠️ شماره یا یوزرنیم تماس را وارد کنید'); return; }
+  if (!consent) { showToast('⚠️ باید با شرایط موافقت کنید'); return; }
+
+  try {
+    const res = await fetch('/.netlify/functions/tiktok-order', {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ tiktokUsername: username, tiktokPassword: password, contactMethod: ttContactMethod, contactValue })
+    });
+    const data = await res.json();
+    closeTikTokOrder();
+    if (res.ok) {
+      showToast('✅ درخواست ثبت شد! به‌زودی از طریق ' + ttContactMethod + ' با شما تماس می‌گیریم.');
+    } else {
+      showToast('❌ خطا در ثبت درخواست، دوباره تلاش کنید');
+    }
+  } catch(e) {
+    closeTikTokOrder();
+    showToast('❌ خطا در ارتباط با سرور');
+  }
+}
+
+function selectPkg(idx) {
+  selectedPkg = currentGame.packages[idx];
+  document.querySelectorAll('.pkg-item').forEach((p,i) => {
+    p.classList.toggle('selected', i === idx);
+  });
+  if(selectedPay === 'PayPal') renderPayPalBtns();
+}
+
+function selPay(el, name) {
+  selectedPay = name;
+  document.querySelectorAll('.pay-item').forEach(p => p.classList.remove('selected'));
+  el.classList.add('selected');
+  const info = document.getElementById('payInfo');
+  const ppContainer = document.getElementById('paypal-btn-container');
+
+  if(name === 'PayPal') {
+    const fee = selectedPkg ? (selectedPkg.price * PAYPAL_FEE_RATE) : 0;
+    const total = selectedPkg ? (selectedPkg.price + fee) : 0;
+    info.style.display = 'block';
+    info.innerHTML = selectedPkg
+      ? `🅿️ قیمت پکیج: $${selectedPkg.price.toFixed(2)} + کارمزد PayPal (۸٪): $${fee.toFixed(2)} = <strong style="color:#fff;">مبلغ قابل پرداخت: $${total.toFixed(2)}</strong>`
+      : 'ابتدا یک پکیج انتخاب کنید';
+    ppContainer.innerHTML = '';
+    document.getElementById('submitBtn').style.display = 'none';
+    renderPayPalBtns();
+  } else if(name === 'Hesab') {
+    ppContainer.innerHTML = '';
+    document.getElementById('submitBtn').style.display = 'block';
+    info.style.display = 'block';
+    info.innerHTML = '💜 اپ Hesab → Send Money → <strong style="color:#fff;">+4993640356750</strong>';
+  } else if(name === 'CardToCard') {
+    ppContainer.innerHTML = '';
+    document.getElementById('submitBtn').style.display = 'block';
+    info.style.display = 'block';
+    info.innerHTML = '💳 برای دریافت شماره کارت با ما در <a href="https://wa.me/4915210984525" target="_blank" style="color:#25D366;">واتساپ</a> یا <a href="https://t.me/afghanfollowers" target="_blank" style="color:#229ED9;">تلگرام</a> هماهنگ کنید.';
+  } else if(name === 'Binance') {
+    ppContainer.innerHTML = '';
+    document.getElementById('submitBtn').style.display = 'block';
+    info.style.display = 'block';
+    info.innerHTML = '🟡 Binance Pay → Send → ID: <strong style="color:#fff;">470330651</strong>';
+  }
+}
+
+function renderPayPalBtns() {
+  if(!selectedPkg) { showToast('⚠️ اول پکیج انتخاب کنید'); return; }
+  const container = document.getElementById('paypal-btn-container');
+  container.innerHTML = '';
+  const totalWithFee = selectedPkg.price * (1 + PAYPAL_FEE_RATE);
+  paypal.Buttons({
+    style: {layout:'vertical', color:'gold', shape:'rect', label:'pay'},
+    createOrder: (data, actions) => actions.order.create({
+      purchase_units:[{amount:{value: totalWithFee.toFixed(2)}}]
+    }),
+    onApprove: (data, actions) => actions.order.capture().then(async details => {
+      const newOrder = await saveOrder('PayPal', totalWithFee);
+      closeOrder();
+      openProcessingModal(newOrder.id);
+    }),
+    onError: err => showToast('❌ خطا در پرداخت')
+  }).render('#paypal-btn-container');
+}
+
+// PayPal charges an extra fee, passed on to the customer
+const PAYPAL_FEE_RATE = 0.08; // 8%
+
+
+async function submitOrder() {
+  const pid = document.getElementById('playerIdInput').value.trim();
+  if(!selectedPkg) { showToast('⚠️ پکیج انتخاب کنید'); return; }
+  if(!pid) { showToast('⚠️ Player ID وارد کنید'); return; }
+  if(!selectedPay) { showToast('⚠️ روش پرداخت انتخاب کنید'); return; }
+
+  const newOrder = await saveOrder(selectedPay);
+  closeOrder();
+  openProcessingModal(newOrder.id);
+}
+
+let processingInterval = null;
+let processingPoll = null;
+function openProcessingModal(orderId) {
+  const min = 60, max = 1800; // 1 minute to 30 minutes, in seconds (rough estimate only)
+  let secondsLeft = Math.floor(Math.random() * (max - min + 1)) + min;
+  const box = document.getElementById('processingModal');
+  const icon = document.getElementById('processingIcon');
+  const title = document.getElementById('processingTitle');
+  const desc = document.getElementById('processingDesc');
+  const timerWrap = document.getElementById('processingTimerWrap');
+  const timerEl = document.getElementById('processingTimer');
+
+  title.textContent = 'سفارش شما ثبت شد!';
+  desc.textContent = 'لطفاً منتظر بمانید تا ادمین سفارش شما را تأیید کند. معمولاً بین ۱ دقیقه تا ۳۰ دقیقه طول می‌کشد.';
+  timerWrap.style.display = 'block';
+  icon.textContent = '⏳';
+  document.getElementById('processingOrderId').textContent = 'شماره سفارش: ' + orderId;
+  box.style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+
+  function render() {
+    const m = Math.floor(secondsLeft / 60).toString().padStart(2,'0');
+    const s = (secondsLeft % 60).toString().padStart(2,'0');
+    timerEl.textContent = m + ':' + s;
+  }
+  render();
+
+  if(processingInterval) clearInterval(processingInterval);
+  processingInterval = setInterval(() => {
+    if(secondsLeft > 0) { secondsLeft--; render(); }
+  }, 1000);
+
+  // Poll the server for the real order status; when admin confirms, stop the timer
+  // and show a success message instead.
+  if(processingPoll) clearInterval(processingPoll);
+  async function checkStatus() {
+    try {
+      const res = await fetch('/.netlify/functions/get-order?id=' + encodeURIComponent(orderId));
+      if(!res.ok) return;
+      const data = await res.json();
+      if(data.status === 'completed') {
+        clearInterval(processingInterval); processingInterval = null;
+        clearInterval(processingPoll); processingPoll = null;
+        timerWrap.style.display = 'none';
+        icon.textContent = '✅';
+        title.textContent = 'سفارش شما موفقیت‌آمیز بود!';
+        desc.textContent = 'سفارش شما توسط ادمین تأیید و تکمیل شد. ممنون از خرید شما 🎉';
+      } else if(data.status === 'cancelled') {
+        clearInterval(processingInterval); processingInterval = null;
+        clearInterval(processingPoll); processingPoll = null;
+        timerWrap.style.display = 'none';
+        icon.textContent = '❌';
+        title.textContent = 'سفارش لغو شد';
+        desc.textContent = 'متأسفانه این سفارش لغو شد. لطفاً از طریق واتساپ یا تلگرام با ما در تماس باشید.';
+      }
+    } catch(e) {}
+  }
+  checkStatus();
+  processingPoll = setInterval(checkStatus, 10000); // check every 10 seconds
+}
+
+function closeProcessingModal() {
+  document.getElementById('processingModal').style.display = 'none';
+  document.body.style.overflow = '';
+  if(processingInterval) { clearInterval(processingInterval); processingInterval = null; }
+  if(processingPoll) { clearInterval(processingPoll); processingPoll = null; }
+}
+
+async function saveOrder(payment, priceOverride) {
+  const pid = document.getElementById('playerIdInput').value.trim();
+  const finalPrice = priceOverride != null ? priceOverride : selectedPkg.price;
+  const order = {
+    id: 'AC-' + String(orders.length+1).padStart(6,'0'),
+    game: currentGame.name,
+    pkg: selectedPkg.amount.toLocaleString() + ' ' + currentGame.currency,
+    playerId: pid,
+    payment,
+    price: finalPrice,
+    date: new Date().toLocaleDateString('fa-IR'),
+    status: 'pending'
+  };
+  orders.unshift(order);
+  localStorage.setItem('ac_orders', JSON.stringify(orders));
+  try {
+    await fetch('/.netlify/functions/order', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        orderId: order.id,
+        productId: selectedPkg.productId || null,
+        playerId: pid,
+        game: order.game,
+        pkg: order.pkg,
+        price: order.price,
+        payment: order.payment,
+        customerEmail: getCustomerEmail() || null
+      })
+    });
+  } catch(e) {}
+  return order;
+}
+
+function renderOrders() {
+  if (getCustomerToken()) { loadMyOrders(); return; }
+  const el = document.getElementById('ordersList');
+  if(!orders.length) { el.innerHTML = '<div style="text-align:center;padding:40px;color:var(--muted);">هیچ سفارشی وجود ندارد</div>'; return; }
+  el.innerHTML = orders.map(o => `
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:10px;">
+      <div style="display:flex;justify-content:space-between;margin-bottom:8px;">
+        <span style="font-family:'Rajdhani',sans-serif;font-weight:700;color:var(--gold);">${o.id}</span>
+        <span style="padding:3px 10px;border-radius:20px;font-size:10px;font-weight:700;background:${o.status==='completed'?'rgba(46,213,115,0.12)':'rgba(255,165,0,0.12)'};color:${o.status==='completed'?'var(--success)':'orange'};">${o.status==='completed'?'✅ تکمیل':'⏳ در انتظار'}</span>
+      </div>
+      <div style="font-size:13px;color:#fff;font-weight:600;">${o.game}</div>
+      <div style="font-size:12px;color:var(--muted);margin-top:4px;">${o.pkg} · ${o.payment} · $${o.price.toFixed(2)}</div>
+      <div style="font-size:11px;color:var(--muted);margin-top:4px;">Player ID: ${o.playerId} · ${o.date}</div>
+    </div>
+  `).join('');
+}
+
+// ============ CUSTOMER ACCOUNT SYSTEM ============
+let authMode = 'login';
+function getCustomerToken() { return localStorage.getItem('customer_token'); }
+function getCustomerEmail() { return localStorage.getItem('customer_email'); }
+
+function switchAuthTab(mode) {
+  authMode = mode;
+  const loginTab = document.getElementById('authTabLogin');
+  const regTab = document.getElementById('authTabRegister');
+  const phoneField = document.getElementById('authPhone');
+  const submitBtn = document.getElementById('authSubmitBtn');
+  if (mode === 'login') {
+    loginTab.style.background = 'var(--gold)'; loginTab.style.color = '#000';
+    regTab.style.background = 'transparent'; regTab.style.color = 'var(--text)';
+    phoneField.style.display = 'none';
+    submitBtn.textContent = 'ورود';
+  } else {
+    regTab.style.background = 'var(--gold)'; regTab.style.color = '#000';
+    loginTab.style.background = 'transparent'; loginTab.style.color = 'var(--text)';
+    phoneField.style.display = 'block';
+    submitBtn.textContent = 'ثبت‌نام';
+  }
+  document.getElementById('authError').style.display = 'none';
+}
+
+async function submitAuth() {
+  const email = document.getElementById('authEmail').value.trim();
+  const password = document.getElementById('authPassword').value;
+  const phone = document.getElementById('authPhone').value.trim();
+  const errEl = document.getElementById('authError');
+  errEl.style.display = 'none';
+
+  if (!email || !password) { errEl.textContent = 'ایمیل و رمز را وارد کنید'; errEl.style.display = 'block'; return; }
+
+  const endpoint = authMode === 'login' ? '/.netlify/functions/login' : '/.netlify/functions/register';
+  try {
+    const res = await fetch(endpoint, {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ email, password, phone })
+    });
+    const data = await res.json();
+    if (!res.ok) { errEl.textContent = data.error || 'خطایی رخ داد'; errEl.style.display = 'block'; return; }
+    localStorage.setItem('customer_token', data.token);
+    localStorage.setItem('customer_email', data.email);
+    updateAuthUI();
+    renderOrders();
+  } catch(e) {
+    errEl.textContent = 'خطا در ارتباط با سرور'; errEl.style.display = 'block';
+  }
+}
+
+function logoutCustomer() {
+  localStorage.removeItem('customer_token');
+  localStorage.removeItem('customer_email');
+  updateAuthUI();
+  renderOrders();
+}
+
+function updateAuthUI() {
+  const token = getCustomerToken();
+  const authBox = document.getElementById('authBox');
+  const accountBox = document.getElementById('accountBox');
+  if (token) {
+    authBox.style.display = 'none';
+    accountBox.style.display = 'flex';
+    document.getElementById('accountEmail').textContent = getCustomerEmail();
+  } else {
+    authBox.style.display = 'block';
+    accountBox.style.display = 'none';
+  }
+}
+
+async function loadMyOrders() {
+  const el = document.getElementById('ordersList');
+  el.innerHTML = '<div style="text-align:center;padding:40px;color:var(--muted);">در حال بارگذاری...</div>';
+  try {
+    const res = await fetch('/.netlify/functions/my-orders?token=' + encodeURIComponent(getCustomerToken()));
+    const data = await res.json();
+    if (!res.ok) {
+      if (res.status === 401) { logoutCustomer(); return; }
+      el.innerHTML = '<div style="text-align:center;padding:40px;color:var(--muted);">خطا در بارگذاری سفارشات</div>';
+      return;
+    }
+    const list = data.orders || [];
+    if (!list.length) { el.innerHTML = '<div style="text-align:center;padding:40px;color:var(--muted);">هیچ سفارشی وجود ندارد</div>'; return; }
+    el.innerHTML = list.map(o => `
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:10px;">
+        <div style="display:flex;justify-content:space-between;margin-bottom:8px;">
+          <span style="font-family:'Rajdhani',sans-serif;font-weight:700;color:var(--gold);">${o.id}</span>
+          <span style="padding:3px 10px;border-radius:20px;font-size:10px;font-weight:700;background:${o.status==='completed'?'rgba(46,213,115,0.12)':o.status==='cancelled'?'rgba(255,71,87,0.12)':'rgba(255,165,0,0.12)'};color:${o.status==='completed'?'var(--success)':o.status==='cancelled'?'var(--danger)':'orange'};">${o.status==='completed'?'✅ تکمیل':o.status==='cancelled'?'❌ لغو شده':'⏳ در انتظار'}</span>
+        </div>
+        <div style="font-size:13px;color:#fff;font-weight:600;">${o.game}</div>
+        <div style="font-size:12px;color:var(--muted);margin-top:4px;">${o.pkg} · ${o.payment} · $${parseFloat(o.price).toFixed(2)}</div>
+        <div style="font-size:11px;color:var(--muted);margin-top:4px;">Player ID: ${o.playerId} · ${o.createdAt ? new Date(o.createdAt).toLocaleDateString('fa-IR') : ''}</div>
+      </div>
+    `).join('');
+  } catch(e) {
+    el.innerHTML = '<div style="text-align:center;padding:40px;color:var(--muted);">خطا در ارتباط با سرور</div>';
+  }
+}
+
+document.addEventListener('DOMContentLoaded', updateAuthUI);
+
+function filterGames(query) {
+  const cards = document.querySelectorAll('.game-list-card');
+  cards.forEach(c => {
+    const name = c.querySelector('.game-list-name').textContent.toLowerCase();
+    c.style.display = name.includes(query.toLowerCase()) ? 'block' : 'none';
+  });
+}
+
+function filterCategory(cat, btn) {
+  document.querySelectorAll('.filter-chip').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.game-list-card').forEach(c => {
+    c.style.display = (cat === 'all' || c.dataset.cat === cat) ? 'block' : 'none';
+  });
+}
+
+let lang = 'fa';
+function toggleLang() {
+  lang = lang === 'fa' ? 'en' : 'fa';
+  document.documentElement.dir = lang === 'fa' ? 'rtl' : 'ltr';
+  document.documentElement.lang = lang;
+  document.querySelector('.lang-btn').textContent = lang === 'fa' ? 'EN' : 'فا';
+}
+
+// ============ VISITOR TRACKING ============
+async function trackVisit(page) {
+  try {
+    const res = await fetch('/.netlify/functions/track', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        page: page,
+        device: /Mobile|Android|iPhone/i.test(navigator.userAgent) ? 'mobile' : 'desktop',
+        referrer: document.referrer || 'direct'
+      })
+    });
+    const data = await res.json();
+    if(data.visitor) {
+      // Save to localStorage for admin panel
+      const visitors = JSON.parse(localStorage.getItem('ac_visitors') || '[]');
+      visitors.unshift(data.visitor);
+      if(visitors.length > 500) visitors.splice(500);
+      localStorage.setItem('ac_visitors', JSON.stringify(visitors));
+    }
+  } catch(e) {}
+}
+
+// Track on page load
+window.addEventListener('load', () => trackVisit('home'));
+
+// showPage tracks navigation in addition to switching pages
+function showPage(name) {
+  showPageCore(name);
+  trackVisit(name);
+  return false;
+}
+
+async function loadDynamicBlogPosts() {
+  const el = document.getElementById('dynamicBlogPosts');
+  if (!el || el.dataset.loaded) return;
+  try {
+    const res = await fetch('/.netlify/functions/get-blog-posts');
+    const data = await res.json();
+    const posts = data.posts || [];
+    if (!posts.length) return;
+    el.dataset.loaded = '1';
+    el.innerHTML = posts.map(p => `
+      <div class="blog-card">
+        <div class="blog-body">
+          <span class="blog-tag">${p.tag || 'اخبار'}</span>
+          <div class="blog-title">${p.title}</div>
+          <div class="blog-excerpt">${p.excerpt}</div>
+          <div class="blog-meta"><span>📅 ${new Date(p.date).toLocaleDateString('fa-IR')}</span><span>⏱️ ${p.readTime || 3} دقیقه</span></div>
+        </div>
+      </div>
+    `).join('');
+  } catch(e) {}
+}
+
+function showVirtualAccountInfo() {
+  const existing = document.getElementById('vaInfoPopup');
+  if (existing) existing.remove();
+  const popup = document.createElement('div');
+  popup.id = 'vaInfoPopup';
+  popup.style.cssText = 'position:fixed;inset:0;z-index:500;background:rgba(0,0,0,0.75);display:flex;align-items:center;justify-content:center;padding:20px;';
+  popup.onclick = e => { if (e.target === popup) popup.remove(); };
+  popup.innerHTML = `
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:24px;max-width:320px;width:100%;text-align:center;">
+      <div style="font-size:36px;margin-bottom:10px;">🆔</div>
+      <div style="font-size:15px;font-weight:700;color:var(--text);margin-bottom:8px;">ساخت اکونت مجازی تلگرام و واتساپ</div>
+      <div style="font-size:13px;color:var(--muted);line-height:1.8;margin-bottom:18px;">برای خرید اکانت مجازی و هماهنگی قیمت، لطفاً از طریق واتساپ یا تلگرام با ما در تماس باشید.</div>
+      <div style="display:flex;gap:8px;margin-bottom:12px;">
+        <a href="https://wa.me/4915210984525" target="_blank" style="flex:1;background:#25D366;color:#000;padding:11px;border-radius:10px;text-decoration:none;font-weight:700;font-size:13px;">واتساپ</a>
+        <a href="https://t.me/afghanfollowers" target="_blank" style="flex:1;background:#229ED9;color:#fff;padding:11px;border-radius:10px;text-decoration:none;font-weight:700;font-size:13px;">تلگرام</a>
+      </div>
+      <button onclick="document.getElementById('vaInfoPopup').remove()" style="width:100%;padding:10px;background:transparent;border:1px solid var(--border);color:var(--muted);border-radius:10px;font-size:12px;cursor:pointer;">بستن</button>
+    </div>
+  `;
+  document.body.appendChild(popup);
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+</script>
+</body>
+</html>
