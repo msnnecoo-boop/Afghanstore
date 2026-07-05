@@ -23,7 +23,7 @@ exports.handler = async function(event) {
   const dayIndex = new Date().getDate() % GAMES_ROTATION.length;
   const game = GAMES_ROTATION[dayIndex];
 
-  const prompt = `یک پست بلاگ کوتاه و اورجینال (حدود ۱۰۰ تا ۱۵۰ کلمه) به زبان فارسی درباره‌ی «${game.name}» بنویس. موضوع می‌تواند نکات، ترفندها، یا معرفی ویژگی‌های بازی باشد (نه اخبار جعلی یا آپدیت خیالی که وجود ندارد). لحن دوستانه و مفید برای بازیکنان باشد. در پایان به‌طور طبیعی به فروشگاه شارژ بازی afghancoins.online اشاره کن. فقط متن پست را بنویس، بدون مقدمه یا توضیح اضافه.`;
+  const prompt = `یک پست بلاگ کوتاه و اورجینال (حدود ۱۰۰ تا ۱۵۰ کلمه) فقط و فقط به زبان فارسی روان درباره‌ی «${game.name}» بنویس. موضوع می‌تواند نکات، ترفندها، یا معرفی ویژگی‌های بازی باشد (نه اخبار جعلی یا آپدیت خیالی که وجود ندارد). لحن دوستانه و مفید برای بازیکنان باشد. در پایان به‌طور طبیعی به فروشگاه شارژ بازی afghancoins.online اشاره کن.\n\nمهم: کل متن باید فقط فارسیِ استاندارد باشد؛ هیچ کلمه یا حرفی از زبان‌های دیگر (انگلیسی به‌جز نام بازی، روسی، چینی، ژاپنی و غیره) استفاده نکن. فقط متن پست را بنویس، بدون مقدمه یا توضیح اضافه.`;
 
   try {
     const groqRes = await fetch('https://api.groq.com/openai/v1/chat/completions', {
@@ -32,6 +32,7 @@ exports.handler = async function(event) {
       body: JSON.stringify({
         model: 'llama-3.3-70b-versatile',
         max_tokens: 500,
+        temperature: 0.4,
         messages: [{ role: 'user', content: prompt }]
       })
     });
