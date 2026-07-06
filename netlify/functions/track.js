@@ -56,7 +56,9 @@ exports.handler = async (event) => {
     const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
     const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID;
 
-    if (TELEGRAM_BOT_TOKEN && TELEGRAM_CHAT_ID) {
+    if (!TELEGRAM_BOT_TOKEN || !TELEGRAM_CHAT_ID) {
+      console.error('track.js: TELEGRAM_BOT_TOKEN or TELEGRAM_CHAT_ID not set in this deploy context');
+    } else {
       const message = `👁️ بازدیدکننده جدید!\n\n` +
         `📄 صفحه: ${pageName}\n` +
         `${flag} کشور: ${country}\n` +
@@ -66,15 +68,21 @@ exports.handler = async (event) => {
         `⏰ زمان: ${time}\n` +
         `🔗 IP: ${ip}`;
 
-      await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          chat_id: TELEGRAM_CHAT_ID,
-          text: message,
-          parse_mode: 'HTML'
-        })
-      });
+      try {
+        const tgRes = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            chat_id: TELEGRAM_CHAT_ID,
+            text: message,
+            parse_mode: 'HTML'
+          })
+        });
+        const tgData = await tgRes.json();
+        if (!tgData.ok) console.error('track.js: Telegram API rejected message:', tgData);
+      } catch(e) {
+        console.error('track.js: Telegram request failed:', e.message);
+      }
     }
 
     // Save visitor data (using Netlify Blobs or return data)
