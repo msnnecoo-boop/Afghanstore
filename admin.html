@@ -658,6 +658,29 @@ async function changeGameImage(id, input) {
   await renderGames();
 }
 
+function toggleEditGame(id) {
+  const panel = document.getElementById('editPanel_'+id);
+  if (panel) panel.style.display = panel.style.display === 'none' ? 'flex' : 'none';
+}
+
+async function saveGameEdit(id) {
+  const name = document.getElementById('editName_'+id).value.trim();
+  const icon = document.getElementById('editIcon_'+id).value.trim();
+  const currency = document.getElementById('editCurrency_'+id).value.trim();
+  const idLabel = document.getElementById('editIdLabel_'+id).value.trim();
+  if (!name || !currency) { alert('لطفاً نام بازی و نوع ارز را پر کنید'); return; }
+
+  const games = await getGames();
+  const g = games.find(g => g.id === id);
+  if (!g) return;
+  g.name = name;
+  g.icon = icon || '🎮';
+  g.currency = currency;
+  g.idLabel = idLabel || name + ' Player ID';
+  if (!(await saveGames(games))) return;
+  await renderGames();
+}
+
 async function renderGames() {
   const games = await getGames();
   document.getElementById('gamesList').innerHTML = games.map((g,i) => `
@@ -670,14 +693,22 @@ async function renderGames() {
             <div style="font-size:11px;color:#94A3B8;">${escapeHtml(g.currency)} • ${escapeHtml(g.idLabel||'')}</div>
           </div>
         </div>
-        <div style="display:flex;gap:6px;align-items:center;">
+        <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;">
           <button class="btn-secondary" style="padding:4px 8px;font-size:11px;" ${i===0?'disabled':''} onclick="moveGame('${g.id}',-1)">⬆</button>
           <button class="btn-secondary" style="padding:4px 8px;font-size:11px;" ${i===games.length-1?'disabled':''} onclick="moveGame('${g.id}',1)">⬇</button>
           <input type="file" accept="image/*" id="gameImgInput_${g.id}" style="display:none;" onchange="changeGameImage('${g.id}', this)"/>
           <button class="btn-secondary" style="padding:6px 10px;font-size:11px;" onclick="document.getElementById('gameImgInput_${g.id}').click()">🖼️ لوگو</button>
+          <button class="btn-secondary" style="padding:6px 10px;font-size:11px;" onclick="toggleEditGame('${g.id}')">✏️ ویرایش</button>
           <div class="toggle-switch ${g.active?'on':''}" onclick="toggleGame('${g.id}')"></div>
           <button class="btn-danger" onclick="deleteGame('${g.id}')">حذف</button>
         </div>
+      </div>
+      <div id="editPanel_${g.id}" style="display:none;gap:6px;margin-top:10px;flex-wrap:wrap;">
+        <input class="form-input" style="flex:1;min-width:100px;" placeholder="نام بازی" id="editName_${g.id}" value="${escapeHtml(g.name)}"/>
+        <input class="form-input" style="flex:1;min-width:80px;" placeholder="آیکون (Emoji)" id="editIcon_${g.id}" value="${escapeHtml(g.icon||'')}"/>
+        <input class="form-input" style="flex:1;min-width:80px;" placeholder="نوع ارز" id="editCurrency_${g.id}" value="${escapeHtml(g.currency)}"/>
+        <input class="form-input" style="flex:1;min-width:100px;" placeholder="توضیحات Player ID" id="editIdLabel_${g.id}" value="${escapeHtml(g.idLabel||'')}"/>
+        <button class="btn-primary" onclick="saveGameEdit('${g.id}')">💾 ذخیره</button>
       </div>
       <div style="margin-top:10px;padding-top:10px;border-top:1px solid #2D2D4E;">
         <div style="font-size:11px;color:#94A3B8;margin-bottom:6px;">پکیج‌ها (${(g.packages||[]).length})</div>
