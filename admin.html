@@ -160,8 +160,12 @@ h2{font-size:18px;color:#fff;margin-bottom:18px;}
           <input class="form-input" id="newGameName" placeholder="مثلاً: Call of Duty"/>
         </div>
         <div class="form-group">
-          <label class="form-label">آیکون (Emoji)</label>
+          <label class="form-label">آیکون (Emoji) - اختیاری اگه لوگو آپلود کنی</label>
           <input class="form-input" id="newGameIcon" placeholder="مثلاً: 🔫"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">لوگو / عکس بازی (اختیاری)</label>
+          <input class="form-input" id="newGameImage" type="file" accept="image/*"/>
         </div>
         <div class="form-group">
           <label class="form-label">نوع ارز در بازی</label>
@@ -406,15 +410,52 @@ async function getOrders() {
     return await res.json();
   } catch(e) { return []; }
 }
-function getGames() {
-  const def = [
-    { id:'pubg', name:'PUBG Mobile', icon:'🪖', currency:'UC', idLabel:'PUBG Player ID', active:true },
-    { id:'freefire', name:'Free Fire', icon:'🔥', currency:'Diamonds', idLabel:'Free Fire Player ID', active:true },
-    { id:'mlbb', name:'Mobile Legends', icon:'⚔️', currency:'Diamonds', idLabel:'MLBB User ID', active:true },
+async function getGames() {
+  try {
+    const res = await fetch('/.netlify/functions/games');
+    const data = await res.json();
+    if (data.success && Array.isArray(data.games) && data.games.length) return data.games;
+  } catch(e) {}
+  return [
+    { id:'pubg', name:'PUBG Mobile', icon:'🪖', currency:'UC', idLabel:'PUBG Player ID', active:true, packages:[] },
+    { id:'freefire', name:'Free Fire', icon:'🔥', currency:'Diamonds', idLabel:'Free Fire Player ID', active:true, packages:[] },
+    { id:'mlbb', name:'Mobile Legends', icon:'⚔️', currency:'Diamonds', idLabel:'MLBB User ID', active:true, packages:[] },
   ];
-  return JSON.parse(localStorage.getItem('ag_games') || JSON.stringify(def));
 }
-function saveGames(g) { localStorage.setItem('ag_games', JSON.stringify(g)); }
+async function saveGames(games) {
+  try {
+    await fetch('/.netlify/functions/games', {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ token: getAdminToken(), games })
+    });
+  } catch(e) { console.error(e); }
+}
+// Resize+re-encode an uploaded image client-side so large photos don't get
+// stored as multi-MB base64 blobs in the games list.
+function compressImage(file, maxDim, quality) {
+  maxDim = maxDim || 300; quality = quality || 0.75;
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const img = new Image();
+      img.onload = () => {
+        let { width, height } = img;
+        if (width > maxDim || height > maxDim) {
+          if (width > height) { height = Math.round(height * maxDim / width); width = maxDim; }
+          else { width = Math.round(width * maxDim / height); height = maxDim; }
+        }
+        const canvas = document.createElement('canvas');
+        canvas.width = width; canvas.height = height;
+        canvas.getContext('2d').drawImage(img, 0, 0, width, height);
+        resolve(canvas.toDataURL('image/jpeg', quality));
+      };
+      img.onerror = reject;
+      img.src = reader.result;
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
 function getPayments() {
   const def = [
     { id:'paypal', name:'PayPal', icon:'🅿️', instructions:'پرداخت مستقیم از طریق PayPal', type:'auto', active:true },
@@ -514,50 +555,103 @@ async function updateOrder(id, status) {
 }
 
 // ============ GAMES ============
-function addGame() {
+async function addGame() {
   const name = document.getElementById('newGameName').value.trim();
   const icon = document.getElementById('newGameIcon').value.trim();
   const currency = document.getElementById('newGameCurrency').value.trim();
   const idLabel = document.getElementById('newGameIdLabel').value.trim();
-  if(!name||!icon||!currency) { alert('لطفاً همه فیلدها را پر کنید'); return; }
-  const games = getGames();
-  games.push({ id:'game_'+Date.now(), name, icon, currency, idLabel: idLabel||name+' Player ID', active:true, packages:[] });
-  saveGames(games);
+  const fileInput = document.getElementById('newGameImage');
+  if(!name||!currency) { alert('لطفاً نام بازی و نوع ارز را پر کنید'); return; }
+
+  let image = null;
+  if (fileInput && fileInput.files && fileInput.files[0]) {
+    try { image = await compressImage(fileInput.files[0]); }
+    catch(e) { alert('خطا در پردازش عکس'); return; }
+  }
+
+  const games = await getGames();
+  games.push({ id:'game_'+Date.now(), name, icon: icon || '🎮', image, currency, idLabel: idLabel||name+' Player ID', active:true, packages:[] });
+  await saveGames(games);
   document.getElementById('newGameName').value='';
   document.getElementById('newGameIcon').value='';
   document.getElementById('newGameCurrency').value='';
   document.getElementById('newGameIdLabel').value='';
-  renderGames();
-  alert('✅ بازی '+name+' اضافه شد!');
+  if(fileInput) fileInput.value='';
+  await renderGames();
+  alert('✅ بازی '+name+' اضافه شد! حالا از بخش پکیج‌ها براش قیمت تعریف کن تا روی سایت قابل خرید بشه.');
 }
 
-function toggleGame(id) {
-  const games = getGames();
+async function toggleGame(id) {
+  const games = await getGames();
   const g = games.find(g => g.id === id);
-  if(g) { g.active = !g.active; saveGames(games); renderGames(); }
+  if(g) { g.active = !g.active; await saveGames(games); await renderGames(); }
 }
 
-function deleteGame(id) {
+async function deleteGame(id) {
   if(!confirm('آیا مطمئنی؟')) return;
-  const games = getGames().filter(g => g.id !== id);
-  saveGames(games);
-  renderGames();
+  const games = (await getGames()).filter(g => g.id !== id);
+  await saveGames(games);
+  await renderGames();
 }
 
-function renderGames() {
-  const games = getGames();
+async function addPackage(gameId) {
+  const amountInput = document.getElementById('pkgAmount_'+gameId);
+  const priceInput = document.getElementById('pkgPrice_'+gameId);
+  const productIdInput = document.getElementById('pkgProductId_'+gameId);
+  const amount = parseFloat(amountInput.value);
+  const price = parseFloat(priceInput.value);
+  const productId = productIdInput.value.trim();
+  if(!amount || !price) { alert('لطفاً مقدار و قیمت معتبر وارد کنید'); return; }
+
+  const games = await getGames();
+  const g = games.find(g => g.id === gameId);
+  if(!g) return;
+  if(!Array.isArray(g.packages)) g.packages = [];
+  g.packages.push({ amount, price, productId: productId || null });
+  await saveGames(games);
+  await renderGames();
+}
+
+async function deletePackage(gameId, index) {
+  const games = await getGames();
+  const g = games.find(g => g.id === gameId);
+  if(!g || !Array.isArray(g.packages)) return;
+  g.packages.splice(index, 1);
+  await saveGames(games);
+  await renderGames();
+}
+
+async function renderGames() {
+  const games = await getGames();
   document.getElementById('gamesList').innerHTML = games.map(g => `
-    <div class="game-item">
-      <div style="display:flex;align-items:center;gap:10px;">
-        <span style="font-size:24px;">${g.icon}</span>
-        <div>
-          <div style="font-size:13px;font-weight:600;color:#fff;">${g.name}</div>
-          <div style="font-size:11px;color:#94A3B8;">${g.currency} • ${g.idLabel}</div>
+    <div class="game-item" style="flex-direction:column;align-items:stretch;">
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <div style="display:flex;align-items:center;gap:10px;">
+          ${g.image ? `<img src="${g.image}" style="width:32px;height:32px;border-radius:8px;object-fit:cover;"/>` : `<span style="font-size:24px;">${escapeHtml(g.icon||'🎮')}</span>`}
+          <div>
+            <div style="font-size:13px;font-weight:600;color:#fff;">${escapeHtml(g.name)}</div>
+            <div style="font-size:11px;color:#94A3B8;">${escapeHtml(g.currency)} • ${escapeHtml(g.idLabel||'')}</div>
+          </div>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <div class="toggle-switch ${g.active?'on':''}" onclick="toggleGame('${g.id}')"></div>
+          <button class="btn-danger" onclick="deleteGame('${g.id}')">حذف</button>
         </div>
       </div>
-      <div style="display:flex;gap:8px;align-items:center;">
-        <div class="toggle-switch ${g.active?'on':''}" onclick="toggleGame('${g.id}')"></div>
-        <button class="btn-danger" onclick="deleteGame('${g.id}')">حذف</button>
+      <div style="margin-top:10px;padding-top:10px;border-top:1px solid #2D2D4E;">
+        <div style="font-size:11px;color:#94A3B8;margin-bottom:6px;">پکیج‌ها (${(g.packages||[]).length})</div>
+        ${(g.packages||[]).map((p,i) => `
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:4px 0;font-size:12px;color:#fff;">
+            <span>${Number(p.amount).toLocaleString()} ${escapeHtml(g.currency)} — $${parseFloat(p.price).toFixed(2)}${p.productId?' · '+escapeHtml(p.productId):''}</span>
+            <button class="btn-danger" style="padding:2px 8px;font-size:11px;" onclick="deletePackage('${g.id}',${i})">حذف</button>
+          </div>
+        `).join('') || '<div style="font-size:11px;color:#64748B;">هیچ پکیجی تعریف نشده — این بازی قابل خرید نیست</div>'}
+        <div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap;">
+          <input class="form-input" style="flex:1;min-width:80px;" placeholder="مقدار" id="pkgAmount_${g.id}" type="number"/>
+          <input class="form-input" style="flex:1;min-width:80px;" placeholder="قیمت ($)" id="pkgPrice_${g.id}" type="number" step="0.01"/>
+          <input class="form-input" style="flex:1;min-width:100px;" placeholder="Product ID (اختیاری)" id="pkgProductId_${g.id}"/>
+          <button class="btn-primary" onclick="addPackage('${g.id}')">افزودن پکیج</button>
+        </div>
       </div>
     </div>
   `).join('') || '<div class="empty">هیچ بازی‌ای وجود ندارد</div>';
@@ -883,7 +977,7 @@ async function sendMsg() {
   addMsg('user', text);
 
   const orders = await getOrders();
-  const games = getGames();
+  const games = await getGames();
   const payments = getPayments();
   const pending = orders.filter(function(o){return o.status==='pending';}).length;
   const completed = orders.filter(function(o){return o.status==='completed';}).length;

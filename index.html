@@ -1285,6 +1285,51 @@ async function trackVisit(page) {
 // Track on page load
 window.addEventListener('load', () => trackVisit('home'));
 
+// Merge admin-added games/apps (via the admin panel's "games" tab) into the
+// storefront. Static entries above are left untouched so a collision can
+// never clobber their curated packages/pricing.
+async function loadDynamicGames() {
+  try {
+    const res = await fetch('/.netlify/functions/games');
+    const data = await res.json();
+    if (!data.success || !Array.isArray(data.games)) return;
+    const grid = document.getElementById('gamesList');
+    if (!grid) return;
+
+    data.games
+      .filter(g => g.active && !GAMES_DATA[g.id] && Array.isArray(g.packages) && g.packages.length)
+      .forEach(g => {
+        GAMES_DATA[g.id] = {
+          name: g.name,
+          currency: g.currency,
+          idPlaceholder: g.idLabel || (g.name + ' ID'),
+          packages: g.packages.map(p => ({ amount: p.amount, price: p.price, popular: !!p.popular, productId: p.productId || null }))
+        };
+
+        const minPrice = Math.min(...g.packages.map(p => p.price));
+        const thumb = g.image
+          ? `<img src="${g.image}" alt="${escapeHtml(g.name)}" onerror="this.remove()"/>`
+          : `<div style="font-size:48px;text-align:center;padding:30px 0;">${escapeHtml(g.icon||'🎮')}</div>`;
+
+        const card = document.createElement('div');
+        card.className = 'game-list-card';
+        card.dataset.cat = 'dynamic';
+        card.onclick = () => openOrder(g.id);
+        card.innerHTML = `
+          ${thumb}
+          <div class="game-list-info">
+            <div class="game-list-name">${escapeHtml(g.name)}</div>
+            <div class="game-list-currency">${escapeHtml(g.currency)}</div>
+            <div class="game-list-price">از $${minPrice.toFixed(2)}</div>
+            <button class="game-list-btn">خرید ${escapeHtml(g.currency)}</button>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+  } catch(e) {}
+}
+window.addEventListener('load', loadDynamicGames);
+
 // showPage tracks navigation in addition to switching pages
 function showPage(name) {
   showPageCore(name);
