@@ -298,6 +298,17 @@ h2{font-size:18px;color:#fff;margin-bottom:18px;}
 </div>
 
 <script>
+function escapeHtml(str) {
+  return String(str ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+// Delegated handler for order action buttons rendered via innerHTML (avoids
+// embedding untrusted order data inside inline onclick="" JS strings)
+document.addEventListener('click', (e) => {
+  const btn = e.target.closest('[data-action="update-order"]');
+  if(btn) updateOrder(btn.dataset.orderId, btn.dataset.status);
+});
+
 // Apply lang before login
 window.addEventListener('DOMContentLoaded', () => {
   // Apply saved language to login screen
@@ -326,8 +337,11 @@ window.addEventListener('DOMContentLoaded', () => {
 const GROQ_API_KEY = localStorage.getItem('groq_api_key') || 'YOUR_GROQ_API_KEY';
 
 // ============ AUTH ============
-const ADMIN_USER = 'admin';
-let ADMIN_PASS = '532255';
+function getAdminToken() { return localStorage.getItem('admin_token'); }
+function logoutAdmin() {
+  localStorage.removeItem('admin_token');
+  location.reload();
+}
 
 function toggleLangLogin() {
   const btn = document.getElementById('loginLangBtn');
@@ -359,14 +373,25 @@ function toggleLangLogin() {
   }
 }
 
-function doLogin() {
-  const u = document.getElementById('loginUser').value.trim();
+async function doLogin() {
   const p = document.getElementById('loginPass').value.trim();
-  if(u.toLowerCase() === ADMIN_USER.toLowerCase() && p === ADMIN_PASS) {
-    document.getElementById('loginScreen').style.display = 'none';
-    document.getElementById('mainPanel').style.display = 'block';
-    init();
-  } else {
+  document.getElementById('loginError').style.display = 'none';
+  try {
+    const res = await fetch('/.netlify/functions/admin-login', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ password: p })
+    });
+    const data = await res.json();
+    if(res.ok && data.success) {
+      localStorage.setItem('admin_token', data.token);
+      document.getElementById('loginScreen').style.display = 'none';
+      document.getElementById('mainPanel').style.display = 'block';
+      init();
+    } else {
+      document.getElementById('loginError').style.display = 'block';
+    }
+  } catch(e) {
     document.getElementById('loginError').style.display = 'block';
   }
 }
@@ -375,7 +400,8 @@ document.getElementById('loginPass').addEventListener('keydown', e => { if(e.key
 // ============ DATA ============
 async function getOrders() {
   try {
-    const res = await fetch('/.netlify/functions/admin-orders?password=' + encodeURIComponent(ADMIN_PASS));
+    const res = await fetch('/.netlify/functions/admin-orders?token=' + encodeURIComponent(getAdminToken()));
+    if(res.status === 401) { logoutAdmin(); return []; }
     if(!res.ok) return [];
     return await res.json();
   } catch(e) { return []; }
@@ -452,36 +478,37 @@ async function renderOrders() {
     <div class="order-card">
       <div class="order-header">
         <div>
-          <div class="order-player">${o.gameIcon||'🎮'} ${o.playerId}</div>
-          <div class="order-uid">${o.id} • ${o.game}</div>
+          <div class="order-player">${o.gameIcon||'🎮'} ${escapeHtml(o.playerId)}</div>
+          <div class="order-uid">${escapeHtml(o.id)} • ${escapeHtml(o.game)}</div>
         </div>
         <span class="badge ${statusClass[o.status]}">${statusLabel[o.status]}</span>
       </div>
       <div class="info-grid">
-        <div class="info-box"><div class="info-label">پکیج</div><div class="info-value">${o.pkg}</div></div>
+        <div class="info-box"><div class="info-label">پکیج</div><div class="info-value">${escapeHtml(o.pkg)}</div></div>
         <div class="info-box"><div class="info-label">قیمت</div><div class="info-value green">$${parseFloat(o.price).toFixed(2)}</div></div>
-        <div class="info-box"><div class="info-label">پرداخت</div><div class="info-value">${o.payment}</div></div>
+        <div class="info-box"><div class="info-label">پرداخت</div><div class="info-value">${escapeHtml(o.payment)}</div></div>
       </div>
       <div class="info-grid">
         <div class="info-box"><div class="info-label">تاریخ</div><div class="info-value">${o.createdAt ? new Date(o.createdAt).toLocaleDateString('fa-IR') : (o.date||'-')}</div></div>
-        <div class="info-box" style="grid-column:span 2;"><div class="info-label">توضیحات</div><div class="info-value">${o.notes||'-'}</div></div>
+        <div class="info-box" style="grid-column:span 2;"><div class="info-label">توضیحات</div><div class="info-value">${escapeHtml(o.notes||'-')}</div></div>
       </div>
       ${o.status === 'pending' || o.status === 'processing' ? `
       <div class="action-row">
-        <button class="btn-complete" onclick="updateOrder('${o.id}','completed')">✅ تکمیل سفارش</button>
-        <button class="btn-cancel" onclick="updateOrder('${o.id}','cancelled')">❌ لغو</button>
+        <button class="btn-complete" data-action="update-order" data-order-id="${escapeHtml(o.id)}" data-status="completed">✅ تکمیل سفارش</button>
+        <button class="btn-cancel" data-action="update-order" data-order-id="${escapeHtml(o.id)}" data-status="cancelled">❌ لغو</button>
       </div>` : ''}
-      ${o.status === 'cancelled' ? `<button class="btn-secondary" style="width:100%;padding:10px;margin-top:8px;" onclick="updateOrder('${o.id}','pending')">↩️ بازگرداندن</button>` : ''}
+      ${o.status === 'cancelled' ? `<button class="btn-secondary" style="width:100%;padding:10px;margin-top:8px;" data-action="update-order" data-order-id="${escapeHtml(o.id)}" data-status="pending">↩️ بازگرداندن</button>` : ''}
     </div>
   `).join('');
 }
 
 async function updateOrder(id, status) {
   try {
-    await fetch('/.netlify/functions/update-order', {
+    const res = await fetch('/.netlify/functions/update-order', {
       method: 'POST', headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({ password: ADMIN_PASS, orderId: id, status })
+      body: JSON.stringify({ token: getAdminToken(), orderId: id, status })
     });
+    if(res.status === 401) { logoutAdmin(); return; }
   } catch(e) { console.error(e); }
   renderOrders();
 }
@@ -594,7 +621,7 @@ function saveGroqKey() {
 }
 
 function changePassword() {
-  alert('⚠️ برای تغییر رمز، باید مقدار ADMIN_PASSWORD رو توی Netlify Environment Variables عوض کنی و بعد همون رمز رو اینجا توی کد (admin.html) هم آپدیت کنی، تا هردو یکی بمونن.');
+  alert('⚠️ برای تغییر رمز، فقط کافیه مقدار ADMIN_PASSWORD رو توی Netlify Environment Variables عوض کنی. رمز دیگه توی کد ذخیره نمی‌شه.');
 }
 
 async function renderStats() {

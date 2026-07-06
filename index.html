@@ -673,6 +673,10 @@ body{background:var(--bg);color:var(--text);font-family:'Exo 2',sans-serif;min-h
 </div>
 
 <script>
+function escapeHtml(str) {
+  return String(str ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
 // EXCHANGE RATES - fetched live daily from /.netlify/functions/fx-rates, cached 24h in localStorage
 const FX_RATES = { AFN: 64, EUR: 0.88, IRR: 1600000 }; // fallback defaults while loading
 const CURRENCY_SYMBOLS = { USD:'$', AFN:'؋', EUR:'€', IRR:'﷼' };
@@ -1113,12 +1117,12 @@ function renderOrders() {
   el.innerHTML = orders.map(o => `
     <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:10px;">
       <div style="display:flex;justify-content:space-between;margin-bottom:8px;">
-        <span style="font-family:'Rajdhani',sans-serif;font-weight:700;color:var(--gold);">${o.id}</span>
+        <span style="font-family:'Rajdhani',sans-serif;font-weight:700;color:var(--gold);">${escapeHtml(o.id)}</span>
         <span style="padding:3px 10px;border-radius:20px;font-size:10px;font-weight:700;background:${o.status==='completed'?'rgba(46,213,115,0.12)':'rgba(255,165,0,0.12)'};color:${o.status==='completed'?'var(--success)':'orange'};">${o.status==='completed'?'✅ تکمیل':'⏳ در انتظار'}</span>
       </div>
-      <div style="font-size:13px;color:#fff;font-weight:600;">${o.game}</div>
-      <div style="font-size:12px;color:var(--muted);margin-top:4px;">${o.pkg} · ${o.payment} · $${o.price.toFixed(2)}</div>
-      <div style="font-size:11px;color:var(--muted);margin-top:4px;">Player ID: ${o.playerId} · ${o.date}</div>
+      <div style="font-size:13px;color:#fff;font-weight:600;">${escapeHtml(o.game)}</div>
+      <div style="font-size:12px;color:var(--muted);margin-top:4px;">${escapeHtml(o.pkg)} · ${escapeHtml(o.payment)} · $${o.price.toFixed(2)}</div>
+      <div style="font-size:11px;color:var(--muted);margin-top:4px;">Player ID: ${escapeHtml(o.playerId)} · ${escapeHtml(o.date)}</div>
     </div>
   `).join('');
 }
@@ -1211,12 +1215,12 @@ async function loadMyOrders() {
     el.innerHTML = list.map(o => `
       <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:10px;">
         <div style="display:flex;justify-content:space-between;margin-bottom:8px;">
-          <span style="font-family:'Rajdhani',sans-serif;font-weight:700;color:var(--gold);">${o.id}</span>
+          <span style="font-family:'Rajdhani',sans-serif;font-weight:700;color:var(--gold);">${escapeHtml(o.id)}</span>
           <span style="padding:3px 10px;border-radius:20px;font-size:10px;font-weight:700;background:${o.status==='completed'?'rgba(46,213,115,0.12)':o.status==='cancelled'?'rgba(255,71,87,0.12)':'rgba(255,165,0,0.12)'};color:${o.status==='completed'?'var(--success)':o.status==='cancelled'?'var(--danger)':'orange'};">${o.status==='completed'?'✅ تکمیل':o.status==='cancelled'?'❌ لغو شده':'⏳ در انتظار'}</span>
         </div>
-        <div style="font-size:13px;color:#fff;font-weight:600;">${o.game}</div>
-        <div style="font-size:12px;color:var(--muted);margin-top:4px;">${o.pkg} · ${o.payment} · $${parseFloat(o.price).toFixed(2)}</div>
-        <div style="font-size:11px;color:var(--muted);margin-top:4px;">Player ID: ${o.playerId} · ${o.createdAt ? new Date(o.createdAt).toLocaleDateString('fa-IR') : ''}</div>
+        <div style="font-size:13px;color:#fff;font-weight:600;">${escapeHtml(o.game)}</div>
+        <div style="font-size:12px;color:var(--muted);margin-top:4px;">${escapeHtml(o.pkg)} · ${escapeHtml(o.payment)} · $${parseFloat(o.price).toFixed(2)}</div>
+        <div style="font-size:11px;color:var(--muted);margin-top:4px;">Player ID: ${escapeHtml(o.playerId)} · ${o.createdAt ? new Date(o.createdAt).toLocaleDateString('fa-IR') : ''}</div>
       </div>
     `).join('');
   } catch(e) {

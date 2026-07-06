@@ -13,8 +13,8 @@ exports.handler = async function(event) {
     return { statusCode: 405, body: 'Method Not Allowed' };
   }
 
-  const TELEGRAM_TOKEN = process.env.TELEGRAM_BOT_TOKEN || '7634398182:AAH_VVcSUmvDTqtQyjer7G_YsAAAydg4zWs';
-  const CHAT_ID = process.env.TELEGRAM_CHAT_ID || '221207676';
+  const TELEGRAM_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
+  const CHAT_ID = process.env.TELEGRAM_CHAT_ID;
   const FOXRELOAD_KEY = process.env.FOXRELOAD_API_KEY;
   const CALLMEBOT_PHONE = process.env.CALLMEBOT_PHONE;
   const CALLMEBOT_APIKEY = process.env.CALLMEBOT_APIKEY;
@@ -46,16 +46,18 @@ exports.handler = async function(event) {
   const msg = `🛒 سفارش جدید!\n\n🆔 ${orderId}\n🎮 ${game}\n💎 ${pkg}\n👤 Player ID: ${playerId}\n💰 $${price}\n💳 ${payment}`;
 
   // Send Telegram notification
-  const telegramMsg = `🛒 سفارش جدید!\n\n🆔 ${orderId}\n🎮 ${game}\n💎 ${pkg}\n👤 Player ID: ${playerId}\n💰 $${price}\n💳 ${payment}`;
-  try {
-    const tgRes = await fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ chat_id: CHAT_ID, text: telegramMsg })
-    });
-    const tgData = await tgRes.json();
-    if (!tgData.ok) console.error('Telegram API rejected message:', tgData);
-  } catch(e) { console.error('Telegram error:', e); }
+  if (TELEGRAM_TOKEN && CHAT_ID) {
+    const telegramMsg = `🛒 سفارش جدید!\n\n🆔 ${orderId}\n🎮 ${game}\n💎 ${pkg}\n👤 Player ID: ${playerId}\n💰 $${price}\n💳 ${payment}`;
+    try {
+      const tgRes = await fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ chat_id: CHAT_ID, text: telegramMsg })
+      });
+      const tgData = await tgRes.json();
+      if (!tgData.ok) console.error('Telegram API rejected message:', tgData);
+    } catch(e) { console.error('Telegram error:', e); }
+  }
 
   // Send WhatsApp notification via CallMeBot
   if (CALLMEBOT_PHONE && CALLMEBOT_APIKEY) {
@@ -66,7 +68,7 @@ exports.handler = async function(event) {
   }
 
   // Send receipt image to Telegram, if provided (e.g. Hesab / Card-to-Card payments)
-  if (receiptImage && typeof receiptImage === 'string' && receiptImage.startsWith('data:')) {
+  if (TELEGRAM_TOKEN && CHAT_ID && receiptImage && typeof receiptImage === 'string' && receiptImage.startsWith('data:')) {
     try {
       const matches = receiptImage.match(/^data:(.+);base64,(.+)$/);
       if (matches) {
