@@ -99,7 +99,10 @@ h2{font-size:18px;color:#fff;margin-bottom:18px;}
     <div class="login-title" id="loginTitle">Afghan Games</div>
     <div class="login-sub" id="loginSubTitle">ورود به پنل مدیریت</div>
     <input class="login-input" id="loginUser" type="text" placeholder="نام کاربری" autocapitalize="none" autocorrect="off" spellcheck="false"/>
-    <input class="login-input" id="loginPass" type="password" placeholder="رمز عبور" autocapitalize="none" autocorrect="off" spellcheck="false"/>
+    <div style="position:relative;">
+      <input class="login-input" id="loginPass" type="password" placeholder="رمز عبور" autocapitalize="none" autocorrect="off" spellcheck="false" style="padding-left:40px;"/>
+      <button type="button" onclick="togglePasswordVisibility('loginPass', this)" style="position:absolute;left:8px;top:calc(50% - 6px);transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:16px;padding:4px;line-height:1;">👁️</button>
+    </div>
     <button class="login-btn" id="loginBtnText" onclick="doLogin()">ورود</button>
     <div class="login-error" id="loginError">نام کاربری یا رمز اشتباه است</div>
   </div>
@@ -229,7 +232,10 @@ h2{font-size:18px;color:#fff;margin-bottom:18px;}
         <div class="card-title">🤖 تنظیمات Groq AI</div>
         <div class="form-group">
           <label class="form-label">Groq API Key</label>
-          <input class="form-input" id="groqApiKey" type="password" placeholder="gsk_xxxxxxxxxxxxxxxxxxxx"/>
+          <div style="position:relative;">
+            <input class="form-input" id="groqApiKey" type="password" placeholder="gsk_xxxxxxxxxxxxxxxxxxxx" style="padding-left:40px;"/>
+            <button type="button" onclick="togglePasswordVisibility('groqApiKey', this)" style="position:absolute;left:8px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:16px;padding:4px;line-height:1;">👁️</button>
+          </div>
           <div style="font-size:11px;color:#94A3B8;margin-top:6px;">از <strong style="color:#6366F1;">console.groq.com</strong> رایگان بگیر</div>
         </div>
         <button class="btn-primary" onclick="saveGroqKey()">ذخیره API Key</button>
@@ -239,11 +245,17 @@ h2{font-size:18px;color:#fff;margin-bottom:18px;}
         <div class="card-title">🔐 تغییر رمز عبور ادمین</div>
         <div class="form-group">
           <label class="form-label">رمز عبور جدید</label>
-          <input class="form-input" id="newPassword" type="password" placeholder="رمز عبور جدید"/>
+          <div style="position:relative;">
+            <input class="form-input" id="newPassword" type="password" placeholder="رمز عبور جدید" style="padding-left:40px;"/>
+            <button type="button" onclick="togglePasswordVisibility('newPassword', this)" style="position:absolute;left:8px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:16px;padding:4px;line-height:1;">👁️</button>
+          </div>
         </div>
         <div class="form-group">
           <label class="form-label">تکرار رمز عبور</label>
-          <input class="form-input" id="confirmPassword" type="password" placeholder="تکرار رمز عبور"/>
+          <div style="position:relative;">
+            <input class="form-input" id="confirmPassword" type="password" placeholder="تکرار رمز عبور" style="padding-left:40px;"/>
+            <button type="button" onclick="togglePasswordVisibility('confirmPassword', this)" style="position:absolute;left:8px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:16px;padding:4px;line-height:1;">👁️</button>
+          </div>
         </div>
         <button class="btn-primary" onclick="changePassword()">ذخیره رمز جدید</button>
       </div>
@@ -306,6 +318,14 @@ function escapeHtml(str) {
   return String(str ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
 
+function togglePasswordVisibility(inputId, btn) {
+  const input = document.getElementById(inputId);
+  if (!input) return;
+  const show = input.type === 'password';
+  input.type = show ? 'text' : 'password';
+  btn.textContent = show ? '🙈' : '👁️';
+}
+
 // Delegated handler for order action buttons rendered via innerHTML (avoids
 // embedding untrusted order data inside inline onclick="" JS strings)
 document.addEventListener('click', (e) => {
@@ -313,28 +333,45 @@ document.addEventListener('click', (e) => {
   if(btn) updateOrder(btn.dataset.orderId, btn.dataset.status);
 });
 
-// Apply lang before login
+// ============ LANGUAGE (login screen) ============
+const LANG_CYCLE = ['fa', 'en', 'de'];
+const LANG_LABELS = { fa: '🌐 فا', en: '🌐 EN', de: '🌐 DE' };
+const LOGIN_TRANS = {
+  fa: { dir:'rtl', title:'Afghan Games', sub:'ورود به پنل مدیریت', user:'نام کاربری', pass:'رمز عبور', btn:'ورود', err:'نام کاربری یا رمز اشتباه است' },
+  en: { dir:'ltr', title:'Afghan Games', sub:'Admin Panel Login', user:'Username', pass:'Password', btn:'Login', err:'Invalid username or password' },
+  de: { dir:'ltr', title:'Afghan Games', sub:'Admin-Panel-Anmeldung', user:'Benutzername', pass:'Passwort', btn:'Anmelden', err:'Ungültiger Benutzername oder Passwort' },
+};
+
+function applyLoginLang(lang) {
+  const t = LOGIN_TRANS[lang];
+  document.documentElement.dir = t.dir;
+  document.documentElement.lang = lang;
+  const nextLang = LANG_CYCLE[(LANG_CYCLE.indexOf(lang) + 1) % LANG_CYCLE.length];
+  const lb = document.getElementById('loginLangBtn');
+  if(lb) lb.textContent = LANG_LABELS[nextLang];
+  const lTitle = document.getElementById('loginTitle');
+  if(lTitle) lTitle.textContent = t.title;
+  const lSub = document.getElementById('loginSubTitle');
+  if(lSub) lSub.textContent = t.sub;
+  const lUser = document.getElementById('loginUser');
+  if(lUser) lUser.placeholder = t.user;
+  const lPass = document.getElementById('loginPass');
+  if(lPass) lPass.placeholder = t.pass;
+  const lBtnText = document.getElementById('loginBtnText');
+  if(lBtnText) lBtnText.textContent = t.btn;
+  const lErr = document.getElementById('loginError');
+  if(lErr) lErr.textContent = t.err;
+}
+
+function toggleLangLogin() {
+  const cur = localStorage.getItem('admin_lang') || 'fa';
+  const next = LANG_CYCLE[(LANG_CYCLE.indexOf(cur) + 1) % LANG_CYCLE.length];
+  applyLoginLang(next);
+  localStorage.setItem('admin_lang', next);
+}
+
 window.addEventListener('DOMContentLoaded', () => {
-  // Apply saved language to login screen
-  const savedLang = localStorage.getItem('admin_lang') || 'fa';
-  if(savedLang === 'en') {
-    toggleLangLogin();
-  }
-  const lang = localStorage.getItem('admin_lang') || 'fa';
-  if(lang === 'en') {
-    document.documentElement.dir = 'ltr';
-    document.documentElement.lang = 'en';
-    const lb = document.getElementById('langBtn');
-    if(lb) lb.textContent = '🌐 فا';
-    const lu = document.getElementById('loginUser');
-    if(lu) lu.placeholder = 'Username';
-    const lp = document.getElementById('loginPass');
-    if(lp) lp.placeholder = 'Password';
-    const lt = document.querySelector('.login-sub');
-    if(lt) lt.textContent = 'Admin Panel Login';
-    const lbtn = document.querySelector('.login-btn');
-    if(lbtn) lbtn.textContent = 'Login';
-  }
+  applyLoginLang(localStorage.getItem('admin_lang') || 'fa');
 });
 
 // ============ CONFIG ============
@@ -345,36 +382,6 @@ function getAdminToken() { return localStorage.getItem('admin_token'); }
 function logoutAdmin() {
   localStorage.removeItem('admin_token');
   location.reload();
-}
-
-function toggleLangLogin() {
-  const btn = document.getElementById('loginLangBtn');
-  const isEn = btn.textContent.includes('EN');
-  if(isEn) {
-    // Switch to English
-    btn.textContent = '🌐 فا';
-    document.documentElement.dir = 'ltr';
-    document.documentElement.lang = 'en';
-    document.getElementById('loginTitle').textContent = 'Afghan Games';
-    document.getElementById('loginSubTitle').textContent = 'Admin Panel Login';
-    document.getElementById('loginUser').placeholder = 'Username';
-    document.getElementById('loginPass').placeholder = 'Password';
-    document.getElementById('loginBtnText').textContent = 'Login';
-    document.getElementById('loginError').textContent = 'Invalid username or password';
-    localStorage.setItem('admin_lang', 'en');
-  } else {
-    // Switch to Farsi
-    btn.textContent = '🌐 EN';
-    document.documentElement.dir = 'rtl';
-    document.documentElement.lang = 'fa';
-    document.getElementById('loginTitle').textContent = 'Afghan Games';
-    document.getElementById('loginSubTitle').textContent = 'ورود به پنل مدیریت';
-    document.getElementById('loginUser').placeholder = 'نام کاربری';
-    document.getElementById('loginPass').placeholder = 'رمز عبور';
-    document.getElementById('loginBtnText').textContent = 'ورود';
-    document.getElementById('loginError').textContent = 'نام کاربری یا رمز اشتباه است';
-    localStorage.setItem('admin_lang', 'fa');
-  }
 }
 
 async function doLogin() {
@@ -820,7 +827,6 @@ const TRANS = {
   fa: {
     dir: 'rtl',
     online: 'آنلاین',
-    langBtn: '🌐 EN',
     tabs: ['📦 سفارشات','🎮 بازی‌ها','💳 پرداخت','⚙️ تنظیمات','👁️ بازدیدکنندگان','🤖 دستیار AI'],
     ordersTitle: '📦 مدیریت سفارشات',
     gamesTitle: '🎮 مدیریت بازی‌ها',
@@ -858,7 +864,6 @@ const TRANS = {
   en: {
     dir: 'ltr',
     online: 'Online',
-    langBtn: '🌐 فا',
     tabs: ['📦 Orders','🎮 Games','💳 Payments','⚙️ Settings','👁️ Visitors','🤖 AI Assistant'],
     ordersTitle: '📦 Order Management',
     gamesTitle: '🎮 Game Management',
@@ -892,11 +897,48 @@ const TRANS = {
     auto: 'Automatic', manual: 'Manual',
     statusPending: 'Pending', statusProcessing: 'Processing',
     statusCompleted: 'Completed', statusCancelled: 'Cancelled',
+  },
+  de: {
+    dir: 'ltr',
+    online: 'Online',
+    tabs: ['📦 Bestellungen','🎮 Spiele','💳 Zahlung','⚙️ Einstellungen','👁️ Besucher','🤖 KI-Assistent'],
+    ordersTitle: '📦 Bestellverwaltung',
+    gamesTitle: '🎮 Spieleverwaltung',
+    paymentsTitle: '💳 Zahlungsmethoden',
+    settingsTitle: '⚙️ Einstellungen',
+    aiTitle: '🤖 KI-Assistent',
+    filterAll: 'Alle', filterPending: 'Ausstehend', filterProcessing: 'In Bearbeitung',
+    filterCompleted: 'Abgeschlossen', filterCancelled: 'Storniert',
+    complete: '✅ Bestellung abschließen', cancel: '❌ Stornieren', restore: '↩️ Wiederherstellen',
+    addGame: '➕ Neues Spiel hinzufügen', gameName: 'Spielname', gameIcon: 'Symbol (Emoji)',
+    gameCurrency: 'Spielwährung', gameIdLabel: 'Spieler-ID Beschreibung',
+    addGameBtn: '✅ Spiel hinzufügen', gamesList: 'Spieleliste',
+    addPay: '➕ Zahlungsmethode hinzufügen', payName: 'Name der Zahlungsmethode',
+    payIcon: 'Symbol (Emoji)', payInstructions: 'Zahlungsanweisungen',
+    payType: 'Typ', payManual: 'Manuell (Admin-Bestätigung erforderlich)', payAuto: 'Automatisch',
+    addPayBtn: '✅ Hinzufügen', paysList: 'Aktive Zahlungsmethoden',
+    groqTitle: '🤖 Groq-KI-Einstellungen', groqKey: 'Groq API-Schlüssel',
+    groqHint: 'Kostenlos erhältlich auf console.groq.com', groqSave: 'API-Schlüssel speichern',
+    passTitle: '🔐 Admin-Passwort ändern', newPass: 'Neues Passwort',
+    confirmPass: 'Passwort bestätigen', savePass: 'Neues Passwort speichern',
+    statsTitle: '📊 Statistiken', clearTitle: '🗑️ Datenverwaltung',
+    clearBtn: 'Alle Bestellungen löschen', empty: 'Keine Bestellungen gefunden',
+    emptyGames: 'Keine Spiele gefunden', emptyPays: 'Keine Zahlungsmethoden gefunden',
+    chatPlaceholder: 'Frage stellen oder Befehl eingeben...', sendBtn: 'Senden',
+    quick1: 'Ausstehende Bestellungen', quick2: 'Verkaufsanalyse',
+    quick3: 'Kundennachricht', quick4: 'Top-Spiele',
+    delete: 'Löschen', loginTitle: 'Afghan Games', loginSub: 'Admin-Panel-Anmeldung',
+    loginUser: 'Benutzername', loginPass: 'Passwort', loginBtn: 'Anmelden',
+    loginError: 'Ungültiger Benutzername oder Passwort',
+    pkg: 'Paket', price: 'Preis', payment: 'Zahlung', date: 'Datum', notes: 'Notizen',
+    auto: 'Automatisch', manual: 'Manuell',
+    statusPending: 'Ausstehend', statusProcessing: 'In Bearbeitung',
+    statusCompleted: 'Abgeschlossen', statusCancelled: 'Storniert',
   }
 };
 
 function toggleLang() {
-  currentLang = currentLang === 'fa' ? 'en' : 'fa';
+  currentLang = LANG_CYCLE[(LANG_CYCLE.indexOf(currentLang) + 1) % LANG_CYCLE.length];
   localStorage.setItem('admin_lang', currentLang);
   applyLang();
   renderOrders();
@@ -909,9 +951,9 @@ function applyLang() {
   document.documentElement.dir = t.dir;
   document.documentElement.lang = currentLang;
 
-  // Lang button
+  // Lang button (shows the label of the language a click will switch to)
   const lb = document.getElementById('langBtn');
-  if(lb) lb.textContent = t.langBtn;
+  if(lb) lb.textContent = LANG_LABELS[LANG_CYCLE[(LANG_CYCLE.indexOf(currentLang) + 1) % LANG_CYCLE.length]];
 
   // Online text
   const ot = document.getElementById('onlineText');

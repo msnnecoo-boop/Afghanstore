@@ -534,7 +534,10 @@ body{background:var(--bg);color:var(--text);font-family:'Exo 2',sans-serif;min-h
       </div>
       <input class="form-input" id="authEmail" type="email" placeholder="ایمیل" style="margin-bottom:10px;"/>
       <input class="form-input" id="authPhone" type="tel" placeholder="شماره تماس (اختیاری)" style="margin-bottom:10px;display:none;"/>
-      <input class="form-input" id="authPassword" type="password" placeholder="رمز عبور" style="margin-bottom:10px;"/>
+      <div style="position:relative;">
+        <input class="form-input" id="authPassword" type="password" placeholder="رمز عبور" style="margin-bottom:10px;padding-left:40px;"/>
+        <button type="button" onclick="togglePasswordVisibility('authPassword', this)" style="position:absolute;left:8px;top:calc(50% - 5px);transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:16px;padding:4px;line-height:1;">👁️</button>
+      </div>
       <button class="submit-btn" onclick="submitAuth()" id="authSubmitBtn">ورود</button>
       <div id="authError" style="color:var(--danger);font-size:12px;margin-top:8px;display:none;"></div>
     </div>
@@ -562,7 +565,10 @@ body{background:var(--bg);color:var(--text);font-family:'Exo 2',sans-serif;min-h
     <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">یوزرنیم TikTok</div>
     <input class="form-input" id="ttUsername" placeholder="مثال: @username" style="margin-bottom:14px;"/>
     <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">رمز عبور TikTok</div>
-    <input class="form-input" id="ttPassword" type="password" placeholder="رمز عبور اکانت" style="margin-bottom:14px;"/>
+    <div style="position:relative;">
+      <input class="form-input" id="ttPassword" type="password" placeholder="رمز عبور اکانت" style="margin-bottom:14px;padding-left:40px;"/>
+      <button type="button" onclick="togglePasswordVisibility('ttPassword', this)" style="position:absolute;left:8px;top:calc(50% - 7px);transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:16px;padding:4px;line-height:1;">👁️</button>
+    </div>
     <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">راه ارتباطی برای تعیین قیمت</div>
     <div class="pay-grid" style="margin-bottom:10px;">
       <div class="pay-item" onclick="selTtContact(this,'تلگرام')">
@@ -686,6 +692,14 @@ body{background:var(--bg);color:var(--text);font-family:'Exo 2',sans-serif;min-h
 <script>
 function escapeHtml(str) {
   return String(str ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+function togglePasswordVisibility(inputId, btn) {
+  const input = document.getElementById(inputId);
+  if (!input) return;
+  const show = input.type === 'password';
+  input.type = show ? 'text' : 'password';
+  btn.textContent = show ? '🙈' : '👁️';
 }
 
 // EXCHANGE RATES - fetched live daily from /.netlify/functions/fx-rates, cached 24h in localStorage
