@@ -632,9 +632,35 @@ async function deletePackage(gameId, index) {
   await renderGames();
 }
 
+async function moveGame(id, dir) {
+  const games = await getGames();
+  const idx = games.findIndex(g => g.id === id);
+  if (idx < 0) return;
+  const newIdx = idx + dir;
+  if (newIdx < 0 || newIdx >= games.length) return;
+  [games[idx], games[newIdx]] = [games[newIdx], games[idx]];
+  if (!(await saveGames(games))) return;
+  await renderGames();
+}
+
+async function changeGameImage(id, input) {
+  const file = input.files && input.files[0];
+  if (!file) return;
+  let image;
+  try { image = await compressImage(file); }
+  catch(e) { alert('خطا در پردازش عکس'); return; }
+
+  const games = await getGames();
+  const g = games.find(g => g.id === id);
+  if (!g) return;
+  g.image = image;
+  if (!(await saveGames(games))) return;
+  await renderGames();
+}
+
 async function renderGames() {
   const games = await getGames();
-  document.getElementById('gamesList').innerHTML = games.map(g => `
+  document.getElementById('gamesList').innerHTML = games.map((g,i) => `
     <div class="game-item" style="flex-direction:column;align-items:stretch;">
       <div style="display:flex;justify-content:space-between;align-items:center;">
         <div style="display:flex;align-items:center;gap:10px;">
@@ -644,7 +670,11 @@ async function renderGames() {
             <div style="font-size:11px;color:#94A3B8;">${escapeHtml(g.currency)} • ${escapeHtml(g.idLabel||'')}</div>
           </div>
         </div>
-        <div style="display:flex;gap:8px;align-items:center;">
+        <div style="display:flex;gap:6px;align-items:center;">
+          <button class="btn-secondary" style="padding:4px 8px;font-size:11px;" ${i===0?'disabled':''} onclick="moveGame('${g.id}',-1)">⬆</button>
+          <button class="btn-secondary" style="padding:4px 8px;font-size:11px;" ${i===games.length-1?'disabled':''} onclick="moveGame('${g.id}',1)">⬇</button>
+          <input type="file" accept="image/*" id="gameImgInput_${g.id}" style="display:none;" onchange="changeGameImage('${g.id}', this)"/>
+          <button class="btn-secondary" style="padding:6px 10px;font-size:11px;" onclick="document.getElementById('gameImgInput_${g.id}').click()">🖼️ لوگو</button>
           <div class="toggle-switch ${g.active?'on':''}" onclick="toggleGame('${g.id}')"></div>
           <button class="btn-danger" onclick="deleteGame('${g.id}')">حذف</button>
         </div>
