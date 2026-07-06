@@ -1,8 +1,12 @@
-const { getStore } = require('@netlify/blobs');
 const crypto = require('crypto');
+const { getClientIp, checkRateLimit } = require('./lib/rate-limit');
+const { adminSessionsStore, SESSION_TTL_MS } = require('./lib/admin-session');
 
-function adminSessionsStore() {
-  return getStore({ name: 'admin-sessions', siteID: process.env.NETLIFY_SITE_ID, token: process.env.NETLIFY_BLOBS_TOKEN });
+function safeEqual(a, b) {
+  const bufA = Buffer.from(a || '');
+  const bufB = Buffer.from(b || '');
+  if (bufA.length !== bufB.length) return false;
+  return crypto.timingSafeEqual(bufA, bufB);
 }
 
 exports.handler = async function(event) {
@@ -15,19 +19,25 @@ exports.handler = async function(event) {
     return { statusCode: 500, headers, body: JSON.stringify({ error: 'ADMIN_PASSWORD not configured' }) };
   }
 
+  const ip = getClientIp(event);
+  const allowed = await checkRateLimit(`admin-login:${ip}`, 10, 15 * 60 * 1000);
+  if (!allowed) {
+    return { statusCode: 429, headers, body: JSON.stringify({ error: 'تلاش‌های زیاد، چند دقیقه بعد دوباره امتحان کنید' }) };
+  }
+
   let body;
   try { body = JSON.parse(event.body); }
   catch(e) { return { statusCode: 400, headers, body: JSON.stringify({ error: 'Invalid JSON' }) }; }
 
   const password = body.password || '';
-  if (password !== ADMIN_PASSWORD) {
+  if (!safeEqual(password, ADMIN_PASSWORD)) {
     return { statusCode: 401, headers, body: JSON.stringify({ error: 'رمز عبور اشتباه است' }) };
   }
 
   try {
     const token = crypto.randomBytes(24).toString('hex');
     const sessions = adminSessionsStore();
-    await sessions.setJSON(token, { createdAt: new Date().toISOString() });
+    await sessions.setJSON(token, { createdAt: new Date().toISOString(), expiresAt: Date.now() + SESSION_TTL_MS });
 
     return { statusCode: 200, headers, body: JSON.stringify({ success: true, token }) };
   } catch(e) {

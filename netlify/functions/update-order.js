@@ -1,4 +1,5 @@
 const { getStore } = require('@netlify/blobs');
+const { verifyAdminSession } = require('./lib/admin-session');
 
 function ordersStore() {
   return getStore({
@@ -6,9 +7,6 @@ function ordersStore() {
     siteID: process.env.NETLIFY_SITE_ID,
     token: process.env.NETLIFY_BLOBS_TOKEN
   });
-}
-function adminSessionsStore() {
-  return getStore({ name: 'admin-sessions', siteID: process.env.NETLIFY_SITE_ID, token: process.env.NETLIFY_BLOBS_TOKEN });
 }
 
 exports.handler = async function(event) {
@@ -21,9 +19,7 @@ exports.handler = async function(event) {
   catch(e) { return { statusCode: 400, body: JSON.stringify({ error: 'Invalid JSON' }) }; }
 
   const { token, orderId, status } = body;
-  if (!token) return { statusCode: 401, body: JSON.stringify({ error: 'Unauthorized' }) };
-  const session = await adminSessionsStore().get(token, { type: 'json' });
-  if (!session) return { statusCode: 401, body: JSON.stringify({ error: 'Unauthorized' }) };
+  if (!(await verifyAdminSession(token))) return { statusCode: 401, body: JSON.stringify({ error: 'Unauthorized' }) };
   if (!orderId || !status) return { statusCode: 400, body: JSON.stringify({ error: 'orderId and status required' }) };
 
   try {
