@@ -424,11 +424,18 @@ async function getGames() {
 }
 async function saveGames(games) {
   try {
-    await fetch('/.netlify/functions/games', {
+    const res = await fetch('/.netlify/functions/games', {
       method: 'POST', headers: {'Content-Type':'application/json'},
       body: JSON.stringify({ token: getAdminToken(), games })
     });
-  } catch(e) { console.error(e); }
+    if (res.status === 401) { logoutAdmin(); return false; }
+    if (!res.ok) { alert('❌ ذخیره روی سرور انجام نشد. دوباره تلاش کن.'); return false; }
+    return true;
+  } catch(e) {
+    console.error(e);
+    alert('❌ خطا در ارتباط با سرور، ذخیره انجام نشد.');
+    return false;
+  }
 }
 // Resize+re-encode an uploaded image client-side so large photos don't get
 // stored as multi-MB base64 blobs in the games list.
@@ -571,7 +578,8 @@ async function addGame() {
 
   const games = await getGames();
   games.push({ id:'game_'+Date.now(), name, icon: icon || '🎮', image, currency, idLabel: idLabel||name+' Player ID', active:true, packages:[] });
-  await saveGames(games);
+  const ok = await saveGames(games);
+  if(!ok) return;
   document.getElementById('newGameName').value='';
   document.getElementById('newGameIcon').value='';
   document.getElementById('newGameCurrency').value='';
@@ -584,13 +592,16 @@ async function addGame() {
 async function toggleGame(id) {
   const games = await getGames();
   const g = games.find(g => g.id === id);
-  if(g) { g.active = !g.active; await saveGames(games); await renderGames(); }
+  if(!g) return;
+  g.active = !g.active;
+  if(!(await saveGames(games))) return;
+  await renderGames();
 }
 
 async function deleteGame(id) {
   if(!confirm('آیا مطمئنی؟')) return;
   const games = (await getGames()).filter(g => g.id !== id);
-  await saveGames(games);
+  if(!(await saveGames(games))) return;
   await renderGames();
 }
 
@@ -608,7 +619,7 @@ async function addPackage(gameId) {
   if(!g) return;
   if(!Array.isArray(g.packages)) g.packages = [];
   g.packages.push({ amount, price, productId: productId || null });
-  await saveGames(games);
+  if(!(await saveGames(games))) return;
   await renderGames();
 }
 
@@ -617,7 +628,7 @@ async function deletePackage(gameId, index) {
   const g = games.find(g => g.id === gameId);
   if(!g || !Array.isArray(g.packages)) return;
   g.packages.splice(index, 1);
-  await saveGames(games);
+  if(!(await saveGames(games))) return;
   await renderGames();
 }
 
