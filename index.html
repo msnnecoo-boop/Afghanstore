@@ -474,17 +474,6 @@ body{background:var(--bg);color:var(--text);font-family:'Exo 2',sans-serif;min-h
         <button class="game-list-btn">ثبت درخواست</button>
       </div>
     </div>
-    <div class="game-list-card" data-cat="strategy" onclick="openOrder('roblox')">
-      <div style="height:140px;background:#000;display:flex;align-items:center;justify-content:center;">
-        <span style="font-size:22px;font-weight:800;color:#fff;letter-spacing:1px;">ROBLOX</span>
-      </div>
-      <div class="game-list-info">
-        <div class="game-list-name">Roblox</div>
-        <div class="game-list-currency">Robux</div>
-        <div class="game-list-price">از $5.49</div>
-        <button class="game-list-btn">خرید Robux</button>
-      </div>
-    </div>
   </div>
 </div>
 
@@ -846,17 +835,6 @@ const GAMES_DATA = {
       {amount:500, price:15.70},
       {amount:1000, price:31.40, popular:true},
       {amount:2100, price:65.94},
-    ]
-  },
-  roblox: {
-    // Base cost = Roblox's own official in-app Robux prices, +10% margin on top.
-    name:'Roblox', currency:'Robux', idPlaceholder:'یوزرنیم یا Roblox User ID',
-    packages:[
-      {amount:400, price:5.49},
-      {amount:800, price:10.99},
-      {amount:1700, price:21.99, popular:true},
-      {amount:4500, price:54.99},
-      {amount:10000, price:109.99},
     ]
   },
 };
