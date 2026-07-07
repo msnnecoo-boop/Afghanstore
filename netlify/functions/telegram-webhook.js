@@ -43,6 +43,34 @@ async function answerCallback(token, callbackQueryId) {
   });
 }
 
+// Used as a fallback for free-text messages that don't match any of the
+// fixed FAQ keyword patterns below, so the bot can answer open-ended
+// questions instead of just pointing back at the menu buttons.
+async function askGroq(userText) {
+  const GROQ_API_KEY = process.env.GROQ_API_KEY;
+  if (!GROQ_API_KEY) return null;
+
+  const systemPrompt = 'تو دستیار پشتیبانی ربات تلگرام فروشگاه آنلاین AfghanCoins هستی. این فروشگاه شارژ بازی‌های موبایل (PUBG Mobile UC، Free Fire Diamonds، Mobile Legends Diamonds، Genshin Impact، Honkai: Star Rail، Call of Duty Mobile، Clash of Clans، Roblox Robux)، IMO Diamond و TikTok Coins می‌فروشه. روش‌های پرداخت: PayPal، Hesab، کارت به کارت، Binance Pay. تحویل معمولاً بین ۱ تا ۳۰ دقیقه طول می‌کشه. سایت: https://afghancoins.online. به فارسی، کوتاه (حداکثر چند جمله، مناسب پیام تلگرام)، دوستانه و مفید جواب بده. اگه سوال درباره‌ی وضعیت سفارش خاص یا اطلاعات حساب کاربری بود، بگو با پشتیبانی (@AFGTeam_support) تماس بگیرن.';
+
+  try {
+    const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + GROQ_API_KEY },
+      body: JSON.stringify({
+        model: 'llama-3.3-70b-versatile',
+        max_tokens: 400,
+        temperature: 0.4,
+        messages: [{ role: 'system', content: systemPrompt }, { role: 'user', content: userText }]
+      })
+    });
+    const data = await res.json();
+    return data.choices?.[0]?.message?.content?.trim() || null;
+  } catch(e) {
+    console.error('Groq error:', e);
+    return null;
+  }
+}
+
 exports.handler = async function(event) {
   if (event.httpMethod !== 'POST') {
     return { statusCode: 405, body: 'Method Not Allowed' };
@@ -108,8 +136,13 @@ exports.handler = async function(event) {
   } else if (/بازی|گیم|لیست|imo|تیک ?تاک|tiktok/.test(lower)) {
     reply = FAQ.games.text;
   } else {
-    reply = `متوجه دستورت نشدم 🤔\n\nاز دکمه‌های زیر استفاده کن یا /help رو بزن:`;
-    keyboard = MAIN_KEYBOARD;
+    const aiReply = await askGroq(text);
+    if (aiReply) {
+      reply = aiReply;
+    } else {
+      reply = `متوجه دستورت نشدم 🤔\n\nاز دکمه‌های زیر استفاده کن یا /help رو بزن:`;
+      keyboard = MAIN_KEYBOARD;
+    }
   }
 
   try {
