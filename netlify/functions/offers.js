@@ -5,9 +5,12 @@ function offersStore() {
   return getStore({ name: 'offers', siteID: process.env.NETLIFY_SITE_ID, token: process.env.NETLIFY_BLOBS_TOKEN });
 }
 
-// Shown until the admin saves changes for the first time (from then on the
-// saved list in Blobs is the source of truth, including any of these that
-// were edited, reordered, or removed).
+// Always merged into the saved list by id (see the GET handler below), so
+// adding a new entry here still shows up for admins who already saved
+// changes before it existed. Note: the merge only skips ids already present
+// in the saved list, so hitting "حذف" (delete) on one of these just brings
+// it back on the next load — use the active/inactive toggle to hide one of
+// these for good instead of the delete button.
 const DEFAULT_OFFERS = [
   {
     id: 'smm', active: true, icon: '📱', image: null,
@@ -69,6 +72,12 @@ const DEFAULT_OFFERS = [
     link: 'https://crypto.com/app/mxf7maq5je',
     benefits: 'با لینک من عضو شو و از مزایای ویژه بهره‌مند شو. کارت اختصاصی کریپتو، بازگشت وجه روی خریدها، و مدیریت آسان دارایی‌های دیجیتال در یک اپلیکیشن.',
   },
+  {
+    id: 'hesabpay', active: true, icon: '💜', image: null,
+    title: 'به هرکسی، هرجا، هر زمان پول بفرست با HesabPay', subtitle: 'همین حالا نصب کن و به دنیای پرداخت بدون مرز بپیوند',
+    link: 'https://app.hesab.com/#/referral?phone=499364035675',
+    benefits: 'با اپلیکیشن HesabPay می‌تونی به هر کسی، هر جای دنیا، در هر زمان، به سادگی و سرعت پول بفرستی یا دریافت کنی — بدون کارمزدهای سنگین بانکی و بدون پیچیدگی. همین حالا از لینک من عضو شو و از مزایای ویژه‌ی دعوت بهره‌مند شو.',
+  },
 ];
 
 exports.handler = async function(event) {
@@ -78,7 +87,13 @@ exports.handler = async function(event) {
   if (event.httpMethod === 'GET') {
     try {
       const list = await offersStore().get('list', { type: 'json' });
-      return { statusCode: 200, headers, body: JSON.stringify({ success: true, offers: list || DEFAULT_OFFERS }) };
+      // If the store already has data from before a default was added, merge
+      // in whichever defaults are missing by id instead of only falling
+      // back to DEFAULT_OFFERS on a completely empty store.
+      const merged = list
+        ? list.concat(DEFAULT_OFFERS.filter(d => !list.some(o => o.id === d.id)))
+        : DEFAULT_OFFERS;
+      return { statusCode: 200, headers, body: JSON.stringify({ success: true, offers: merged }) };
     } catch(e) {
       return { statusCode: 500, headers, body: JSON.stringify({ error: 'Server error', details: e.message }) };
     }
