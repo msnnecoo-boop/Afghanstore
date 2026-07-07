@@ -14,6 +14,10 @@ const FAQ = {
   games: {
     label: '🎮 لیست بازی‌ها',
     text: '🎮 بازی‌ها و اپلیکیشن‌های موجود:\n\n• PUBG Mobile (UC)\n• Free Fire (Diamonds)\n• Mobile Legends (Diamonds)\n• Genshin Impact\n• Honkai: Star Rail\n• Call of Duty Mobile\n• Clash of Clans\n• IMO (Diamond)\n• TikTok Coins\n\nلیست کامل با قیمت: https://afghancoins.online'
+  },
+  followers: {
+    label: '📱 افغان فالوور',
+    text: '📱 افغان فالوور (Afghan Followers) سرویس خواهرِ AfghanCoins هست — افزایش فالوور، لایک و بازدید واقعی برای:\n\n📸 Instagram\n🎵 TikTok\n▶️ YouTube\n📢 Telegram\n\nمناسب برای صفحه‌های شخصی، کسب‌وکارها و اینفلوئنسرها؛ تحویل سریع و قیمت مناسب.\n\nسفارش: https://afghanfollowers.online'
   }
 };
 
@@ -21,6 +25,7 @@ const MAIN_KEYBOARD = {
   inline_keyboard: [
     [{ text: FAQ.prices.label, callback_data: 'faq_prices' }, { text: FAQ.payment.label, callback_data: 'faq_payment' }],
     [{ text: FAQ.delivery.label, callback_data: 'faq_delivery' }, { text: FAQ.games.label, callback_data: 'faq_games' }],
+    [{ text: FAQ.followers.label, callback_data: 'faq_followers' }],
     [{ text: '🛒 ثبت سفارش', url: 'https://afghancoins.online' }, { text: '📞 پشتیبانی', callback_data: 'faq_support' }]
   ]
 };
@@ -50,7 +55,7 @@ async function askGroq(userText) {
   const GROQ_API_KEY = process.env.GROQ_API_KEY;
   if (!GROQ_API_KEY) return null;
 
-  const systemPrompt = 'تو دستیار پشتیبانی ربات تلگرام فروشگاه آنلاین AfghanCoins هستی. این فروشگاه شارژ بازی‌های موبایل (PUBG Mobile UC، Free Fire Diamonds، Mobile Legends Diamonds، Genshin Impact، Honkai: Star Rail، Call of Duty Mobile، Clash of Clans، Roblox Robux)، IMO Diamond و TikTok Coins می‌فروشه. روش‌های پرداخت: PayPal، Hesab، کارت به کارت، Binance Pay. تحویل معمولاً بین ۱ تا ۳۰ دقیقه طول می‌کشه. سایت: https://afghancoins.online. به فارسی، کوتاه (حداکثر چند جمله، مناسب پیام تلگرام)، دوستانه و مفید جواب بده. اگه سوال درباره‌ی وضعیت سفارش خاص یا اطلاعات حساب کاربری بود، بگو با پشتیبانی (@AFGTeam_support) تماس بگیرن.';
+  const systemPrompt = 'تو دستیار پشتیبانی ربات تلگرام فروشگاه آنلاین AfghanCoins هستی. این فروشگاه شارژ بازی‌های موبایل (PUBG Mobile UC، Free Fire Diamonds، Mobile Legends Diamonds، Genshin Impact، Honkai: Star Rail، Call of Duty Mobile، Clash of Clans، Roblox Robux)، IMO Diamond و TikTok Coins می‌فروشه. روش‌های پرداخت: PayPal، Hesab، کارت به کارت، Binance Pay. تحویل معمولاً بین ۱ تا ۳۰ دقیقه طول می‌کشه. سایت: https://afghancoins.online. همچنین یک سرویس خواهر به نام «افغان فالوور» (afghanfollowers.online) داریم که فالوور، لایک و بازدید واقعی برای Instagram، TikTok، YouTube و Telegram می‌فروشه؛ اگه کسی درباره‌ی فالوور/لایک/رشد صفحه‌ی شبکه‌های اجتماعی پرسید، همین سایت رو معرفی کن. به فارسی، کوتاه (حداکثر چند جمله، مناسب پیام تلگرام)، دوستانه و مفید جواب بده. اگه سوال درباره‌ی وضعیت سفارش خاص یا اطلاعات حساب کاربری بود، بگو با پشتیبانی (@AFGTeam_support) تماس بگیرن.';
 
   try {
     const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
@@ -98,6 +103,7 @@ exports.handler = async function(event) {
     else if (data === 'faq_payment') reply = FAQ.payment.text;
     else if (data === 'faq_delivery') reply = FAQ.delivery.text;
     else if (data === 'faq_games') reply = FAQ.games.text;
+    else if (data === 'faq_followers') reply = FAQ.followers.text;
     else if (data === 'faq_support') reply = '📞 پشتیبانی AfghanCoins:\n\n💬 واتساپ: @AFG_Team\n📢 تلگرام: @AFGTeam_support\n\nهر سوالی داشتی در خدمتیم!';
     else reply = 'متوجه نشدم، لطفاً از دکمه‌ها استفاده کن.';
 
@@ -119,10 +125,10 @@ exports.handler = async function(event) {
   let keyboard = null;
 
   if (text === '/start') {
-    reply = `👋 سلام ${firstName}!\n\nبه ربات رسمی AfghanCoins خوش آمدید 🎮\n\nما شارژ سریع UC، Diamonds و ارزهای بازی‌های محبوب رو با بهترین قیمت ارائه می‌دیم.\n\nیکی از گزینه‌های زیر رو انتخاب کن، یا سوالت رو مستقیم بنویس:`;
+    reply = `👋 سلام ${firstName}!\n\nبه ربات رسمی AfghanCoins خوش آمدید 🎮\n\nما شارژ سریع UC، Diamonds و ارزهای بازی‌های محبوب رو با بهترین قیمت ارائه می‌دیم؛ و از طریق سرویس خواهرمون افغان فالوور (afghanfollowers.online) فالوور و لایک واقعی هم داریم.\n\nیکی از گزینه‌های زیر رو انتخاب کن، یا سوالت رو مستقیم بنویس:`;
     keyboard = MAIN_KEYBOARD;
   } else if (text === '/help') {
-    reply = `📖 راهنمای ربات AfghanCoins:\n\n/start - شروع مجدد و نمایش منو\n/order - لینک ثبت سفارش\n/support - تماس با پشتیبانی\n\nهمچنین می‌تونی مستقیم به سایت ما مراجعه کنی:\nhttps://afghancoins.online`;
+    reply = `📖 راهنمای ربات AfghanCoins:\n\n/start - شروع مجدد و نمایش منو\n/order - لینک ثبت سفارش\n/support - تماس با پشتیبانی\n\nهمچنین می‌تونی مستقیم به سایت‌های ما مراجعه کنی:\nhttps://afghancoins.online (شارژ بازی)\nhttps://afghanfollowers.online (فالوور و لایک)`;
   } else if (text === '/order') {
     reply = `🛒 برای ثبت سفارش به سایت ما مراجعه کن:\nhttps://afghancoins.online\n\nUC پابجی، دایموند فری‌فایر و بازی‌های دیگه با بهترین قیمت و تحویل سریع 🎮`;
   } else if (text === '/support') {
@@ -135,6 +141,8 @@ exports.handler = async function(event) {
     reply = FAQ.delivery.text;
   } else if (/بازی|گیم|لیست|imo|تیک ?تاک|tiktok/.test(lower)) {
     reply = FAQ.games.text;
+  } else if (/فالوور|لایک|بازدید|اینستاگرام|instagram|یوتیوب|youtube|افغان ?فالوور|afghanfollowers/.test(lower)) {
+    reply = FAQ.followers.text;
   } else {
     const aiReply = await askGroq(text);
     if (aiReply) {
