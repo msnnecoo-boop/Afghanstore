@@ -5,9 +5,12 @@ function gamesStore() {
   return getStore({ name: 'games', siteID: process.env.NETLIFY_SITE_ID, token: process.env.NETLIFY_BLOBS_TOKEN });
 }
 
-// Shown until the admin saves changes for the first time (from then on the
-// saved list in Blobs is the source of truth, including any of these that
-// were edited, reordered, or removed).
+// Always merged into the saved list by id (see the GET handler below), so
+// adding a new entry here still shows up for admins who already saved
+// changes before it existed. Note: the merge only skips ids already present
+// in the saved list, so hitting "حذف" (delete) on one of these just brings
+// it back on the next load — use the active/inactive toggle to hide one of
+// these for good instead of the delete button.
 const DEFAULT_GAMES = [
   { id:'pubg', name:'PUBG Mobile', icon:'🪖', image:null, currency:'UC', idLabel:'PUBG Player ID', active:true, packages:[] },
   { id:'freefire', name:'Free Fire', icon:'🔥', image:null, currency:'Diamonds', idLabel:'Free Fire Player ID', active:true, packages:[] },
@@ -32,7 +35,13 @@ exports.handler = async function(event) {
   if (event.httpMethod === 'GET') {
     try {
       const list = await gamesStore().get('list', { type: 'json' });
-      return { statusCode: 200, headers, body: JSON.stringify({ success: true, games: list || DEFAULT_GAMES }) };
+      // If the store already has data from before a default was added (e.g.
+      // Roblox), merge in whichever defaults are missing by id instead of
+      // only falling back to DEFAULT_GAMES on a completely empty store.
+      const merged = list
+        ? list.concat(DEFAULT_GAMES.filter(d => !list.some(g => g.id === d.id)))
+        : DEFAULT_GAMES;
+      return { statusCode: 200, headers, body: JSON.stringify({ success: true, games: merged }) };
     } catch(e) {
       return { statusCode: 500, headers, body: JSON.stringify({ error: 'Server error', details: e.message }) };
     }
