@@ -463,13 +463,9 @@ async function getGames() {
   try {
     const res = await fetch('/.netlify/functions/games');
     const data = await res.json();
-    if (data.success && Array.isArray(data.games) && data.games.length) return data.games;
+    if (data.success && Array.isArray(data.games)) return data.games;
   } catch(e) {}
-  return [
-    { id:'pubg', name:'PUBG Mobile', icon:'🪖', currency:'UC', idLabel:'PUBG Player ID', active:true, packages:[] },
-    { id:'freefire', name:'Free Fire', icon:'🔥', currency:'Diamonds', idLabel:'Free Fire Player ID', active:true, packages:[] },
-    { id:'mlbb', name:'Mobile Legends', icon:'⚔️', currency:'Diamonds', idLabel:'MLBB User ID', active:true, packages:[] },
-  ];
+  return [];
 }
 async function saveGames(games) {
   try {
