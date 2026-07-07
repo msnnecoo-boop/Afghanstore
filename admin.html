@@ -99,7 +99,10 @@ h2{font-size:18px;color:#fff;margin-bottom:18px;}
     <div class="login-title" id="loginTitle">Afghan Games</div>
     <div class="login-sub" id="loginSubTitle">ورود به پنل مدیریت</div>
     <input class="login-input" id="loginUser" type="text" placeholder="نام کاربری" autocapitalize="none" autocorrect="off" spellcheck="false"/>
-    <input class="login-input" id="loginPass" type="password" placeholder="رمز عبور" autocapitalize="none" autocorrect="off" spellcheck="false"/>
+    <div style="position:relative;">
+      <input class="login-input" id="loginPass" type="password" placeholder="رمز عبور" autocapitalize="none" autocorrect="off" spellcheck="false" style="padding-left:40px;"/>
+      <button type="button" onclick="togglePasswordVisibility('loginPass', this)" style="position:absolute;left:8px;top:calc(50% - 6px);transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:16px;padding:4px;line-height:1;">👁️</button>
+    </div>
     <button class="login-btn" id="loginBtnText" onclick="doLogin()">ورود</button>
     <div class="login-error" id="loginError">نام کاربری یا رمز اشتباه است</div>
   </div>
@@ -128,6 +131,7 @@ h2{font-size:18px;color:#fff;margin-bottom:18px;}
     <button class="nav-btn active" onclick="showTab('orders',this)">📦 سفارشات</button>
     <button class="nav-btn" onclick="showTab('games',this)">🎮 بازی‌ها</button>
     <button class="nav-btn" onclick="showTab('payments',this)">💳 پرداخت</button>
+    <button class="nav-btn" onclick="showTab('offers',this)">🎁 پیشنهادها</button>
     <button class="nav-btn" onclick="showTab('settings',this)">⚙️ تنظیمات</button>
     <button class="nav-btn" onclick="showTab('visitors',this)">👁️ بازدیدکنندگان</button>
     <button class="nav-btn" onclick="showTab('ai',this)">🤖 دستیار AI</button>
@@ -160,8 +164,12 @@ h2{font-size:18px;color:#fff;margin-bottom:18px;}
           <input class="form-input" id="newGameName" placeholder="مثلاً: Call of Duty"/>
         </div>
         <div class="form-group">
-          <label class="form-label">آیکون (Emoji)</label>
+          <label class="form-label">آیکون (Emoji) - اختیاری اگه لوگو آپلود کنی</label>
           <input class="form-input" id="newGameIcon" placeholder="مثلاً: 🔫"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">لوگو / عکس بازی (اختیاری)</label>
+          <input class="form-input" id="newGameImage" type="file" accept="image/*"/>
         </div>
         <div class="form-group">
           <label class="form-label">نوع ارز در بازی</label>
@@ -178,6 +186,47 @@ h2{font-size:18px;color:#fff;margin-bottom:18px;}
       <div class="card">
         <div class="card-title">لیست بازی‌ها</div>
         <div id="gamesList"></div>
+      </div>
+    </div>
+
+    <!-- OFFERS TAB -->
+    <div id="tab-offers" class="tab">
+      <h2>🎁 مدیریت پیشنهادها</h2>
+
+      <!-- Add new offer -->
+      <div class="card">
+        <div class="card-title">➕ اضافه کردن پیشنهاد جدید</div>
+        <div class="form-group">
+          <label class="form-label">عنوان</label>
+          <input class="form-input" id="newOfferTitle" placeholder="مثلاً: کارت اعتباری Revolut"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">آیکون (Emoji) - اختیاری اگه لوگو آپلود کنی</label>
+          <input class="form-input" id="newOfferIcon" placeholder="مثلاً: 💳"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">لوگو / عکس (اختیاری)</label>
+          <input class="form-input" id="newOfferImage" type="file" accept="image/*"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">لینک</label>
+          <input class="form-input" id="newOfferLink" placeholder="https://..."/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">متن کوتاه (روی کارت نشون داده می‌شه)</label>
+          <input class="form-input" id="newOfferSubtitle" placeholder="مثلاً: با لینک من ثبت‌نام کن و پاداش بگیر"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">توضیحات و مزایا (وقتی مشتری تپ می‌کنه نشون داده می‌شه)</label>
+          <textarea class="form-input" id="newOfferBenefits" rows="3" placeholder="چرا و چطور این پیشنهاد سودمنده..."></textarea>
+        </div>
+        <button class="btn-primary" onclick="addOffer()" style="width:100%;padding:12px;margin-top:6px;">✅ اضافه کردن پیشنهاد</button>
+      </div>
+
+      <!-- Offers list -->
+      <div class="card">
+        <div class="card-title">لیست پیشنهادها</div>
+        <div id="offersList"></div>
       </div>
     </div>
 
@@ -225,7 +274,10 @@ h2{font-size:18px;color:#fff;margin-bottom:18px;}
         <div class="card-title">🤖 تنظیمات Groq AI</div>
         <div class="form-group">
           <label class="form-label">Groq API Key</label>
-          <input class="form-input" id="groqApiKey" type="password" placeholder="gsk_xxxxxxxxxxxxxxxxxxxx"/>
+          <div style="position:relative;">
+            <input class="form-input" id="groqApiKey" type="password" placeholder="gsk_xxxxxxxxxxxxxxxxxxxx" style="padding-left:40px;"/>
+            <button type="button" onclick="togglePasswordVisibility('groqApiKey', this)" style="position:absolute;left:8px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:16px;padding:4px;line-height:1;">👁️</button>
+          </div>
           <div style="font-size:11px;color:#94A3B8;margin-top:6px;">از <strong style="color:#6366F1;">console.groq.com</strong> رایگان بگیر</div>
         </div>
         <button class="btn-primary" onclick="saveGroqKey()">ذخیره API Key</button>
@@ -235,11 +287,17 @@ h2{font-size:18px;color:#fff;margin-bottom:18px;}
         <div class="card-title">🔐 تغییر رمز عبور ادمین</div>
         <div class="form-group">
           <label class="form-label">رمز عبور جدید</label>
-          <input class="form-input" id="newPassword" type="password" placeholder="رمز عبور جدید"/>
+          <div style="position:relative;">
+            <input class="form-input" id="newPassword" type="password" placeholder="رمز عبور جدید" style="padding-left:40px;"/>
+            <button type="button" onclick="togglePasswordVisibility('newPassword', this)" style="position:absolute;left:8px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:16px;padding:4px;line-height:1;">👁️</button>
+          </div>
         </div>
         <div class="form-group">
           <label class="form-label">تکرار رمز عبور</label>
-          <input class="form-input" id="confirmPassword" type="password" placeholder="تکرار رمز عبور"/>
+          <div style="position:relative;">
+            <input class="form-input" id="confirmPassword" type="password" placeholder="تکرار رمز عبور" style="padding-left:40px;"/>
+            <button type="button" onclick="togglePasswordVisibility('confirmPassword', this)" style="position:absolute;left:8px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:16px;padding:4px;line-height:1;">👁️</button>
+          </div>
         </div>
         <button class="btn-primary" onclick="changePassword()">ذخیره رمز جدید</button>
       </div>
@@ -298,75 +356,95 @@ h2{font-size:18px;color:#fff;margin-bottom:18px;}
 </div>
 
 <script>
-// Apply lang before login
+function escapeHtml(str) {
+  return String(str ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+function togglePasswordVisibility(inputId, btn) {
+  const input = document.getElementById(inputId);
+  if (!input) return;
+  const show = input.type === 'password';
+  input.type = show ? 'text' : 'password';
+  btn.textContent = show ? '🙈' : '👁️';
+}
+
+// Delegated handler for order action buttons rendered via innerHTML (avoids
+// embedding untrusted order data inside inline onclick="" JS strings)
+document.addEventListener('click', (e) => {
+  const btn = e.target.closest('[data-action="update-order"]');
+  if(btn) updateOrder(btn.dataset.orderId, btn.dataset.status);
+});
+
+// ============ LANGUAGE (login screen) ============
+const LANG_CYCLE = ['fa', 'en', 'de'];
+const LANG_LABELS = { fa: '🌐 فا', en: '🌐 EN', de: '🌐 DE' };
+const LOGIN_TRANS = {
+  fa: { dir:'rtl', title:'Afghan Games', sub:'ورود به پنل مدیریت', user:'نام کاربری', pass:'رمز عبور', btn:'ورود', err:'نام کاربری یا رمز اشتباه است' },
+  en: { dir:'ltr', title:'Afghan Games', sub:'Admin Panel Login', user:'Username', pass:'Password', btn:'Login', err:'Invalid username or password' },
+  de: { dir:'ltr', title:'Afghan Games', sub:'Admin-Panel-Anmeldung', user:'Benutzername', pass:'Passwort', btn:'Anmelden', err:'Ungültiger Benutzername oder Passwort' },
+};
+
+function applyLoginLang(lang) {
+  const t = LOGIN_TRANS[lang];
+  document.documentElement.dir = t.dir;
+  document.documentElement.lang = lang;
+  const nextLang = LANG_CYCLE[(LANG_CYCLE.indexOf(lang) + 1) % LANG_CYCLE.length];
+  const lb = document.getElementById('loginLangBtn');
+  if(lb) lb.textContent = LANG_LABELS[nextLang];
+  const lTitle = document.getElementById('loginTitle');
+  if(lTitle) lTitle.textContent = t.title;
+  const lSub = document.getElementById('loginSubTitle');
+  if(lSub) lSub.textContent = t.sub;
+  const lUser = document.getElementById('loginUser');
+  if(lUser) lUser.placeholder = t.user;
+  const lPass = document.getElementById('loginPass');
+  if(lPass) lPass.placeholder = t.pass;
+  const lBtnText = document.getElementById('loginBtnText');
+  if(lBtnText) lBtnText.textContent = t.btn;
+  const lErr = document.getElementById('loginError');
+  if(lErr) lErr.textContent = t.err;
+}
+
+function toggleLangLogin() {
+  const cur = localStorage.getItem('admin_lang') || 'fa';
+  const next = LANG_CYCLE[(LANG_CYCLE.indexOf(cur) + 1) % LANG_CYCLE.length];
+  applyLoginLang(next);
+  localStorage.setItem('admin_lang', next);
+}
+
 window.addEventListener('DOMContentLoaded', () => {
-  // Apply saved language to login screen
-  const savedLang = localStorage.getItem('admin_lang') || 'fa';
-  if(savedLang === 'en') {
-    toggleLangLogin();
-  }
-  const lang = localStorage.getItem('admin_lang') || 'fa';
-  if(lang === 'en') {
-    document.documentElement.dir = 'ltr';
-    document.documentElement.lang = 'en';
-    const lb = document.getElementById('langBtn');
-    if(lb) lb.textContent = '🌐 فا';
-    const lu = document.getElementById('loginUser');
-    if(lu) lu.placeholder = 'Username';
-    const lp = document.getElementById('loginPass');
-    if(lp) lp.placeholder = 'Password';
-    const lt = document.querySelector('.login-sub');
-    if(lt) lt.textContent = 'Admin Panel Login';
-    const lbtn = document.querySelector('.login-btn');
-    if(lbtn) lbtn.textContent = 'Login';
-  }
+  applyLoginLang(localStorage.getItem('admin_lang') || 'fa');
 });
 
 // ============ CONFIG ============
 const GROQ_API_KEY = localStorage.getItem('groq_api_key') || 'YOUR_GROQ_API_KEY';
 
 // ============ AUTH ============
-const ADMIN_USER = 'admin';
-let ADMIN_PASS = '532255';
-
-function toggleLangLogin() {
-  const btn = document.getElementById('loginLangBtn');
-  const isEn = btn.textContent.includes('EN');
-  if(isEn) {
-    // Switch to English
-    btn.textContent = '🌐 فا';
-    document.documentElement.dir = 'ltr';
-    document.documentElement.lang = 'en';
-    document.getElementById('loginTitle').textContent = 'Afghan Games';
-    document.getElementById('loginSubTitle').textContent = 'Admin Panel Login';
-    document.getElementById('loginUser').placeholder = 'Username';
-    document.getElementById('loginPass').placeholder = 'Password';
-    document.getElementById('loginBtnText').textContent = 'Login';
-    document.getElementById('loginError').textContent = 'Invalid username or password';
-    localStorage.setItem('admin_lang', 'en');
-  } else {
-    // Switch to Farsi
-    btn.textContent = '🌐 EN';
-    document.documentElement.dir = 'rtl';
-    document.documentElement.lang = 'fa';
-    document.getElementById('loginTitle').textContent = 'Afghan Games';
-    document.getElementById('loginSubTitle').textContent = 'ورود به پنل مدیریت';
-    document.getElementById('loginUser').placeholder = 'نام کاربری';
-    document.getElementById('loginPass').placeholder = 'رمز عبور';
-    document.getElementById('loginBtnText').textContent = 'ورود';
-    document.getElementById('loginError').textContent = 'نام کاربری یا رمز اشتباه است';
-    localStorage.setItem('admin_lang', 'fa');
-  }
+function getAdminToken() { return localStorage.getItem('admin_token'); }
+function logoutAdmin() {
+  localStorage.removeItem('admin_token');
+  location.reload();
 }
 
-function doLogin() {
-  const u = document.getElementById('loginUser').value.trim();
+async function doLogin() {
   const p = document.getElementById('loginPass').value.trim();
-  if(u.toLowerCase() === ADMIN_USER.toLowerCase() && p === ADMIN_PASS) {
-    document.getElementById('loginScreen').style.display = 'none';
-    document.getElementById('mainPanel').style.display = 'block';
-    init();
-  } else {
+  document.getElementById('loginError').style.display = 'none';
+  try {
+    const res = await fetch('/.netlify/functions/admin-login', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ password: p })
+    });
+    const data = await res.json();
+    if(res.ok && data.success) {
+      localStorage.setItem('admin_token', data.token);
+      document.getElementById('loginScreen').style.display = 'none';
+      document.getElementById('mainPanel').style.display = 'block';
+      init();
+    } else {
+      document.getElementById('loginError').style.display = 'block';
+    }
+  } catch(e) {
     document.getElementById('loginError').style.display = 'block';
   }
 }
@@ -375,20 +453,65 @@ document.getElementById('loginPass').addEventListener('keydown', e => { if(e.key
 // ============ DATA ============
 async function getOrders() {
   try {
-    const res = await fetch('/.netlify/functions/admin-orders?password=' + encodeURIComponent(ADMIN_PASS));
+    const res = await fetch('/.netlify/functions/admin-orders?token=' + encodeURIComponent(getAdminToken()));
+    if(res.status === 401) { logoutAdmin(); return []; }
     if(!res.ok) return [];
     return await res.json();
   } catch(e) { return []; }
 }
-function getGames() {
-  const def = [
-    { id:'pubg', name:'PUBG Mobile', icon:'🪖', currency:'UC', idLabel:'PUBG Player ID', active:true },
-    { id:'freefire', name:'Free Fire', icon:'🔥', currency:'Diamonds', idLabel:'Free Fire Player ID', active:true },
-    { id:'mlbb', name:'Mobile Legends', icon:'⚔️', currency:'Diamonds', idLabel:'MLBB User ID', active:true },
+async function getGames() {
+  try {
+    const res = await fetch('/.netlify/functions/games');
+    const data = await res.json();
+    if (data.success && Array.isArray(data.games) && data.games.length) return data.games;
+  } catch(e) {}
+  return [
+    { id:'pubg', name:'PUBG Mobile', icon:'🪖', currency:'UC', idLabel:'PUBG Player ID', active:true, packages:[] },
+    { id:'freefire', name:'Free Fire', icon:'🔥', currency:'Diamonds', idLabel:'Free Fire Player ID', active:true, packages:[] },
+    { id:'mlbb', name:'Mobile Legends', icon:'⚔️', currency:'Diamonds', idLabel:'MLBB User ID', active:true, packages:[] },
   ];
-  return JSON.parse(localStorage.getItem('ag_games') || JSON.stringify(def));
 }
-function saveGames(g) { localStorage.setItem('ag_games', JSON.stringify(g)); }
+async function saveGames(games) {
+  try {
+    const res = await fetch('/.netlify/functions/games', {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ token: getAdminToken(), games })
+    });
+    if (res.status === 401) { logoutAdmin(); return false; }
+    if (!res.ok) { alert('❌ ذخیره روی سرور انجام نشد. دوباره تلاش کن.'); return false; }
+    return true;
+  } catch(e) {
+    console.error(e);
+    alert('❌ خطا در ارتباط با سرور، ذخیره انجام نشد.');
+    return false;
+  }
+}
+// Resize+re-encode an uploaded image client-side so large photos don't get
+// stored as multi-MB base64 blobs in the games list.
+function compressImage(file, maxDim, quality) {
+  maxDim = maxDim || 300; quality = quality || 0.75;
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const img = new Image();
+      img.onload = () => {
+        let { width, height } = img;
+        if (width > maxDim || height > maxDim) {
+          if (width > height) { height = Math.round(height * maxDim / width); width = maxDim; }
+          else { width = Math.round(width * maxDim / height); height = maxDim; }
+        }
+        const canvas = document.createElement('canvas');
+        canvas.width = width; canvas.height = height;
+        canvas.getContext('2d').drawImage(img, 0, 0, width, height);
+        resolve(canvas.toDataURL('image/jpeg', quality));
+      };
+      img.onerror = reject;
+      img.src = reader.result;
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
 function getPayments() {
   const def = [
     { id:'paypal', name:'PayPal', icon:'🅿️', instructions:'پرداخت مستقیم از طریق PayPal', type:'auto', active:true },
@@ -411,6 +534,7 @@ function init() {
   }
   renderOrders();
   renderGames();
+  renderOffers();
   renderPayments();
   renderStats();
   applyLang();
@@ -452,88 +576,362 @@ async function renderOrders() {
     <div class="order-card">
       <div class="order-header">
         <div>
-          <div class="order-player">${o.gameIcon||'🎮'} ${o.playerId}</div>
-          <div class="order-uid">${o.id} • ${o.game}</div>
+          <div class="order-player">${o.gameIcon||'🎮'} ${escapeHtml(o.playerId)}</div>
+          <div class="order-uid">${escapeHtml(o.id)} • ${escapeHtml(o.game)}</div>
         </div>
         <span class="badge ${statusClass[o.status]}">${statusLabel[o.status]}</span>
       </div>
       <div class="info-grid">
-        <div class="info-box"><div class="info-label">پکیج</div><div class="info-value">${o.pkg}</div></div>
+        <div class="info-box"><div class="info-label">پکیج</div><div class="info-value">${escapeHtml(o.pkg)}</div></div>
         <div class="info-box"><div class="info-label">قیمت</div><div class="info-value green">$${parseFloat(o.price).toFixed(2)}</div></div>
-        <div class="info-box"><div class="info-label">پرداخت</div><div class="info-value">${o.payment}</div></div>
+        <div class="info-box"><div class="info-label">پرداخت</div><div class="info-value">${escapeHtml(o.payment)}</div></div>
       </div>
       <div class="info-grid">
         <div class="info-box"><div class="info-label">تاریخ</div><div class="info-value">${o.createdAt ? new Date(o.createdAt).toLocaleDateString('fa-IR') : (o.date||'-')}</div></div>
-        <div class="info-box" style="grid-column:span 2;"><div class="info-label">توضیحات</div><div class="info-value">${o.notes||'-'}</div></div>
+        <div class="info-box" style="grid-column:span 2;"><div class="info-label">توضیحات</div><div class="info-value">${escapeHtml(o.notes||'-')}</div></div>
       </div>
       ${o.status === 'pending' || o.status === 'processing' ? `
       <div class="action-row">
-        <button class="btn-complete" onclick="updateOrder('${o.id}','completed')">✅ تکمیل سفارش</button>
-        <button class="btn-cancel" onclick="updateOrder('${o.id}','cancelled')">❌ لغو</button>
+        <button class="btn-complete" data-action="update-order" data-order-id="${escapeHtml(o.id)}" data-status="completed">✅ تکمیل سفارش</button>
+        <button class="btn-cancel" data-action="update-order" data-order-id="${escapeHtml(o.id)}" data-status="cancelled">❌ لغو</button>
       </div>` : ''}
-      ${o.status === 'cancelled' ? `<button class="btn-secondary" style="width:100%;padding:10px;margin-top:8px;" onclick="updateOrder('${o.id}','pending')">↩️ بازگرداندن</button>` : ''}
+      ${o.status === 'cancelled' ? `<button class="btn-secondary" style="width:100%;padding:10px;margin-top:8px;" data-action="update-order" data-order-id="${escapeHtml(o.id)}" data-status="pending">↩️ بازگرداندن</button>` : ''}
     </div>
   `).join('');
 }
 
 async function updateOrder(id, status) {
   try {
-    await fetch('/.netlify/functions/update-order', {
+    const res = await fetch('/.netlify/functions/update-order', {
       method: 'POST', headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({ password: ADMIN_PASS, orderId: id, status })
+      body: JSON.stringify({ token: getAdminToken(), orderId: id, status })
     });
+    if(res.status === 401) { logoutAdmin(); return; }
   } catch(e) { console.error(e); }
   renderOrders();
 }
 
 // ============ GAMES ============
-function addGame() {
+async function addGame() {
   const name = document.getElementById('newGameName').value.trim();
   const icon = document.getElementById('newGameIcon').value.trim();
   const currency = document.getElementById('newGameCurrency').value.trim();
   const idLabel = document.getElementById('newGameIdLabel').value.trim();
-  if(!name||!icon||!currency) { alert('لطفاً همه فیلدها را پر کنید'); return; }
-  const games = getGames();
-  games.push({ id:'game_'+Date.now(), name, icon, currency, idLabel: idLabel||name+' Player ID', active:true, packages:[] });
-  saveGames(games);
+  const fileInput = document.getElementById('newGameImage');
+  if(!name||!currency) { alert('لطفاً نام بازی و نوع ارز را پر کنید'); return; }
+
+  let image = null;
+  if (fileInput && fileInput.files && fileInput.files[0]) {
+    try { image = await compressImage(fileInput.files[0]); }
+    catch(e) { alert('خطا در پردازش عکس'); return; }
+  }
+
+  const games = await getGames();
+  games.push({ id:'game_'+Date.now(), name, icon: icon || '🎮', image, currency, idLabel: idLabel||name+' Player ID', active:true, packages:[] });
+  const ok = await saveGames(games);
+  if(!ok) return;
   document.getElementById('newGameName').value='';
   document.getElementById('newGameIcon').value='';
   document.getElementById('newGameCurrency').value='';
   document.getElementById('newGameIdLabel').value='';
-  renderGames();
-  alert('✅ بازی '+name+' اضافه شد!');
+  if(fileInput) fileInput.value='';
+  await renderGames();
+  alert('✅ بازی '+name+' اضافه شد! حالا از بخش پکیج‌ها براش قیمت تعریف کن تا روی سایت قابل خرید بشه.');
 }
 
-function toggleGame(id) {
-  const games = getGames();
+async function toggleGame(id) {
+  const games = await getGames();
   const g = games.find(g => g.id === id);
-  if(g) { g.active = !g.active; saveGames(games); renderGames(); }
+  if(!g) return;
+  g.active = !g.active;
+  if(!(await saveGames(games))) return;
+  await renderGames();
 }
 
-function deleteGame(id) {
+async function deleteGame(id) {
   if(!confirm('آیا مطمئنی؟')) return;
-  const games = getGames().filter(g => g.id !== id);
-  saveGames(games);
-  renderGames();
+  const games = (await getGames()).filter(g => g.id !== id);
+  if(!(await saveGames(games))) return;
+  await renderGames();
 }
 
-function renderGames() {
-  const games = getGames();
-  document.getElementById('gamesList').innerHTML = games.map(g => `
-    <div class="game-item">
-      <div style="display:flex;align-items:center;gap:10px;">
-        <span style="font-size:24px;">${g.icon}</span>
-        <div>
-          <div style="font-size:13px;font-weight:600;color:#fff;">${g.name}</div>
-          <div style="font-size:11px;color:#94A3B8;">${g.currency} • ${g.idLabel}</div>
+async function addPackage(gameId) {
+  const amountInput = document.getElementById('pkgAmount_'+gameId);
+  const priceInput = document.getElementById('pkgPrice_'+gameId);
+  const productIdInput = document.getElementById('pkgProductId_'+gameId);
+  const amount = parseFloat(amountInput.value);
+  const price = parseFloat(priceInput.value);
+  const productId = productIdInput.value.trim();
+  if(!amount || !price) { alert('لطفاً مقدار و قیمت معتبر وارد کنید'); return; }
+
+  const games = await getGames();
+  const g = games.find(g => g.id === gameId);
+  if(!g) return;
+  if(!Array.isArray(g.packages)) g.packages = [];
+  g.packages.push({ amount, price, productId: productId || null });
+  if(!(await saveGames(games))) return;
+  await renderGames();
+}
+
+async function deletePackage(gameId, index) {
+  const games = await getGames();
+  const g = games.find(g => g.id === gameId);
+  if(!g || !Array.isArray(g.packages)) return;
+  g.packages.splice(index, 1);
+  if(!(await saveGames(games))) return;
+  await renderGames();
+}
+
+async function moveGame(id, dir) {
+  const games = await getGames();
+  const idx = games.findIndex(g => g.id === id);
+  if (idx < 0) return;
+  const newIdx = idx + dir;
+  if (newIdx < 0 || newIdx >= games.length) return;
+  [games[idx], games[newIdx]] = [games[newIdx], games[idx]];
+  if (!(await saveGames(games))) return;
+  await renderGames();
+}
+
+async function changeGameImage(id, input) {
+  const file = input.files && input.files[0];
+  if (!file) return;
+  let image;
+  try { image = await compressImage(file); }
+  catch(e) { alert('خطا در پردازش عکس'); return; }
+
+  const games = await getGames();
+  const g = games.find(g => g.id === id);
+  if (!g) return;
+  g.image = image;
+  if (!(await saveGames(games))) return;
+  await renderGames();
+}
+
+function toggleEditGame(id) {
+  const panel = document.getElementById('editPanel_'+id);
+  if (panel) panel.style.display = panel.style.display === 'none' ? 'flex' : 'none';
+}
+
+async function saveGameEdit(id) {
+  const name = document.getElementById('editName_'+id).value.trim();
+  const icon = document.getElementById('editIcon_'+id).value.trim();
+  const currency = document.getElementById('editCurrency_'+id).value.trim();
+  const idLabel = document.getElementById('editIdLabel_'+id).value.trim();
+  if (!name || !currency) { alert('لطفاً نام بازی و نوع ارز را پر کنید'); return; }
+
+  const games = await getGames();
+  const g = games.find(g => g.id === id);
+  if (!g) return;
+  g.name = name;
+  g.icon = icon || '🎮';
+  g.currency = currency;
+  g.idLabel = idLabel || name + ' Player ID';
+  if (!(await saveGames(games))) return;
+  await renderGames();
+}
+
+async function renderGames() {
+  const games = await getGames();
+  document.getElementById('gamesList').innerHTML = games.map((g,i) => `
+    <div class="game-item" style="flex-direction:column;align-items:stretch;">
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <div style="display:flex;align-items:center;gap:10px;">
+          ${g.image ? `<img src="${g.image}" style="width:32px;height:32px;border-radius:8px;object-fit:cover;"/>` : `<span style="font-size:24px;">${escapeHtml(g.icon||'🎮')}</span>`}
+          <div>
+            <div style="font-size:13px;font-weight:600;color:#fff;">${escapeHtml(g.name)}</div>
+            <div style="font-size:11px;color:#94A3B8;">${escapeHtml(g.currency)} • ${escapeHtml(g.idLabel||'')}</div>
+          </div>
+        </div>
+        <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;">
+          <button class="btn-secondary" style="padding:4px 8px;font-size:11px;" ${i===0?'disabled':''} onclick="moveGame('${g.id}',-1)">⬆</button>
+          <button class="btn-secondary" style="padding:4px 8px;font-size:11px;" ${i===games.length-1?'disabled':''} onclick="moveGame('${g.id}',1)">⬇</button>
+          <input type="file" accept="image/*" id="gameImgInput_${g.id}" style="display:none;" onchange="changeGameImage('${g.id}', this)"/>
+          <button class="btn-secondary" style="padding:6px 10px;font-size:11px;" onclick="document.getElementById('gameImgInput_${g.id}').click()">🖼️ لوگو</button>
+          <button class="btn-secondary" style="padding:6px 10px;font-size:11px;" onclick="toggleEditGame('${g.id}')">✏️ ویرایش</button>
+          <div class="toggle-switch ${g.active?'on':''}" onclick="toggleGame('${g.id}')"></div>
+          <button class="btn-danger" onclick="deleteGame('${g.id}')">حذف</button>
         </div>
       </div>
-      <div style="display:flex;gap:8px;align-items:center;">
-        <div class="toggle-switch ${g.active?'on':''}" onclick="toggleGame('${g.id}')"></div>
-        <button class="btn-danger" onclick="deleteGame('${g.id}')">حذف</button>
+      <div id="editPanel_${g.id}" style="display:none;gap:6px;margin-top:10px;flex-wrap:wrap;">
+        <input class="form-input" style="flex:1;min-width:100px;" placeholder="نام بازی" id="editName_${g.id}" value="${escapeHtml(g.name)}"/>
+        <input class="form-input" style="flex:1;min-width:80px;" placeholder="آیکون (Emoji)" id="editIcon_${g.id}" value="${escapeHtml(g.icon||'')}"/>
+        <input class="form-input" style="flex:1;min-width:80px;" placeholder="نوع ارز" id="editCurrency_${g.id}" value="${escapeHtml(g.currency)}"/>
+        <input class="form-input" style="flex:1;min-width:100px;" placeholder="توضیحات Player ID" id="editIdLabel_${g.id}" value="${escapeHtml(g.idLabel||'')}"/>
+        <button class="btn-primary" onclick="saveGameEdit('${g.id}')">💾 ذخیره</button>
+      </div>
+      <div style="margin-top:10px;padding-top:10px;border-top:1px solid #2D2D4E;">
+        <div style="font-size:11px;color:#94A3B8;margin-bottom:6px;">پکیج‌ها (${(g.packages||[]).length})</div>
+        ${(g.packages||[]).map((p,i) => `
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:4px 0;font-size:12px;color:#fff;">
+            <span>${Number(p.amount).toLocaleString()} ${escapeHtml(g.currency)} — $${parseFloat(p.price).toFixed(2)}${p.productId?' · '+escapeHtml(p.productId):''}</span>
+            <button class="btn-danger" style="padding:2px 8px;font-size:11px;" onclick="deletePackage('${g.id}',${i})">حذف</button>
+          </div>
+        `).join('') || '<div style="font-size:11px;color:#64748B;">هیچ پکیجی تعریف نشده — این بازی قابل خرید نیست</div>'}
+        <div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap;">
+          <input class="form-input" style="flex:1;min-width:80px;" placeholder="مقدار" id="pkgAmount_${g.id}" type="number"/>
+          <input class="form-input" style="flex:1;min-width:80px;" placeholder="قیمت ($)" id="pkgPrice_${g.id}" type="number" step="0.01"/>
+          <input class="form-input" style="flex:1;min-width:100px;" placeholder="Product ID (اختیاری)" id="pkgProductId_${g.id}"/>
+          <button class="btn-primary" onclick="addPackage('${g.id}')">افزودن پکیج</button>
+        </div>
       </div>
     </div>
   `).join('') || '<div class="empty">هیچ بازی‌ای وجود ندارد</div>';
+}
+
+// ============ OFFERS ============
+async function getOffers() {
+  try {
+    const res = await fetch('/.netlify/functions/offers');
+    const data = await res.json();
+    if (data.success && Array.isArray(data.offers)) return data.offers;
+  } catch(e) {}
+  return [];
+}
+async function saveOffers(offers) {
+  try {
+    const res = await fetch('/.netlify/functions/offers', {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ token: getAdminToken(), offers })
+    });
+    if (res.status === 401) { logoutAdmin(); return false; }
+    if (!res.ok) { alert('❌ ذخیره روی سرور انجام نشد. دوباره تلاش کن.'); return false; }
+    return true;
+  } catch(e) {
+    console.error(e);
+    alert('❌ خطا در ارتباط با سرور، ذخیره انجام نشد.');
+    return false;
+  }
+}
+
+async function addOffer() {
+  const title = document.getElementById('newOfferTitle').value.trim();
+  const icon = document.getElementById('newOfferIcon').value.trim();
+  const link = document.getElementById('newOfferLink').value.trim();
+  const subtitle = document.getElementById('newOfferSubtitle').value.trim();
+  const benefits = document.getElementById('newOfferBenefits').value.trim();
+  const fileInput = document.getElementById('newOfferImage');
+  if(!title || !link) { alert('لطفاً عنوان و لینک را پر کنید'); return; }
+
+  let image = null;
+  if (fileInput && fileInput.files && fileInput.files[0]) {
+    try { image = await compressImage(fileInput.files[0]); }
+    catch(e) { alert('خطا در پردازش عکس'); return; }
+  }
+
+  const offers = await getOffers();
+  offers.push({ id:'offer_'+Date.now(), title, icon: icon || '🎁', image, link, subtitle, benefits, active:true });
+  const ok = await saveOffers(offers);
+  if(!ok) return;
+  document.getElementById('newOfferTitle').value='';
+  document.getElementById('newOfferIcon').value='';
+  document.getElementById('newOfferLink').value='';
+  document.getElementById('newOfferSubtitle').value='';
+  document.getElementById('newOfferBenefits').value='';
+  if(fileInput) fileInput.value='';
+  await renderOffers();
+  alert('✅ پیشنهاد '+title+' اضافه شد!');
+}
+
+async function toggleOffer(id) {
+  const offers = await getOffers();
+  const o = offers.find(o => o.id === id);
+  if(!o) return;
+  o.active = !o.active;
+  if(!(await saveOffers(offers))) return;
+  await renderOffers();
+}
+
+async function deleteOffer(id) {
+  if(!confirm('آیا مطمئنی؟')) return;
+  const offers = (await getOffers()).filter(o => o.id !== id);
+  if(!(await saveOffers(offers))) return;
+  await renderOffers();
+}
+
+async function moveOffer(id, dir) {
+  const offers = await getOffers();
+  const idx = offers.findIndex(o => o.id === id);
+  if (idx < 0) return;
+  const newIdx = idx + dir;
+  if (newIdx < 0 || newIdx >= offers.length) return;
+  [offers[idx], offers[newIdx]] = [offers[newIdx], offers[idx]];
+  if (!(await saveOffers(offers))) return;
+  await renderOffers();
+}
+
+async function changeOfferImage(id, input) {
+  const file = input.files && input.files[0];
+  if (!file) return;
+  let image;
+  try { image = await compressImage(file); }
+  catch(e) { alert('خطا در پردازش عکس'); return; }
+
+  const offers = await getOffers();
+  const o = offers.find(o => o.id === id);
+  if (!o) return;
+  o.image = image;
+  if (!(await saveOffers(offers))) return;
+  await renderOffers();
+}
+
+function toggleEditOffer(id) {
+  const panel = document.getElementById('offerEditPanel_'+id);
+  if (panel) panel.style.display = panel.style.display === 'none' ? 'flex' : 'none';
+}
+
+async function saveOfferEdit(id) {
+  const title = document.getElementById('offerEditTitle_'+id).value.trim();
+  const icon = document.getElementById('offerEditIcon_'+id).value.trim();
+  const link = document.getElementById('offerEditLink_'+id).value.trim();
+  const subtitle = document.getElementById('offerEditSubtitle_'+id).value.trim();
+  const benefits = document.getElementById('offerEditBenefits_'+id).value.trim();
+  if (!title || !link) { alert('لطفاً عنوان و لینک را پر کنید'); return; }
+
+  const offers = await getOffers();
+  const o = offers.find(o => o.id === id);
+  if (!o) return;
+  o.title = title;
+  o.icon = icon || '🎁';
+  o.link = link;
+  o.subtitle = subtitle;
+  o.benefits = benefits;
+  if (!(await saveOffers(offers))) return;
+  await renderOffers();
+}
+
+async function renderOffers() {
+  const offers = await getOffers();
+  document.getElementById('offersList').innerHTML = offers.map((o,i) => `
+    <div class="game-item" style="flex-direction:column;align-items:stretch;">
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <div style="display:flex;align-items:center;gap:10px;">
+          ${o.image ? `<img src="${o.image}" style="width:32px;height:32px;border-radius:8px;object-fit:cover;"/>` : `<span style="font-size:24px;">${escapeHtml(o.icon||'🎁')}</span>`}
+          <div>
+            <div style="font-size:13px;font-weight:600;color:#fff;">${escapeHtml(o.title)}</div>
+            <div style="font-size:11px;color:#94A3B8;max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${escapeHtml(o.subtitle||'')}</div>
+          </div>
+        </div>
+        <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;">
+          <button class="btn-secondary" style="padding:4px 8px;font-size:11px;" ${i===0?'disabled':''} onclick="moveOffer('${o.id}',-1)">⬆</button>
+          <button class="btn-secondary" style="padding:4px 8px;font-size:11px;" ${i===offers.length-1?'disabled':''} onclick="moveOffer('${o.id}',1)">⬇</button>
+          <input type="file" accept="image/*" id="offerImgInput_${o.id}" style="display:none;" onchange="changeOfferImage('${o.id}', this)"/>
+          <button class="btn-secondary" style="padding:6px 10px;font-size:11px;" onclick="document.getElementById('offerImgInput_${o.id}').click()">🖼️ لوگو</button>
+          <button class="btn-secondary" style="padding:6px 10px;font-size:11px;" onclick="toggleEditOffer('${o.id}')">✏️ ویرایش</button>
+          <div class="toggle-switch ${o.active?'on':''}" onclick="toggleOffer('${o.id}')"></div>
+          <button class="btn-danger" onclick="deleteOffer('${o.id}')">حذف</button>
+        </div>
+      </div>
+      <div id="offerEditPanel_${o.id}" style="display:none;gap:6px;margin-top:10px;flex-wrap:wrap;">
+        <input class="form-input" style="flex:1;min-width:120px;" placeholder="عنوان" id="offerEditTitle_${o.id}" value="${escapeHtml(o.title)}"/>
+        <input class="form-input" style="flex:1;min-width:60px;" placeholder="آیکون" id="offerEditIcon_${o.id}" value="${escapeHtml(o.icon||'')}"/>
+        <input class="form-input" style="flex:2;min-width:160px;" placeholder="لینک" id="offerEditLink_${o.id}" value="${escapeHtml(o.link||'')}"/>
+        <input class="form-input" style="flex:2;min-width:160px;" placeholder="متن کوتاه" id="offerEditSubtitle_${o.id}" value="${escapeHtml(o.subtitle||'')}"/>
+        <textarea class="form-input" style="width:100%;" rows="2" placeholder="توضیحات و مزایا" id="offerEditBenefits_${o.id}">${escapeHtml(o.benefits||'')}</textarea>
+        <button class="btn-primary" onclick="saveOfferEdit('${o.id}')">💾 ذخیره</button>
+      </div>
+    </div>
+  `).join('') || '<div class="empty">هیچ پیشنهادی وجود ندارد</div>';
 }
 
 // ============ PAYMENTS ============
@@ -594,7 +992,7 @@ function saveGroqKey() {
 }
 
 function changePassword() {
-  alert('⚠️ برای تغییر رمز، باید مقدار ADMIN_PASSWORD رو توی Netlify Environment Variables عوض کنی و بعد همون رمز رو اینجا توی کد (admin.html) هم آپدیت کنی، تا هردو یکی بمونن.');
+  alert('⚠️ برای تغییر رمز، فقط کافیه مقدار ADMIN_PASSWORD رو توی Netlify Environment Variables عوض کنی. رمز دیگه توی کد ذخیره نمی‌شه.');
 }
 
 async function renderStats() {
@@ -627,7 +1025,6 @@ const TRANS = {
   fa: {
     dir: 'rtl',
     online: 'آنلاین',
-    langBtn: '🌐 EN',
     tabs: ['📦 سفارشات','🎮 بازی‌ها','💳 پرداخت','⚙️ تنظیمات','👁️ بازدیدکنندگان','🤖 دستیار AI'],
     ordersTitle: '📦 مدیریت سفارشات',
     gamesTitle: '🎮 مدیریت بازی‌ها',
@@ -665,7 +1062,6 @@ const TRANS = {
   en: {
     dir: 'ltr',
     online: 'Online',
-    langBtn: '🌐 فا',
     tabs: ['📦 Orders','🎮 Games','💳 Payments','⚙️ Settings','👁️ Visitors','🤖 AI Assistant'],
     ordersTitle: '📦 Order Management',
     gamesTitle: '🎮 Game Management',
@@ -699,11 +1095,48 @@ const TRANS = {
     auto: 'Automatic', manual: 'Manual',
     statusPending: 'Pending', statusProcessing: 'Processing',
     statusCompleted: 'Completed', statusCancelled: 'Cancelled',
+  },
+  de: {
+    dir: 'ltr',
+    online: 'Online',
+    tabs: ['📦 Bestellungen','🎮 Spiele','💳 Zahlung','⚙️ Einstellungen','👁️ Besucher','🤖 KI-Assistent'],
+    ordersTitle: '📦 Bestellverwaltung',
+    gamesTitle: '🎮 Spieleverwaltung',
+    paymentsTitle: '💳 Zahlungsmethoden',
+    settingsTitle: '⚙️ Einstellungen',
+    aiTitle: '🤖 KI-Assistent',
+    filterAll: 'Alle', filterPending: 'Ausstehend', filterProcessing: 'In Bearbeitung',
+    filterCompleted: 'Abgeschlossen', filterCancelled: 'Storniert',
+    complete: '✅ Bestellung abschließen', cancel: '❌ Stornieren', restore: '↩️ Wiederherstellen',
+    addGame: '➕ Neues Spiel hinzufügen', gameName: 'Spielname', gameIcon: 'Symbol (Emoji)',
+    gameCurrency: 'Spielwährung', gameIdLabel: 'Spieler-ID Beschreibung',
+    addGameBtn: '✅ Spiel hinzufügen', gamesList: 'Spieleliste',
+    addPay: '➕ Zahlungsmethode hinzufügen', payName: 'Name der Zahlungsmethode',
+    payIcon: 'Symbol (Emoji)', payInstructions: 'Zahlungsanweisungen',
+    payType: 'Typ', payManual: 'Manuell (Admin-Bestätigung erforderlich)', payAuto: 'Automatisch',
+    addPayBtn: '✅ Hinzufügen', paysList: 'Aktive Zahlungsmethoden',
+    groqTitle: '🤖 Groq-KI-Einstellungen', groqKey: 'Groq API-Schlüssel',
+    groqHint: 'Kostenlos erhältlich auf console.groq.com', groqSave: 'API-Schlüssel speichern',
+    passTitle: '🔐 Admin-Passwort ändern', newPass: 'Neues Passwort',
+    confirmPass: 'Passwort bestätigen', savePass: 'Neues Passwort speichern',
+    statsTitle: '📊 Statistiken', clearTitle: '🗑️ Datenverwaltung',
+    clearBtn: 'Alle Bestellungen löschen', empty: 'Keine Bestellungen gefunden',
+    emptyGames: 'Keine Spiele gefunden', emptyPays: 'Keine Zahlungsmethoden gefunden',
+    chatPlaceholder: 'Frage stellen oder Befehl eingeben...', sendBtn: 'Senden',
+    quick1: 'Ausstehende Bestellungen', quick2: 'Verkaufsanalyse',
+    quick3: 'Kundennachricht', quick4: 'Top-Spiele',
+    delete: 'Löschen', loginTitle: 'Afghan Games', loginSub: 'Admin-Panel-Anmeldung',
+    loginUser: 'Benutzername', loginPass: 'Passwort', loginBtn: 'Anmelden',
+    loginError: 'Ungültiger Benutzername oder Passwort',
+    pkg: 'Paket', price: 'Preis', payment: 'Zahlung', date: 'Datum', notes: 'Notizen',
+    auto: 'Automatisch', manual: 'Manuell',
+    statusPending: 'Ausstehend', statusProcessing: 'In Bearbeitung',
+    statusCompleted: 'Abgeschlossen', statusCancelled: 'Storniert',
   }
 };
 
 function toggleLang() {
-  currentLang = currentLang === 'fa' ? 'en' : 'fa';
+  currentLang = LANG_CYCLE[(LANG_CYCLE.indexOf(currentLang) + 1) % LANG_CYCLE.length];
   localStorage.setItem('admin_lang', currentLang);
   applyLang();
   renderOrders();
@@ -716,9 +1149,9 @@ function applyLang() {
   document.documentElement.dir = t.dir;
   document.documentElement.lang = currentLang;
 
-  // Lang button
+  // Lang button (shows the label of the language a click will switch to)
   const lb = document.getElementById('langBtn');
-  if(lb) lb.textContent = t.langBtn;
+  if(lb) lb.textContent = LANG_LABELS[LANG_CYCLE[(LANG_CYCLE.indexOf(currentLang) + 1) % LANG_CYCLE.length]];
 
   // Online text
   const ot = document.getElementById('onlineText');
@@ -856,7 +1289,7 @@ async function sendMsg() {
   addMsg('user', text);
 
   const orders = await getOrders();
-  const games = getGames();
+  const games = await getGames();
   const payments = getPayments();
   const pending = orders.filter(function(o){return o.status==='pending';}).length;
   const completed = orders.filter(function(o){return o.status==='completed';}).length;

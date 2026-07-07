@@ -1,4 +1,5 @@
 const { getStore } = require('@netlify/blobs');
+const { verifyAdminSession } = require('./lib/admin-session');
 
 function ordersStore() {
   return getStore({
@@ -13,14 +14,12 @@ exports.handler = async function(event) {
     return { statusCode: 405, body: 'Method Not Allowed' };
   }
 
-  const ADMIN_PASS = process.env.ADMIN_PASSWORD || 'afghan2025';
-
   let body;
   try { body = JSON.parse(event.body); }
   catch(e) { return { statusCode: 400, body: JSON.stringify({ error: 'Invalid JSON' }) }; }
 
-  const { password, orderId, status } = body;
-  if (password !== ADMIN_PASS) return { statusCode: 401, body: JSON.stringify({ error: 'Unauthorized' }) };
+  const { token, orderId, status } = body;
+  if (!(await verifyAdminSession(token))) return { statusCode: 401, body: JSON.stringify({ error: 'Unauthorized' }) };
   if (!orderId || !status) return { statusCode: 400, body: JSON.stringify({ error: 'orderId and status required' }) };
 
   try {

@@ -15,7 +15,10 @@ exports.handler = async function(event) {
   try {
     const sessions = sessionsStore();
     const session = await sessions.get(token, { type: 'json' });
-    if (!session) return { statusCode: 401, headers, body: JSON.stringify({ error: 'نشست منقضی شده، دوباره وارد شوید' }) };
+    if (!session || (session.expiresAt && Date.now() > session.expiresAt)) {
+      if (session) await sessions.delete(token);
+      return { statusCode: 401, headers, body: JSON.stringify({ error: 'نشست منقضی شده، دوباره وارد شوید' }) };
+    }
 
     const store = ordersStore();
     const { blobs } = await store.list();
