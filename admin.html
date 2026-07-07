@@ -131,6 +131,7 @@ h2{font-size:18px;color:#fff;margin-bottom:18px;}
     <button class="nav-btn active" onclick="showTab('orders',this)">📦 سفارشات</button>
     <button class="nav-btn" onclick="showTab('games',this)">🎮 بازی‌ها</button>
     <button class="nav-btn" onclick="showTab('payments',this)">💳 پرداخت</button>
+    <button class="nav-btn" onclick="showTab('offers',this)">🎁 پیشنهادها</button>
     <button class="nav-btn" onclick="showTab('settings',this)">⚙️ تنظیمات</button>
     <button class="nav-btn" onclick="showTab('visitors',this)">👁️ بازدیدکنندگان</button>
     <button class="nav-btn" onclick="showTab('ai',this)">🤖 دستیار AI</button>
@@ -185,6 +186,47 @@ h2{font-size:18px;color:#fff;margin-bottom:18px;}
       <div class="card">
         <div class="card-title">لیست بازی‌ها</div>
         <div id="gamesList"></div>
+      </div>
+    </div>
+
+    <!-- OFFERS TAB -->
+    <div id="tab-offers" class="tab">
+      <h2>🎁 مدیریت پیشنهادها</h2>
+
+      <!-- Add new offer -->
+      <div class="card">
+        <div class="card-title">➕ اضافه کردن پیشنهاد جدید</div>
+        <div class="form-group">
+          <label class="form-label">عنوان</label>
+          <input class="form-input" id="newOfferTitle" placeholder="مثلاً: کارت اعتباری Revolut"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">آیکون (Emoji) - اختیاری اگه لوگو آپلود کنی</label>
+          <input class="form-input" id="newOfferIcon" placeholder="مثلاً: 💳"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">لوگو / عکس (اختیاری)</label>
+          <input class="form-input" id="newOfferImage" type="file" accept="image/*"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">لینک</label>
+          <input class="form-input" id="newOfferLink" placeholder="https://..."/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">متن کوتاه (روی کارت نشون داده می‌شه)</label>
+          <input class="form-input" id="newOfferSubtitle" placeholder="مثلاً: با لینک من ثبت‌نام کن و پاداش بگیر"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">توضیحات و مزایا (وقتی مشتری تپ می‌کنه نشون داده می‌شه)</label>
+          <textarea class="form-input" id="newOfferBenefits" rows="3" placeholder="چرا و چطور این پیشنهاد سودمنده..."></textarea>
+        </div>
+        <button class="btn-primary" onclick="addOffer()" style="width:100%;padding:12px;margin-top:6px;">✅ اضافه کردن پیشنهاد</button>
+      </div>
+
+      <!-- Offers list -->
+      <div class="card">
+        <div class="card-title">لیست پیشنهادها</div>
+        <div id="offersList"></div>
       </div>
     </div>
 
@@ -492,6 +534,7 @@ function init() {
   }
   renderOrders();
   renderGames();
+  renderOffers();
   renderPayments();
   renderStats();
   applyLang();
@@ -734,6 +777,161 @@ async function renderGames() {
       </div>
     </div>
   `).join('') || '<div class="empty">هیچ بازی‌ای وجود ندارد</div>';
+}
+
+// ============ OFFERS ============
+async function getOffers() {
+  try {
+    const res = await fetch('/.netlify/functions/offers');
+    const data = await res.json();
+    if (data.success && Array.isArray(data.offers)) return data.offers;
+  } catch(e) {}
+  return [];
+}
+async function saveOffers(offers) {
+  try {
+    const res = await fetch('/.netlify/functions/offers', {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ token: getAdminToken(), offers })
+    });
+    if (res.status === 401) { logoutAdmin(); return false; }
+    if (!res.ok) { alert('❌ ذخیره روی سرور انجام نشد. دوباره تلاش کن.'); return false; }
+    return true;
+  } catch(e) {
+    console.error(e);
+    alert('❌ خطا در ارتباط با سرور، ذخیره انجام نشد.');
+    return false;
+  }
+}
+
+async function addOffer() {
+  const title = document.getElementById('newOfferTitle').value.trim();
+  const icon = document.getElementById('newOfferIcon').value.trim();
+  const link = document.getElementById('newOfferLink').value.trim();
+  const subtitle = document.getElementById('newOfferSubtitle').value.trim();
+  const benefits = document.getElementById('newOfferBenefits').value.trim();
+  const fileInput = document.getElementById('newOfferImage');
+  if(!title || !link) { alert('لطفاً عنوان و لینک را پر کنید'); return; }
+
+  let image = null;
+  if (fileInput && fileInput.files && fileInput.files[0]) {
+    try { image = await compressImage(fileInput.files[0]); }
+    catch(e) { alert('خطا در پردازش عکس'); return; }
+  }
+
+  const offers = await getOffers();
+  offers.push({ id:'offer_'+Date.now(), title, icon: icon || '🎁', image, link, subtitle, benefits, active:true });
+  const ok = await saveOffers(offers);
+  if(!ok) return;
+  document.getElementById('newOfferTitle').value='';
+  document.getElementById('newOfferIcon').value='';
+  document.getElementById('newOfferLink').value='';
+  document.getElementById('newOfferSubtitle').value='';
+  document.getElementById('newOfferBenefits').value='';
+  if(fileInput) fileInput.value='';
+  await renderOffers();
+  alert('✅ پیشنهاد '+title+' اضافه شد!');
+}
+
+async function toggleOffer(id) {
+  const offers = await getOffers();
+  const o = offers.find(o => o.id === id);
+  if(!o) return;
+  o.active = !o.active;
+  if(!(await saveOffers(offers))) return;
+  await renderOffers();
+}
+
+async function deleteOffer(id) {
+  if(!confirm('آیا مطمئنی؟')) return;
+  const offers = (await getOffers()).filter(o => o.id !== id);
+  if(!(await saveOffers(offers))) return;
+  await renderOffers();
+}
+
+async function moveOffer(id, dir) {
+  const offers = await getOffers();
+  const idx = offers.findIndex(o => o.id === id);
+  if (idx < 0) return;
+  const newIdx = idx + dir;
+  if (newIdx < 0 || newIdx >= offers.length) return;
+  [offers[idx], offers[newIdx]] = [offers[newIdx], offers[idx]];
+  if (!(await saveOffers(offers))) return;
+  await renderOffers();
+}
+
+async function changeOfferImage(id, input) {
+  const file = input.files && input.files[0];
+  if (!file) return;
+  let image;
+  try { image = await compressImage(file); }
+  catch(e) { alert('خطا در پردازش عکس'); return; }
+
+  const offers = await getOffers();
+  const o = offers.find(o => o.id === id);
+  if (!o) return;
+  o.image = image;
+  if (!(await saveOffers(offers))) return;
+  await renderOffers();
+}
+
+function toggleEditOffer(id) {
+  const panel = document.getElementById('offerEditPanel_'+id);
+  if (panel) panel.style.display = panel.style.display === 'none' ? 'flex' : 'none';
+}
+
+async function saveOfferEdit(id) {
+  const title = document.getElementById('offerEditTitle_'+id).value.trim();
+  const icon = document.getElementById('offerEditIcon_'+id).value.trim();
+  const link = document.getElementById('offerEditLink_'+id).value.trim();
+  const subtitle = document.getElementById('offerEditSubtitle_'+id).value.trim();
+  const benefits = document.getElementById('offerEditBenefits_'+id).value.trim();
+  if (!title || !link) { alert('لطفاً عنوان و لینک را پر کنید'); return; }
+
+  const offers = await getOffers();
+  const o = offers.find(o => o.id === id);
+  if (!o) return;
+  o.title = title;
+  o.icon = icon || '🎁';
+  o.link = link;
+  o.subtitle = subtitle;
+  o.benefits = benefits;
+  if (!(await saveOffers(offers))) return;
+  await renderOffers();
+}
+
+async function renderOffers() {
+  const offers = await getOffers();
+  document.getElementById('offersList').innerHTML = offers.map((o,i) => `
+    <div class="game-item" style="flex-direction:column;align-items:stretch;">
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <div style="display:flex;align-items:center;gap:10px;">
+          ${o.image ? `<img src="${o.image}" style="width:32px;height:32px;border-radius:8px;object-fit:cover;"/>` : `<span style="font-size:24px;">${escapeHtml(o.icon||'🎁')}</span>`}
+          <div>
+            <div style="font-size:13px;font-weight:600;color:#fff;">${escapeHtml(o.title)}</div>
+            <div style="font-size:11px;color:#94A3B8;max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${escapeHtml(o.subtitle||'')}</div>
+          </div>
+        </div>
+        <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;">
+          <button class="btn-secondary" style="padding:4px 8px;font-size:11px;" ${i===0?'disabled':''} onclick="moveOffer('${o.id}',-1)">⬆</button>
+          <button class="btn-secondary" style="padding:4px 8px;font-size:11px;" ${i===offers.length-1?'disabled':''} onclick="moveOffer('${o.id}',1)">⬇</button>
+          <input type="file" accept="image/*" id="offerImgInput_${o.id}" style="display:none;" onchange="changeOfferImage('${o.id}', this)"/>
+          <button class="btn-secondary" style="padding:6px 10px;font-size:11px;" onclick="document.getElementById('offerImgInput_${o.id}').click()">🖼️ لوگو</button>
+          <button class="btn-secondary" style="padding:6px 10px;font-size:11px;" onclick="toggleEditOffer('${o.id}')">✏️ ویرایش</button>
+          <div class="toggle-switch ${o.active?'on':''}" onclick="toggleOffer('${o.id}')"></div>
+          <button class="btn-danger" onclick="deleteOffer('${o.id}')">حذف</button>
+        </div>
+      </div>
+      <div id="offerEditPanel_${o.id}" style="display:none;gap:6px;margin-top:10px;flex-wrap:wrap;">
+        <input class="form-input" style="flex:1;min-width:120px;" placeholder="عنوان" id="offerEditTitle_${o.id}" value="${escapeHtml(o.title)}"/>
+        <input class="form-input" style="flex:1;min-width:60px;" placeholder="آیکون" id="offerEditIcon_${o.id}" value="${escapeHtml(o.icon||'')}"/>
+        <input class="form-input" style="flex:2;min-width:160px;" placeholder="لینک" id="offerEditLink_${o.id}" value="${escapeHtml(o.link||'')}"/>
+        <input class="form-input" style="flex:2;min-width:160px;" placeholder="متن کوتاه" id="offerEditSubtitle_${o.id}" value="${escapeHtml(o.subtitle||'')}"/>
+        <textarea class="form-input" style="width:100%;" rows="2" placeholder="توضیحات و مزایا" id="offerEditBenefits_${o.id}">${escapeHtml(o.benefits||'')}</textarea>
+        <button class="btn-primary" onclick="saveOfferEdit('${o.id}')">💾 ذخیره</button>
+      </div>
+    </div>
+  `).join('') || '<div class="empty">هیچ پیشنهادی وجود ندارد</div>';
 }
 
 // ============ PAYMENTS ============
