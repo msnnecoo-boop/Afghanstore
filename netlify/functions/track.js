@@ -49,6 +49,7 @@ exports.handler = async (event) => {
       'games': '🎮 بازی‌ها',
       'blog': '📝 بلاگ',
       'orders': '📦 سفارشات',
+      'affiliate': '🎁 پیشنهادها',
     };
     const pageName = pageNames[page] || page || 'نامشخص';
 
