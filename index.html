@@ -4,6 +4,7 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>AfghanCoins - فروش کاینس بازی</title>
+<link rel="icon" type="image/png" href="/assets/images/favicon.png"/>
 <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@300;400;600;800&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet"/>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
@@ -19,7 +20,7 @@ body{background:var(--bg);color:var(--text);font-family:'Exo 2',sans-serif;min-h
 .header{background:rgba(7,9,13,0.95);backdrop-filter:blur(16px);border-bottom:1px solid rgba(245,197,24,0.15);position:sticky;top:0;z-index:100;padding:0 20px;}
 .header-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:60px;}
 .logo{display:flex;align-items:center;gap:10px;text-decoration:none;}
-.logo-icon{width:36px;height:36px;background:linear-gradient(135deg,#F5C518,#C9A010);clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:900;color:#000;}
+.logo-icon{width:36px;height:36px;object-fit:contain;flex-shrink:0;}
 .logo-text{font-family:'Rajdhani',sans-serif;font-size:20px;font-weight:700;color:#fff;letter-spacing:2px;}
 .logo-text span{color:var(--gold);}
 .header-nav{display:flex;align-items:center;gap:4px;}
@@ -167,7 +168,7 @@ body{background:var(--bg);color:var(--text);font-family:'Exo 2',sans-serif;min-h
 <header class="header">
   <div class="header-inner">
     <a href="#" class="logo" onclick="showPage('home')">
-      <div class="logo-icon">AC</div>
+      <img src="/assets/images/logo-coin.webp" alt="AfghanCoins" class="logo-icon"/>
       <div class="logo-text">AFGHAN<span>COINS</span></div>
     </a>
     <nav class="header-nav">
