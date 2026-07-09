@@ -1,7 +1,7 @@
 const { getStore } = require('@netlify/blobs');
 
 function blogStore() {
-  return getStore('blogposts');
+  return getStore({ name: 'blogposts', siteID: process.env.NETLIFY_SITE_ID, token: process.env.NETLIFY_BLOBS_TOKEN });
 }
 
 const GAMES_ROTATION = [

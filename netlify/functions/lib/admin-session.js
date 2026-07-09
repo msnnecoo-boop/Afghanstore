@@ -3,7 +3,7 @@ const { getStore } = require('@netlify/blobs');
 const SESSION_TTL_MS = 12 * 60 * 60 * 1000; // 12 hours
 
 function adminSessionsStore() {
-  return getStore('admin-sessions');
+  return getStore({ name: 'admin-sessions', siteID: process.env.NETLIFY_SITE_ID, token: process.env.NETLIFY_BLOBS_TOKEN });
 }
 
 async function verifyAdminSession(token) {
