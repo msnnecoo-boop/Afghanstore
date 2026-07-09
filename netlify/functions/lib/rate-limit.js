@@ -1,7 +1,7 @@
 const { getStore } = require('@netlify/blobs');
 
 function rateLimitStore() {
-  return getStore({ name: 'rate-limits', siteID: process.env.NETLIFY_SITE_ID, token: process.env.NETLIFY_BLOBS_TOKEN });
+  return getStore('rate-limits');
 }
 
 function getClientIp(event) {

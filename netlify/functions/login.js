@@ -6,10 +6,10 @@ const PBKDF2_ITERATIONS = 100000;
 const SESSION_TTL_MS = 30 * 24 * 60 * 60 * 1000; // 30 days
 
 function usersStore() {
-  return getStore({ name: 'users', siteID: process.env.NETLIFY_SITE_ID, token: process.env.NETLIFY_BLOBS_TOKEN });
+  return getStore('users');
 }
 function sessionsStore() {
-  return getStore({ name: 'sessions', siteID: process.env.NETLIFY_SITE_ID, token: process.env.NETLIFY_BLOBS_TOKEN });
+  return getStore('sessions');
 }
 function hashPasswordLegacy(password, salt) {
   return crypto.createHash('sha256').update(password + salt).digest('hex');

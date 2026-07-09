@@ -1,10 +1,10 @@
 const { getStore } = require('@netlify/blobs');
 
 function sessionsStore() {
-  return getStore({ name: 'sessions', siteID: process.env.NETLIFY_SITE_ID, token: process.env.NETLIFY_BLOBS_TOKEN });
+  return getStore('sessions');
 }
 function ordersStore() {
-  return getStore({ name: 'orders', siteID: process.env.NETLIFY_SITE_ID, token: process.env.NETLIFY_BLOBS_TOKEN });
+  return getStore('orders');
 }
 
 exports.handler = async function(event) {

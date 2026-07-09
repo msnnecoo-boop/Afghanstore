@@ -2,7 +2,7 @@ const { getStore } = require('@netlify/blobs');
 const { verifyAdminSession } = require('./lib/admin-session');
 
 function offersStore() {
-  return getStore({ name: 'offers', siteID: process.env.NETLIFY_SITE_ID, token: process.env.NETLIFY_BLOBS_TOKEN });
+  return getStore('offers');
 }
 
 // Always merged into the saved list by id (see the GET handler below), so

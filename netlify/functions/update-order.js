@@ -2,11 +2,7 @@ const { getStore } = require('@netlify/blobs');
 const { verifyAdminSession } = require('./lib/admin-session');
 
 function ordersStore() {
-  return getStore({
-    name: 'orders',
-    siteID: process.env.NETLIFY_SITE_ID,
-    token: process.env.NETLIFY_BLOBS_TOKEN
-  });
+  return getStore('orders');
 }
 
 exports.handler = async function(event) {
