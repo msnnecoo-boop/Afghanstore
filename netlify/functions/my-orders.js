@@ -1,4 +1,5 @@
 const { getStore } = require('@netlify/blobs');
+const { listAllBlobs } = require('./lib/list-all');
 
 function sessionsStore() {
   return getStore({ name: 'sessions', siteID: process.env.NETLIFY_SITE_ID, token: process.env.NETLIFY_BLOBS_TOKEN });
@@ -21,7 +22,7 @@ exports.handler = async function(event) {
     }
 
     const store = ordersStore();
-    const { blobs } = await store.list();
+    const blobs = await listAllBlobs(store);
     const allOrders = await Promise.all(blobs.map(b => store.get(b.key, { type: 'json' })));
     const myOrders = allOrders
       .filter(o => o && o.customerEmail === session.email)

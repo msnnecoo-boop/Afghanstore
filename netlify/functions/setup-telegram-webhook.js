@@ -1,3 +1,5 @@
+const { webhookSecret } = require('./lib/telegram-secret');
+
 // One-off setup helper: registers the Telegram webhook using the
 // TELEGRAM_BOT_TOKEN already configured in Netlify, so there's no risk of a
 // typo/autocorrect mangling the token when pasting it into a browser URL
@@ -12,10 +14,11 @@ exports.handler = async function(event) {
 
   const siteUrl = process.env.URL || 'https://afghancoins.online';
   const webhookUrl = `${siteUrl}/.netlify/functions/telegram-webhook`;
+  const secretToken = webhookSecret(TELEGRAM_TOKEN);
 
   try {
     const meRes = await fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/getMe`).then(r => r.json());
-    const setRes = await fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/setWebhook?url=${encodeURIComponent(webhookUrl)}`).then(r => r.json());
+    const setRes = await fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/setWebhook?url=${encodeURIComponent(webhookUrl)}&secret_token=${secretToken}`).then(r => r.json());
     const webhookInfo = await fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/getWebhookInfo`).then(r => r.json());
 
     return {

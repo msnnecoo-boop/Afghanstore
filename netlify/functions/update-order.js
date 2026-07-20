@@ -29,6 +29,22 @@ exports.handler = async function(event) {
 
     order.status = status;
     if (status === 'completed') order.completedAt = new Date().toISOString();
+
+    // Fire FoxReload fulfillment only once an admin has verified payment and
+    // marked the order completed — never automatically on order creation.
+    const FOXRELOAD_KEY = process.env.FOXRELOAD_API_KEY;
+    if (status === 'completed' && FOXRELOAD_KEY && order.productId && order.playerId && !order.foxreloadId) {
+      try {
+        const res = await fetch('https://public-api.foxreload.com/api/orders', {
+          method: 'POST',
+          headers: { 'X-API-Key': FOXRELOAD_KEY, 'Content-Type': 'application/json', 'Accept': 'application/json' },
+          body: JSON.stringify({ product_id: order.productId, recipient: order.playerId, quantity: 1 })
+        });
+        const data = await res.json();
+        if (data?.id) order.foxreloadId = data.id;
+      } catch(e) { console.error('FoxReload error:', e); }
+    }
+
     await store.setJSON(orderId, order);
 
     return { statusCode: 200, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ success: true, order }) };

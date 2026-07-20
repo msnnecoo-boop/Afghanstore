@@ -15,7 +15,6 @@ exports.handler = async function(event) {
 
   const TELEGRAM_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
   const CHAT_ID = process.env.TELEGRAM_CHAT_ID;
-  const FOXRELOAD_KEY = process.env.FOXRELOAD_API_KEY;
   const CALLMEBOT_PHONE = process.env.CALLMEBOT_PHONE;
   const CALLMEBOT_APIKEY = process.env.CALLMEBOT_APIKEY;
 
@@ -24,10 +23,18 @@ exports.handler = async function(event) {
   catch(e) { return { statusCode: 400, body: JSON.stringify({ error: 'Invalid JSON' }) }; }
 
   const { orderId, productId, playerId, game, pkg, price, payment, customerEmail, receiptImage } = body;
+  if (!orderId || !playerId || !game || !pkg || !payment || typeof price === 'undefined') {
+    return { statusCode: 400, body: JSON.stringify({ error: 'Missing required order fields' }) };
+  }
 
-  // Save order to Netlify Blobs
+  // Save order to Netlify Blobs. FoxReload fulfillment does NOT happen here —
+  // it only fires once an admin manually marks the order 'completed' (see
+  // update-order.js), so every order gets a human payment check first.
+  const store = ordersStore();
   try {
-    const store = ordersStore();
+    if (await store.get(orderId, { type: 'json' })) {
+      return { statusCode: 409, body: JSON.stringify({ error: 'Order ID already exists' }) };
+    }
     const orderData = {
       id: orderId,
       game, pkg, playerId, payment,
@@ -86,28 +93,9 @@ exports.handler = async function(event) {
     } catch(e) { console.error('Receipt photo send error:', e); }
   }
 
-  // Try FoxReload
-  let foxreloadId = null;
-  if (FOXRELOAD_KEY && productId && playerId) {
-    try {
-      const res = await fetch('https://public-api.foxreload.com/api/orders', {
-        method: 'POST',
-        headers: { 'X-API-Key': FOXRELOAD_KEY, 'Content-Type': 'application/json', 'Accept': 'application/json' },
-        body: JSON.stringify({ product_id: productId, recipient: playerId, quantity: 1 })
-      });
-      const data = await res.json();
-      foxreloadId = data?.id || null;
-      if (foxreloadId) {
-        const store = ordersStore();
-        const order = await store.get(orderId, { type: 'json' });
-        if (order) { order.status = 'processing'; order.foxreloadId = foxreloadId; await store.setJSON(orderId, order); }
-      }
-    } catch(e) { console.error('FoxReload error:', e); }
-  }
-
   return {
     statusCode: 200,
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ success: true, orderId, foxreloadId })
+    body: JSON.stringify({ success: true, orderId })
   };
 };

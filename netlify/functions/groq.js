@@ -1,3 +1,5 @@
+const { getClientIp, checkRateLimit } = require('./lib/rate-limit');
+
 exports.handler = async (event) => {
   const headers = {
     'Access-Control-Allow-Origin': '*',
@@ -17,6 +19,12 @@ exports.handler = async (event) => {
   const GROQ_API_KEY = process.env.GROQ_API_KEY;
   if (!GROQ_API_KEY) {
     return { statusCode: 500, headers, body: JSON.stringify({ error: 'GROQ_API_KEY not configured' }) };
+  }
+
+  const ip = getClientIp(event);
+  const allowed = await checkRateLimit(`groq:${ip}`, 20, 10 * 60 * 1000);
+  if (!allowed) {
+    return { statusCode: 429, headers, body: JSON.stringify({ error: 'تعداد درخواست‌ها زیاد است، چند دقیقه بعد دوباره امتحان کنید' }) };
   }
 
   try {
