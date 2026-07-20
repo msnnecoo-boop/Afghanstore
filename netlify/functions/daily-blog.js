@@ -22,6 +22,16 @@ exports.handler = async function(event) {
 
   const dayIndex = new Date().getDate() % GAMES_ROTATION.length;
   const game = GAMES_ROTATION[dayIndex];
+  const id = new Date().toISOString().slice(0,10) + '-' + game.name.replace(/\s+/g,'-').toLowerCase();
+
+  const store = blogStore();
+  // Deterministic per-day id means anyone hitting this URL directly (it has
+  // no invocation check, only Netlify's own scheduler is meant to call it)
+  // just gets back today's already-generated post instead of re-billing Groq.
+  const existing = await store.get(id, { type: 'json' });
+  if (existing) {
+    return { statusCode: 200, headers: {'Content-Type':'application/json'}, body: JSON.stringify({ success: true, post: existing }) };
+  }
 
   const prompt = `یک پست بلاگ کوتاه و اورجینال (حدود ۱۰۰ تا ۱۵۰ کلمه) فقط و فقط به زبان فارسی روان درباره‌ی «${game.name}» بنویس. موضوع می‌تواند نکات، ترفندها، یا معرفی ویژگی‌های بازی باشد (نه اخبار جعلی یا آپدیت خیالی که وجود ندارد). لحن دوستانه و مفید برای بازیکنان باشد. در پایان به‌طور طبیعی به فروشگاه شارژ بازی afghancoins.online اشاره کن.\n\nمهم: کل متن باید فقط فارسیِ استاندارد باشد؛ هیچ کلمه یا حرفی از زبان‌های دیگر (انگلیسی به‌جز نام بازی، روسی، چینی، ژاپنی و غیره) استفاده نکن. فقط متن پست را بنویس، بدون مقدمه یا توضیح اضافه.`;
 
@@ -42,7 +52,6 @@ exports.handler = async function(event) {
 
     const title = `${game.name}: نکات و ترفندهای امروز`;
     const excerpt = content.length > 140 ? content.slice(0, 140) + '...' : content;
-    const id = new Date().toISOString().slice(0,10) + '-' + game.name.replace(/\s+/g,'-').toLowerCase();
 
     const post = {
       id,
@@ -55,7 +64,6 @@ exports.handler = async function(event) {
       readTime: Math.max(2, Math.round(content.split(' ').length / 40))
     };
 
-    const store = blogStore();
     await store.setJSON(id, post);
 
     return { statusCode: 200, headers: {'Content-Type':'application/json'}, body: JSON.stringify({ success: true, post }) };

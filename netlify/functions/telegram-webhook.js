@@ -1,3 +1,6 @@
+const crypto = require('crypto');
+const { webhookSecret } = require('./lib/telegram-secret');
+
 const FAQ = {
   prices: {
     label: '💰 قیمت‌ها',
@@ -84,6 +87,17 @@ exports.handler = async function(event) {
   const TELEGRAM_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
   if (!TELEGRAM_TOKEN) {
     return { statusCode: 500, body: 'TELEGRAM_BOT_TOKEN not configured' };
+  }
+
+  // Verify the request actually came from Telegram (secret_token is set on
+  // the webhook by setup-telegram-webhook.js), not a forged POST from
+  // anyone who finds this public URL.
+  const expectedSecret = webhookSecret(TELEGRAM_TOKEN);
+  const gotSecret = event.headers['x-telegram-bot-api-secret-token'] || '';
+  const expectedBuf = Buffer.from(expectedSecret);
+  const gotBuf = Buffer.from(gotSecret);
+  if (expectedBuf.length !== gotBuf.length || !crypto.timingSafeEqual(expectedBuf, gotBuf)) {
+    return { statusCode: 401, body: 'Unauthorized' };
   }
 
   let update;

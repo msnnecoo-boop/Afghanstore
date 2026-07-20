@@ -1,5 +1,6 @@
 const { getStore } = require('@netlify/blobs');
 const { verifyAdminSession } = require('./lib/admin-session');
+const { listAllBlobs } = require('./lib/list-all');
 
 function ordersStore() {
   return getStore({
@@ -15,7 +16,7 @@ exports.handler = async function(event) {
 
   try {
     const store = ordersStore();
-    const { blobs } = await store.list();
+    const blobs = await listAllBlobs(store);
     const orders = await Promise.all(blobs.map(b => store.get(b.key, { type: 'json' })));
     const sorted = orders.filter(Boolean).sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
     return { statusCode: 200, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(sorted) };
